@@ -1,0 +1,2218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIGENT — Autonomous Intelligence Agent Token</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cyan: #00e5ff;
+      --cyan-dim: #006978;
+      --magenta: #d500f9;
+      --blue: #304ffe;
+      --green: #00e676;
+      --bg: #060b14;
+      --bg2: #0a1226;
+      --surface: rgba(10, 20, 44, 0.85);
+      --text: #b0c4de;
+      --text-bright: #e8edf5;
+      --dim: #4a6a8a;
+      --border: rgba(0, 229, 255, 0.10);
+      --border-hover: rgba(0, 229, 255, 0.22);
+      --glow-cyan: 0 0 8px #00e5ff, 0 0 20px rgba(0, 229, 255, 0.3);
+      --glow-magenta: 0 0 8px #d500f9, 0 0 20px rgba(213, 0, 249, 0.3);
+      --radius: 12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'SF Pro Display', 'Inter', 'PingFang SC', 'Microsoft YaHei', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Circuit Background ── */
+    #circuit-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    /* ── Grid Overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(0, 229, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 229, 255, 0.015) 1px, transparent 1px);
+      background-size: 48px 48px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 14px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(6, 11, 20, 0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    nav .logo svg { width: 28px; height: 28px; }
+
+    nav .nav-links {
+      display: flex; gap: 28px; list-style: none; align-items: center;
+    }
+
+    nav .nav-links a {
+      color: var(--dim); text-decoration: none;
+      font-size: 13px; font-weight: 500; letter-spacing: 0.5px;
+      transition: color 0.25s;
+    }
+
+    nav .nav-links a:hover { color: var(--cyan); }
+
+    .nav-btn {
+      padding: 8px 18px;
+      border: 1px solid var(--cyan);
+      border-radius: 6px;
+      background: rgba(0, 229, 255, 0.06);
+      color: var(--cyan) !important;
+      font-weight: 600 !important;
+      transition: all 0.25s !important;
+    }
+
+    .nav-btn:hover {
+      background: rgba(0, 229, 255, 0.14) !important;
+      box-shadow: var(--glow-cyan);
+    }
+
+    .nav-toggle { display: none; background: none; border: none; color: var(--text); font-size: 26px; cursor: pointer; }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      padding-top: 60px;
+    }
+
+    .hero-icon {
+      width: 90px;
+      height: 90px;
+      margin-bottom: 28px;
+      animation: heroFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .hero-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      border-radius: 20px;
+      padding: 6px 20px;
+      display: inline-block;
+    }
+
+    .hero-title {
+      font-size: clamp(64px, 11vw, 130px);
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 6px;
+      line-height: 1;
+    }
+
+    .hero-title .accent { color: var(--cyan); }
+
+    .hero-sub {
+      margin-top: 18px;
+      font-size: 18px;
+      color: var(--dim);
+      letter-spacing: 1px;
+      font-weight: 400;
+    }
+
+    .hero-sub .cursor { color: var(--cyan); animation: blink 0.7s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero-stats {
+      margin-top: 44px;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero-stat {
+      text-align: center;
+      padding: 18px 28px;
+      border-radius: var(--radius);
+      background: rgba(10, 20, 44, 0.6);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      min-width: 140px;
+    }
+
+    .hero-stat .val {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-bright);
+      letter-spacing: 0.5px;
+    }
+
+    .hero-stat .lbl {
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: 1.5px;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--dim);
+      font-size: 10px;
+      letter-spacing: 2px;
+    }
+
+    .scroll-hint .line {
+      width: 1px;
+      height: 32px;
+      background: linear-gradient(to bottom, var(--cyan), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; height: 32px; }
+      50% { opacity: 1; height: 48px; }
+    }
+
+    /* ── Sections ── */
+    section { padding: 100px 0; }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .section-tag {
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text-bright);
+      letter-spacing: -0.5px;
+    }
+
+    .section-sub {
+      font-size: 16px;
+      color: var(--dim);
+      margin-top: 10px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 44px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.25), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .card:hover::after { opacity: 1; }
+
+    .card + .card { margin-top: 24px; }
+
+    /* ── Token Grid ── */
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 28px;
+    }
+
+    .token-item {
+      padding: 24px 20px;
+      background: rgba(10, 20, 44, 0.9);
+      text-align: center;
+    }
+
+    .token-item .label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--dim);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .token-item .value {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-bright);
+    }
+
+    .token-item .value.cyan { color: var(--cyan); }
+
+    .contract-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+      padding: 14px 20px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.35);
+      font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 13px;
+      color: var(--dim);
+      word-break: break-all;
+    }
+
+    .contract-bar .addr { flex: 1; user-select: all; }
+
+    .btn {
+      flex-shrink: 0;
+      padding: 7px 18px;
+      border: 1px solid var(--cyan);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--cyan);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.25s;
+    }
+
+    .btn:hover { background: rgba(0, 229, 255, 0.1); box-shadow: var(--glow-cyan); }
+    .btn.copied { border-color: var(--green); color: var(--green); }
+
+    /* ── Chip & Robot Decorative SVGs ── */
+    .decor-float {
+      position: absolute;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+
+    /* ── Feature Cards ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 28px;
+    }
+
+    .feature-card {
+      padding: 28px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(10, 20, 44, 0.55);
+      backdrop-filter: blur(8px);
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+    }
+
+    .feature-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .feature-card .fc-icon {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card .fc-icon svg {
+      width: 44px;
+      height: 44px;
+    }
+
+    .feature-card .fc-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+
+    .feature-card .fc-desc {
+      font-size: 14px;
+      color: #7a8aa0;
+      line-height: 1.7;
+    }
+
+    /* ── Tokenomics ── */
+    .tok-layout {
+      display: flex;
+      gap: 48px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .donut-wrap {
+      flex-shrink: 0;
+      width: 240px;
+      height: 240px;
+      position: relative;
+    }
+
+    .donut-wrap svg { transform: rotate(-90deg); }
+
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .donut-center .big { font-size: 28px; font-weight: 800; color: #fff; }
+    .donut-center .small { font-size: 11px; color: var(--dim); letter-spacing: 1px; }
+
+    .alloc-list { flex: 1; min-width: 260px; }
+
+    .alloc-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.04);
+      font-size: 14px;
+    }
+
+    .alloc-row:last-child { border-bottom: none; }
+
+    .alloc-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+    .alloc-label { flex: 1; color: #a0b4c8; }
+    .alloc-pct { font-weight: 700; color: var(--text-bright); }
+    .alloc-amt { color: var(--dim); font-size: 12px; margin-left: 4px; }
+
+    /* ── Roadmap ── */
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .phase {
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(10, 20, 44, 0.4);
+      position: relative;
+      transition: border-color 0.3s;
+    }
+
+    .phase:hover { border-color: var(--border-hover); }
+
+    .phase .ph-num {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--dim);
+      margin-bottom: 10px;
+    }
+
+    .phase .ph-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 10px;
+    }
+
+    .phase .ph-desc {
+      font-size: 13px;
+      color: #7a8aa0;
+      line-height: 1.7;
+    }
+
+    .phase .ph-badge {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 4px 14px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+    }
+
+    .ph-badge.live { border: 1px solid var(--cyan); color: var(--cyan); }
+    .ph-badge.upcoming { border: 1px solid var(--dim); color: var(--dim); }
+
+    /* ── Code Block ── */
+    .code-block {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 24px;
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    .code-block pre {
+      font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 13px;
+      color: #7ab8d4;
+      line-height: 1.9;
+    }
+
+    .code-block .c { color: #4a6a8a; }
+    .code-block .k { color: var(--magenta); }
+    .code-block .f { color: var(--cyan); }
+    .code-block .s { color: var(--green); }
+
+    /* ── Presale ── */
+    .presale-price-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .presale-price-card {
+      padding: 22px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .presale-price-card .pp-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--dim);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .presale-price-card .pp-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-bright);
+    }
+
+    .presale-price-card .pp-sub {
+      font-size: 11px;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    .live-tag {
+      color: var(--green) !important;
+      text-shadow: 0 0 8px rgba(0, 230, 118, 0.5);
+    }
+
+    .presale-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 28px;
+    }
+
+    .pstep {
+      display: flex;
+      gap: 14px;
+      padding: 20px;
+      border-radius: 10px;
+      background: rgba(10, 20, 44, 0.4);
+      border: 1px solid var(--border);
+    }
+
+    .pstep-num {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--cyan);
+      opacity: 0.4;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .pstep-text strong {
+      display: block;
+      font-size: 15px;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+
+    .pstep-text p {
+      font-size: 13px;
+      color: #7a8aa0;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .pstep-text code {
+      background: rgba(0, 229, 255, 0.1);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+      color: var(--cyan);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .pstep-text a {
+      color: var(--cyan);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* ── Presale Info Grid ── */
+    .presale-info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .presale-info-box {
+      padding: 18px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+
+    .presale-info-box .pi-head {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--dim);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .presale-info-box .pi-body {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-bright);
+      word-break: break-all;
+    }
+
+    .presale-info-box .pi-body.mono {
+      font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 13px;
+      color: var(--cyan);
+    }
+
+    .presale-info-box .pi-sub {
+      font-size: 10px;
+      color: var(--dim);
+      margin-top: 5px;
+    }
+
+    /* ── Presale How-To ── */
+    .presale-howto {
+      margin-top: 32px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+
+    .presale-howto h3 {
+      font-size: 15px;
+      color: var(--text-bright);
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Presale Notice ── */
+    .presale-notice {
+      margin-top: 24px;
+      padding: 16px 20px;
+      border: 1px solid rgba(255, 145, 0, 0.2);
+      border-radius: 10px;
+      background: rgba(255, 145, 0, 0.04);
+    }
+
+    .presale-notice strong {
+      display: block;
+      font-size: 12px;
+      color: #ff9100;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .presale-notice p {
+      font-size: 12px;
+      color: #8a7a60;
+      line-height: 1.7;
+    }
+
+    .presale-notice strong + p strong {
+      display: inline;
+      font-size: 12px;
+      letter-spacing: 0;
+      color: var(--cyan);
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 60px 0 40px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .footer-links a {
+      color: var(--dim);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: color 0.25s;
+    }
+
+    .footer-links a:hover { color: var(--cyan); }
+
+    .disclaimer {
+      max-width: 560px;
+      margin: 0 auto;
+      font-size: 11px;
+      color: #2a4058;
+      line-height: 1.8;
+    }
+
+    .highlight-cyan { color: var(--cyan); font-weight: 600; }
+    .highlight-magenta { color: var(--magenta); font-weight: 600; }
+
+    .copy {
+      margin-top: 18px;
+      font-size: 11px;
+      color: #1a2a3a;
+      letter-spacing: 2px;
+    }
+
+    /* ── Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── DApp / Wallet ── */
+    .dapp-status-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px; border-radius: 10px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .dapp-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dapp-dot.connected { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .dapp-dot.disconnected { background: #ff4444; box-shadow: 0 0 6px #ff4444; }
+    .dapp-addr {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px; color: var(--text-bright);
+      flex: 1; min-width: 140px; word-break: break-all;
+    }
+    .dapp-chain-badge {
+      font-size: 10px; letter-spacing: 1px; padding: 4px 10px;
+      border-radius: 4px; border: 1px solid var(--cyan);
+      color: var(--cyan); background: rgba(0,229,255,0.08); white-space: nowrap;
+    }
+    .dapp-chain-badge.wrong {
+      border-color: #ff9100; color: #ff9100;
+      background: rgba(255,145,0,0.08);
+    }
+    .dapp-balance-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+    .dapp-balance-card {
+      flex: 1; min-width: 160px; padding: 18px 20px; border-radius: 10px;
+      background: rgba(0,0,0,0.3); border: 1px solid var(--border); text-align: center;
+    }
+    .dapp-balance-card .db-label {
+      font-size: 10px; letter-spacing: 2px; color: var(--dim);
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .dapp-balance-card .db-val {
+      font-size: 28px; font-weight: 800; color: var(--cyan); word-break: break-all;
+    }
+    .dapp-input-group { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+    .dapp-input {
+      flex: 1; min-width: 200px; padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: rgba(0,0,0,0.4); color: var(--text-bright);
+      font-family: 'SF Mono','Fira Code',monospace; font-size: 13px;
+      outline: none; transition: border-color 0.25s;
+    }
+    .dapp-input:focus { border-color: var(--cyan); box-shadow: 0 0 6px rgba(0,229,255,0.15); }
+    .dapp-input::placeholder { color: #3a5a6a; }
+    .dapp-btn {
+      flex-shrink: 0; padding: 10px 22px; border: 1px solid var(--cyan);
+      border-radius: 8px; background: rgba(0,229,255,0.08); color: var(--cyan);
+      cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600;
+      letter-spacing: 0.5px; transition: all 0.25s;
+    }
+    .dapp-btn:hover:not(:disabled) {
+      background: rgba(0,229,255,0.16); box-shadow: var(--glow-cyan);
+    }
+    .dapp-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .dapp-btn.magenta {
+      border-color: var(--magenta); color: var(--magenta);
+      background: rgba(213,0,249,0.06);
+    }
+    .dapp-btn.magenta:hover:not(:disabled) {
+      background: rgba(213,0,249,0.14); box-shadow: var(--glow-magenta);
+    }
+    .dapp-action-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .dapp-msg {
+      margin-top: 14px; padding: 12px 16px; border-radius: 8px;
+      font-size: 13px; font-family: 'SF Mono','Fira Code',monospace;
+      word-break: break-all; display: none;
+    }
+    .dapp-msg.show { display: block; }
+    .dapp-msg.success {
+      background: rgba(0,230,118,0.08); border: 1px solid rgba(0,230,118,0.25);
+      color: var(--green);
+    }
+    .dapp-msg.error {
+      background: rgba(255,68,68,0.08); border: 1px solid rgba(255,68,68,0.25);
+      color: #ff4444;
+    }
+    .dapp-msg.loading {
+      background: rgba(0,229,255,0.06); border: 1px solid rgba(0,229,255,0.2);
+      color: var(--cyan);
+    }
+    .dapp-divider { margin: 18px 0; border: none; border-top: 1px solid var(--border); }
+
+    /* ── Agent Steps ── */
+    .agent-step {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 16px; margin-bottom: 8px;
+      border-radius: 8px; background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border); transition: all 0.3s;
+    }
+    .agent-step.done { border-color: rgba(0,230,118,0.3); background: rgba(0,230,118,0.04); }
+    .agent-step.active { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0,229,255,0.12); }
+    .agent-step.error-step { border-color: rgba(255,68,68,0.4); background: rgba(255,68,68,0.04); }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--cyan);
+      border: 2px solid var(--border); background: rgba(0,0,0,0.4);
+    }
+    .agent-step.done .step-num { color: var(--green); border-color: var(--green); background: rgba(0,230,118,0.08); }
+    .agent-step.active .step-num { border-color: var(--cyan); box-shadow: 0 0 8px rgba(0,229,255,0.3); }
+    .agent-step.error-step .step-num { color: #ff4444; border-color: #ff4444; }
+    .step-content { flex: 1; min-width: 0; }
+    .step-title { font-size: 13px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px; }
+    .step-detail { font-size: 11px; font-family: 'SF Mono','Fira Code',monospace; color: var(--dim); word-break: break-all; }
+    .step-status { flex-shrink: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+    .step-status .spinner {
+      width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--cyan);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .step-status.done { color: var(--green); font-size: 14px; }
+    .step-status.error { color: #ff4444; font-size: 14px; }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      nav { padding: 12px 16px; }
+      nav .nav-links {
+        display: none; flex-direction: column;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: rgba(6, 11, 20, 0.96); padding: 16px 24px; gap: 14px;
+        border-bottom: 1px solid var(--border);
+      }
+      nav .nav-links.open { display: flex; }
+      .nav-toggle { display: block; }
+
+      .section-title { font-size: 28px; }
+      .card { padding: 28px 20px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .token-grid { grid-template-columns: repeat(2, 1fr); }
+      .tok-layout { flex-direction: column; align-items: stretch; }
+      .donut-wrap { margin: 0 auto; }
+      .hero-stats { gap: 16px; }
+      .hero-stat { min-width: 110px; padding: 14px 18px; }
+      .hero-stat .val { font-size: 20px; }
+      .presale-price-row { grid-template-columns: repeat(2, 1fr); }
+      .presale-info-grid { grid-template-columns: repeat(2, 1fr); }
+      .presale-steps { grid-template-columns: 1fr; }
+      .dapp-balance-row { flex-direction: column; }
+      .dapp-input-group { flex-direction: column; }
+      .dapp-btn { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { letter-spacing: 3px; }
+      .contract-bar { flex-direction: column; }
+      .token-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Circuit Background Canvas -->
+  <canvas id="circuit-bg"></canvas>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <div class="logo">
+      <!-- Chip SVG -->
+      <svg viewBox="0 0 32 32" fill="none">
+        <rect x="2" y="2" width="28" height="28" rx="4" stroke="#00e5ff" stroke-width="1.5" fill="none"/>
+        <rect x="10" y="10" width="12" height="12" rx="2" fill="#00e5ff" opacity="0.7"/>
+        <path d="M16 2V6" stroke="#00e5ff" stroke-width="1.2"/>
+        <path d="M16 26V30" stroke="#00e5ff" stroke-width="1.2"/>
+        <path d="M2 16H6" stroke="#00e5ff" stroke-width="1.2"/>
+        <path d="M26 16H30" stroke="#00e5ff" stroke-width="1.2"/>
+        <rect x="5" y="10" width="3" height="2" rx="0.5" fill="#00e5ff" opacity="0.5"/>
+        <rect x="24" y="10" width="3" height="2" rx="0.5" fill="#00e5ff" opacity="0.5"/>
+        <rect x="5" y="20" width="3" height="2" rx="0.5" fill="#00e5ff" opacity="0.5"/>
+        <rect x="24" y="20" width="3" height="2" rx="0.5" fill="#00e5ff" opacity="0.5"/>
+        <rect x="10" y="5" width="2" height="3" rx="0.5" fill="#00e5ff" opacity="0.5"/>
+        <rect x="20" y="5" width="2" height="3" rx="0.5" fill="#00e5ff" opacity="0.5"/>
+        <rect x="10" y="24" width="2" height="3" rx="0.5" fill="#00e5ff" opacity="0.5"/>
+        <rect x="20" y="24" width="2" height="3" rx="0.5" fill="#00e5ff" opacity="0.5"/>
+      </svg>
+      AIGENT
+    </div>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#token">Token</a></li>
+      <li><a href="#tokenomics">Tokenomics</a></li>
+      <li><a href="#presale">Presale</a></li>
+      <li><a href="#dapp">DApp</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="https://github.com/Mrxu6995/aigent/blob/master/whitepaper.md" target="_blank">Whitepaper</a></li>
+      <li><a href="#ai">AI Agents</a></li>
+      <li><a href="#presale" class="nav-btn">Buy $AIGENT</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <div class="hero-icon">
+      <!-- Animated Processor Chip SVG -->
+      <svg viewBox="0 0 100 100" fill="none" width="90" height="90">
+        <defs>
+          <linearGradient id="chipGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#00e5ff"/>
+            <stop offset="1" stop-color="#d500f9"/>
+          </linearGradient>
+          <filter id="chipGlow">
+            <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#00e5ff" flood-opacity="0.6"/>
+          </filter>
+        </defs>
+        <!-- Outer square -->
+        <rect x="8" y="8" width="84" height="84" rx="14" stroke="url(#chipGrad)" stroke-width="2.5" fill="none" filter="url(#chipGlow)"/>
+        <!-- Inner square -->
+        <rect x="30" y="30" width="40" height="40" rx="6" fill="url(#chipGrad)" opacity="0.35"/>
+        <rect x="34" y="34" width="32" height="32" rx="4" fill="#060b14" stroke="url(#chipGrad)" stroke-width="1"/>
+        <!-- Inner circuitry -->
+        <circle cx="50" cy="50" r="8" fill="url(#chipGrad)" opacity="0.5"/>
+        <circle cx="50" cy="50" r="4" fill="url(#chipGrad)"/>
+        <!-- Top pins -->
+        <rect x="22" y="3" width="4" height="7" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="35" y="3" width="4" height="7" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="48" y="3" width="4" height="7" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="61" y="3" width="4" height="7" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="74" y="3" width="4" height="7" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <!-- Bottom pins -->
+        <rect x="22" y="90" width="4" height="7" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="35" y="90" width="4" height="7" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="48" y="90" width="4" height="7" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="61" y="90" width="4" height="7" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="74" y="90" width="4" height="7" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <!-- Left pins -->
+        <rect x="3" y="22" width="7" height="4" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="3" y="35" width="7" height="4" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="3" y="48" width="7" height="4" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="3" y="61" width="7" height="4" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="3" y="74" width="7" height="4" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <!-- Right pins -->
+        <rect x="90" y="22" width="7" height="4" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="90" y="35" width="7" height="4" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="90" y="48" width="7" height="4" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="90" y="61" width="7" height="4" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <rect x="90" y="74" width="7" height="4" rx="1" fill="#00e5ff" opacity="0.7"/>
+        <!-- Corner dots -->
+        <circle cx="18" cy="18" r="2" fill="#d500f9" opacity="0.6"/>
+        <circle cx="82" cy="18" r="2" fill="#d500f9" opacity="0.6"/>
+        <circle cx="18" cy="82" r="2" fill="#d500f9" opacity="0.6"/>
+        <circle cx="82" cy="82" r="2" fill="#d500f9" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <div class="hero-label">X Layer &middot; ERC-20 &middot; EIP-2612</div>
+    <h1 class="hero-title">AI<span class="accent">GENT</span></h1>
+    <div class="hero-sub">
+      <span id="typed"></span><span class="cursor">&#9611;</span>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="val">$0.0001</div>
+        <div class="lbl">Initial Price</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">AIGENT/USDT</div>
+        <div class="lbl">Trading Pair</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">500M</div>
+        <div class="lbl">Total Supply</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">X Layer</div>
+        <div class="lbl">Network</div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>EXPLORE</span>
+      <div class="line"></div>
+    </div>
+  </section>
+
+  <!-- ── TOKEN ── -->
+  <div class="container">
+    <section id="token">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 0;">
+          <div class="section-tag">// Token</div>
+          <div class="section-title">$AIGENT</div>
+          <p class="section-sub" style="margin-left: 0;">Autonomous Intelligence Agent Token on X Layer</p>
+        </div>
+        <div class="token-grid">
+          <div class="token-item">
+            <div class="label">Name</div>
+            <div class="value cyan">AIGENT</div>
+          </div>
+          <div class="token-item">
+            <div class="label">Symbol</div>
+            <div class="value">$AIGENT</div>
+          </div>
+          <div class="token-item">
+            <div class="label">Supply</div>
+            <div class="value cyan">500,000,000</div>
+          </div>
+          <div class="token-item">
+            <div class="label">Decimals</div>
+            <div class="value">18</div>
+          </div>
+          <div class="token-item">
+            <div class="label">Chain</div>
+            <div class="value cyan">X Layer</div>
+          </div>
+          <div class="token-item">
+            <div class="label">Standard</div>
+            <div class="value">ERC-20 + EIP-2612</div>
+          </div>
+        </div>
+        <div class="contract-bar">
+          <span class="addr" id="contract-addr">0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39</span>
+          <button class="btn" id="copy-btn" onclick="copyAddr()">Copy</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── HOW TO BUY ── -->
+    <section id="buy">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 28px;">
+          <div class="section-tag">// Trade</div>
+          <div class="section-title">How to Buy $AIGENT</div>
+          <p class="section-sub" style="margin-left: 0;">Trade AIGENT/USDT on Uniswap V3 — X Layer Mainnet</p>
+        </div>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;">STEP 1</div>
+            <div class="fc-desc">
+              <span class="highlight-cyan">Add X Layer to Wallet</span><br>
+              Chain ID: 196 | RPC: rpc.xlayer.tech<br>
+              Bridge USDT to X Layer via official bridge.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;">STEP 2</div>
+            <div class="fc-desc">
+              <span class="highlight-cyan">Open Uniswap V3</span><br>
+              Go to app.uniswap.org → Pool → New Position.<br>
+              Paste AIGENT contract + USDT.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;">STEP 3</div>
+            <div class="fc-desc">
+              <span class="highlight-cyan">Set Parameters</span><br>
+              Fee: 1.00% | Range: Full Range<br>
+              Initial Price: $0.0001 per AIGENT
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;">STEP 4</div>
+            <div class="fc-desc">
+              <span class="highlight-cyan">Add Liquidity</span><br>
+              Approve AIGENT → Deposit tokens.<br>
+              Verify listing on DexScreener.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PRESALE ── -->
+    <section id="presale">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+          <div class="section-tag">// Presale</div>
+          <div class="section-title">Private Sale — Buy $AIGENT</div>
+          <p class="section-sub" style="margin-left: 0;">Send USDT to the presale contract, receive AIGENT instantly at a fixed price. No vesting, no lockup.</p>
+        </div>
+
+        <div class="presale-price-row">
+          <div class="presale-price-card">
+            <div class="pp-label">Price</div>
+            <div class="pp-val">$0.0001</div>
+            <div class="pp-sub">per AIGENT</div>
+          </div>
+          <div class="presale-price-card">
+            <div class="pp-label">Exchange Rate</div>
+            <div class="pp-val">10,000</div>
+            <div class="pp-sub">AIGENT per 1 USDT</div>
+          </div>
+          <div class="presale-price-card">
+            <div class="pp-label">Hard Cap</div>
+            <div class="pp-val">50M</div>
+            <div class="pp-sub">AIGENT (10% supply)</div>
+          </div>
+          <div class="presale-price-card">
+            <div class="pp-label">Status</div>
+            <div class="pp-val live-tag">LIVE</div>
+            <div class="pp-sub">No vesting period</div>
+          </div>
+        </div>
+
+        <!-- Network Info -->
+        <div class="presale-info-grid">
+          <div class="presale-info-box">
+            <div class="pi-head">Network</div>
+            <div class="pi-body">X Layer Mainnet</div>
+            <div class="pi-sub">Chain ID: 196 | RPC: rpc.xlayer.tech</div>
+          </div>
+          <div class="presale-info-box">
+            <div class="pi-head">Token Contract</div>
+            <div class="pi-body mono" id="token-copy">0xE543...C3e39</div>
+            <div class="pi-sub">AIGENT ERC-20 + EIP-2612</div>
+          </div>
+          <div class="presale-info-box">
+            <div class="pi-head">Presale Contract</div>
+            <div class="pi-body mono" id="presale-copy">0x316b...ccD9</div>
+            <div class="pi-sub">Verified on-chain</div>
+          </div>
+          <div class="presale-info-box">
+            <div class="pi-head">Payment Token</div>
+            <div class="pi-body mono">USDT0</div>
+            <div class="pi-sub">0x779D...3736 (LayerZero OFT)</div>
+          </div>
+        </div>
+
+        <!-- How to Participate -->
+        <div class="presale-howto">
+          <h3>How to Participate</h3>
+
+          <div class="presale-steps">
+            <div class="pstep">
+              <div class="pstep-num">01</div>
+              <div class="pstep-text">
+                <strong>Add X Layer to Your Wallet</strong>
+                <p>Network: X Layer Mainnet | Chain ID: 196 | RPC: https://rpc.xlayer.tech | Currency: OKB</p>
+              </div>
+            </div>
+            <div class="pstep">
+              <div class="pstep-num">02</div>
+              <div class="pstep-text">
+                <strong>Get USDT on X Layer</strong>
+                <p>Bridge USDT from Ethereum/OKX to X Layer via the <a href="https://www.okx.com/web3/bridge" target="_blank" rel="noopener">OKX Bridge</a>. You need USDT0 on X Layer.</p>
+              </div>
+            </div>
+            <div class="pstep">
+              <div class="pstep-num">03</div>
+              <div class="pstep-text">
+                <strong>Approve USDT Spending</strong>
+                <p>Call <code>approve()</code> on USDT contract (0x779D...3736), spender = Presale (0x316b...ccD9), amount = your desired USDT amount.</p>
+              </div>
+            </div>
+            <div class="pstep">
+              <div class="pstep-num">04</div>
+              <div class="pstep-text">
+                <strong>Call buy(amount)</strong>
+                <p>Send transaction to Presale contract (0x316b...ccD9) calling <code>buy(usdtAmount)</code>. AIGENT is transferred to your wallet instantly.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Contract Addresses -->
+        <div style="margin-top: 28px;">
+          <h3 style="font-size:14px;color:var(--dim);letter-spacing:2px;margin-bottom:14px;">CONTRACT ADDRESSES</h3>
+          <div class="contract-bar">
+            <span style="color:var(--dim);font-size:11px;margin-right:8px;">AIGENT</span>
+            <span class="addr" id="contract-addr2">0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39</span>
+            <button class="btn" onclick="copyEl('contract-addr2', this)">Copy</button>
+          </div>
+          <div class="contract-bar">
+            <span style="color:var(--dim);font-size:11px;margin-right:8px;">PRESALE</span>
+            <span class="addr" id="presale-addr">0x316b1cE062cC4525F0129C3D41351a976981ccD9</span>
+            <button class="btn" onclick="copyEl('presale-addr', this)">Copy</button>
+          </div>
+          <div class="contract-bar">
+            <span style="color:var(--dim);font-size:11px;margin-right:8px;">USDT</span>
+            <span class="addr" id="usdt-addr">0x779Ded0c9e1022225f8E0630b35a9b54bE713736</span>
+            <button class="btn" onclick="copyEl('usdt-addr', this)">Copy</button>
+          </div>
+        </div>
+
+        <!-- Warning -->
+        <div class="presale-notice" style="border-color: rgba(255,68,68,0.35); background: rgba(255,68,68,0.06);">
+          <strong style="color:#ff4444;">DO NOT TRANSFER USDT DIRECTLY</strong>
+          <p>Sending USDT directly to the presale contract address will result in <strong style="color:#ff4444;">PERMANENT LOSS</strong> of your funds. You must interact through the contract's <code style="background:rgba(255,68,68,0.1);padding:1px 4px;border-radius:3px;">buy()</code> function via a DApp or wallet that supports contract interaction. Never use "Send" or "Transfer" in your wallet to buy presale tokens. Minimum purchase: 1 USDT.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DAPP ── -->
+    <section id="dapp">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+          <div class="section-tag">// Wallet</div>
+          <div class="section-title">AIGENT Wallet</div>
+          <p class="section-sub" style="margin-left: 0;">Connect your wallet to check balance and transfer $AIGENT</p>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="dapp-status-bar" id="dapp-status">
+          <div class="dapp-dot disconnected" id="dapp-dot"></div>
+          <span class="dapp-addr" id="dapp-addr">Not connected</span>
+          <span class="dapp-chain-badge" id="dapp-chain">X Layer</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="dapp-action-row" id="dapp-actions">
+          <button class="dapp-btn" id="btn-connect" onclick="dappConnect()">Connect Wallet</button>
+          <button class="dapp-btn magenta" onclick="dappOpenUniswap()">Buy on Uniswap</button>
+        </div>
+
+        <!-- Message area -->
+        <div class="dapp-msg" id="dapp-msg"></div>
+
+        <hr class="dapp-divider" id="dapp-divider" style="display:none;">
+
+        <!-- Balance Display -->
+        <div class="dapp-balance-row" id="dapp-balance-section" style="display:none;">
+          <div class="dapp-balance-card">
+            <div class="db-label">AIGENT Balance</div>
+            <div class="db-val" id="dapp-balance">--</div>
+          </div>
+        </div>
+
+        <!-- Transfer Form -->
+        <div id="dapp-transfer-section" style="display:none;">
+          <div class="dapp-input-group" style="margin-bottom: 10px;">
+            <input class="dapp-input" id="dapp-recipient" type="text" placeholder="Recipient address (0x...)" autocomplete="off">
+          </div>
+          <div class="dapp-input-group">
+            <input class="dapp-input" id="dapp-amount" type="text" placeholder="Amount (AIGENT)" autocomplete="off">
+            <button class="dapp-btn" id="btn-transfer" onclick="dappTransfer()">Send AIGENT</button>
+          </div>
+        </div>
+
+        <!-- ── AI Agent Console ── -->
+        <hr class="dapp-divider" id="agent-divider" style="display:none;">
+        <div id="agent-console" style="display:none;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="10" r="1.5" fill="var(--cyan)"/><circle cx="15.5" cy="10" r="1.5" fill="var(--cyan)"/><path d="M8.5 15c1.5 2 3.5 1.5 7 0"/></svg>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:var(--text-bright);">AI Agent Console</div>
+              <div style="font-size:11px;color:var(--dim);">Natural language commands — no API key required</div>
+            </div>
+          </div>
+
+          <div class="dapp-input-group" style="margin-bottom:10px;">
+            <input class="dapp-input" id="agent-cmd" type="text" placeholder='Try: "send 100 to 0x..." | "check balance" | "total supply"' autocomplete="off" onkeydown="if(event.key==='Enter')agentExecute()">
+            <button class="dapp-btn" id="btn-agent" onclick="agentExecute()">Execute</button>
+          </div>
+
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+            <button class="btn" onclick="agentFill('check balance')" style="font-size:10px;padding:4px 10px;">Balance</button>
+            <button class="btn" onclick="agentFill('total supply')" style="font-size:10px;padding:4px 10px;">Supply</button>
+            <button class="btn" onclick="agentFill('send 10 to 0x...')" style="font-size:10px;padding:4px 10px;">Send 10</button>
+          </div>
+
+          <div class="dapp-msg" id="agent-msg"></div>
+
+          <div id="agent-steps" style="display:none;margin-top:14px;">
+            <div class="agent-step" id="step-1">
+              <div class="step-num">1</div><div class="step-content"><div class="step-title">Parse Command</div><div class="step-detail" id="step1-detail"></div></div><div class="step-status" id="step1-status"></div>
+            </div>
+            <div class="agent-step" id="step-2">
+              <div class="step-num">2</div><div class="step-content"><div class="step-title">Sign EIP-2612 Permit (off-chain)</div><div class="step-detail" id="step2-detail"></div></div><div class="step-status" id="step2-status"></div>
+            </div>
+            <div class="agent-step" id="step-3">
+              <div class="step-num">3</div><div class="step-content"><div class="step-title">Submit permit() Transaction</div><div class="step-detail" id="step3-detail"></div></div><div class="step-status" id="step3-status"></div>
+            </div>
+            <div class="agent-step" id="step-4">
+              <div class="step-num">4</div><div class="step-content"><div class="step-title">Submit transferFrom() Transaction</div><div class="step-detail" id="step4-detail"></div></div><div class="step-status" id="step4-status"></div>
+            </div>
+          </div>
+
+          <!-- Presale Buy -->
+          <hr class="dapp-divider" id="presale-divider" style="display:none;">
+          <div id="presale-buy-section" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10l4-4 4 4M8 14l4 4 4-4"/></svg>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--text-bright);">Buy AIGENT Presale</div>
+                <div style="font-size:11px;color:var(--dim);">10,000 AIGENT per USDT — instant delivery</div>
+              </div>
+            </div>
+
+            <div class="dapp-input-group" style="margin-bottom:8px;">
+              <input class="dapp-input" id="presale-usdt-amt" type="text" placeholder="USDT amount (min 1)" autocomplete="off">
+              <button class="dapp-btn magenta" id="btn-presale-buy" onclick="presaleBuy()">Buy AIGENT</button>
+            </div>
+            <div class="dapp-msg" id="presale-msg"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ABOUT ── -->
+    <section id="about">
+      <div class="section-header reveal">
+        <div class="section-tag">// About</div>
+        <div class="section-title">What is AIGENT?</div>
+        <p class="section-sub">The next-generation AI agent token — built for autonomous economies</p>
+      </div>
+
+      <div class="feature-grid reveal">
+        <div class="feature-card">
+          <div class="fc-icon">
+            <!-- Chip icon -->
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="6" width="36" height="36" rx="6" stroke="#00e5ff" stroke-width="2" fill="none"/>
+              <rect x="18" y="18" width="12" height="12" rx="3" fill="#00e5ff" opacity="0.25"/>
+              <circle cx="24" cy="24" r="3" fill="#00e5ff"/>
+              <rect x="22" y="2" width="4" height="6" rx="1" fill="#00e5ff" opacity="0.5"/>
+              <rect x="22" y="40" width="4" height="6" rx="1" fill="#00e5ff" opacity="0.5"/>
+              <rect x="2" y="22" width="6" height="4" rx="1" fill="#00e5ff" opacity="0.5"/>
+              <rect x="40" y="22" width="6" height="4" rx="1" fill="#00e5ff" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fc-title">AI-Optimized Token</div>
+          <div class="fc-desc">Purpose-built for the agent economy. AIGENT implements EIP-2612 Permit, enabling gasless approvals — AI agents can authorize spending without holding OKB.</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="fc-icon">
+            <!-- Robot head icon -->
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="10" y="14" width="28" height="24" rx="5" stroke="#d500f9" stroke-width="2" fill="none"/>
+              <rect x="16" y="8" width="16" height="8" rx="2" stroke="#d500f9" stroke-width="2" fill="none"/>
+              <circle cx="20" cy="27" r="3" fill="#d500f9" opacity="0.6"/>
+              <circle cx="28" cy="27" r="3" fill="#d500f9" opacity="0.6"/>
+              <rect x="21" y="33" width="6" height="2" rx="1" fill="#d500f9" opacity="0.4"/>
+              <line x1="12" y1="8" x2="10" y2="4" stroke="#d500f9" stroke-width="1.5"/>
+              <line x1="36" y1="8" x2="38" y2="4" stroke="#d500f9" stroke-width="1.5"/>
+              <line x1="24" y1="8" x2="24" y2="3" stroke="#d500f9" stroke-width="1.5"/>
+              <rect x="8" y="22" width="3" height="4" rx="1" fill="#d500f9" opacity="0.4"/>
+              <rect x="37" y="22" width="3" height="4" rx="1" fill="#d500f9" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="fc-title">Autonomous Agent Ready</div>
+          <div class="fc-desc">Agents execute transactions independently with pre-signed permission envelopes. Compatible with gas sponsorship networks and relayer infrastructure.</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="fc-icon">
+            <!-- Circuit board icon -->
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="12" cy="12" r="3" fill="#00e5ff" opacity="0.5"/>
+              <circle cx="36" cy="12" r="3" fill="#00e5ff" opacity="0.5"/>
+              <circle cx="12" cy="36" r="3" fill="#00e5ff" opacity="0.5"/>
+              <circle cx="36" cy="36" r="3" fill="#00e5ff" opacity="0.5"/>
+              <circle cx="24" cy="24" r="5" stroke="#00e5ff" stroke-width="2" fill="none"/>
+              <line x1="15" y1="12" x2="19" y2="24" stroke="#00e5ff" stroke-width="1.2" opacity="0.6"/>
+              <line x1="33" y1="12" x2="28" y2="24" stroke="#00e5ff" stroke-width="1.2" opacity="0.6"/>
+              <line x1="15" y1="36" x2="19" y2="24" stroke="#00e5ff" stroke-width="1.2" opacity="0.6"/>
+              <line x1="33" y1="36" x2="28" y2="24" stroke="#00e5ff" stroke-width="1.2" opacity="0.6"/>
+            </svg>
+          </div>
+          <div class="fc-title">5-Contract Ecosystem</div>
+          <div class="fc-desc">Token, Staking, LP Farm, Vault, and Timelock — all deployed and verified on X Layer mainnet. A complete DeFi primitive suite.</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="fc-icon">
+            <!-- Brain/AI icon -->
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="14" r="10" stroke="#00e5ff" stroke-width="2" fill="none"/>
+              <path d="M14 26C10 30 10 38 14 42" stroke="#00e5ff" stroke-width="2" fill="none"/>
+              <path d="M34 26C38 30 38 38 34 42" stroke="#00e5ff" stroke-width="2" fill="none"/>
+              <path d="M18 18L22 26H26L30 18" stroke="#00e5ff" stroke-width="1.5" fill="none"/>
+              <circle cx="18" cy="16" r="1.5" fill="#d500f9"/>
+              <circle cx="30" cy="16" r="1.5" fill="#d500f9"/>
+              <line x1="22" y1="26" x2="22" y2="30" stroke="#00e5ff" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="fc-title">Fixed Supply & Burnable</div>
+          <div class="fc-desc">500,000,000 total supply — no mint, no inflation. Built-in burn mechanism enables deflationary tokenomics for agent economy models.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TOKENOMICS ── -->
+    <section id="tokenomics">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 32px;">
+          <div class="section-tag">// Tokenomics</div>
+          <div class="section-title">Distribution</div>
+        </div>
+        <div class="tok-layout">
+          <div class="donut-wrap">
+            <svg viewBox="0 0 240 240" width="240" height="240">
+              <circle cx="120" cy="120" r="95" fill="none" stroke="rgba(0,229,255,0.04)" stroke-width="24"/>
+              <!-- 40% Ecosystem -->
+              <circle cx="120" cy="120" r="95" fill="none" stroke="#00e5ff" stroke-width="24"
+                stroke-dasharray="226.2 339.3" stroke-dashoffset="0" stroke-linecap="butt" opacity="0.9"/>
+              <!-- 25% Liquidity -->
+              <circle cx="120" cy="120" r="95" fill="none" stroke="#d500f9" stroke-width="24"
+                stroke-dasharray="141.4 424.1" stroke-dashoffset="-226.2" stroke-linecap="butt" opacity="0.9"/>
+              <!-- 20% Dev -->
+              <circle cx="120" cy="120" r="95" fill="none" stroke="#304ffe" stroke-width="24"
+                stroke-dasharray="113.1 452.4" stroke-dashoffset="-367.6" stroke-linecap="butt" opacity="0.85"/>
+              <!-- 10% Marketing -->
+              <circle cx="120" cy="120" r="95" fill="none" stroke="#00e676" stroke-width="24"
+                stroke-dasharray="56.5 509.0" stroke-dashoffset="-480.7" stroke-linecap="butt" opacity="0.8"/>
+              <!-- 5% Airdrop -->
+              <circle cx="120" cy="120" r="95" fill="none" stroke="#ff9100" stroke-width="24"
+                stroke-dasharray="28.3 537.2" stroke-dashoffset="-537.2" stroke-linecap="butt" opacity="0.8"/>
+            </svg>
+            <div class="donut-center">
+              <div class="big">500M</div>
+              <div class="small">$AIGENT</div>
+            </div>
+          </div>
+          <div class="alloc-list">
+            <div class="alloc-row">
+              <span class="alloc-dot" style="background:#00e5ff;"></span>
+              <span class="alloc-label">Ecosystem &amp; Agent Incentives</span>
+              <span class="alloc-pct">40%</span>
+              <span class="alloc-amt">200M</span>
+            </div>
+            <div class="alloc-row">
+              <span class="alloc-dot" style="background:#d500f9;"></span>
+              <span class="alloc-label">Liquidity &amp; DEX Listing</span>
+              <span class="alloc-pct">25%</span>
+              <span class="alloc-amt">125M</span>
+            </div>
+            <div class="alloc-row">
+              <span class="alloc-dot" style="background:#304ffe;"></span>
+              <span class="alloc-label">Development Fund</span>
+              <span class="alloc-pct">20%</span>
+              <span class="alloc-amt">100M</span>
+            </div>
+            <div class="alloc-row">
+              <span class="alloc-dot" style="background:#00e676;"></span>
+              <span class="alloc-label">Marketing &amp; Partnerships</span>
+              <span class="alloc-pct">10%</span>
+              <span class="alloc-amt">50M</span>
+            </div>
+            <div class="alloc-row">
+              <span class="alloc-dot" style="background:#ff9100;"></span>
+              <span class="alloc-label">Community Airdrop</span>
+              <span class="alloc-pct">5%</span>
+              <span class="alloc-amt">25M</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ROADMAP ── -->
+    <section id="roadmap">
+      <div class="section-header reveal">
+        <div class="section-tag">// Roadmap</div>
+        <div class="section-title">The Path Forward</div>
+        <p class="section-sub">Five phases to build the autonomous intelligence economy</p>
+      </div>
+      <div class="roadmap reveal">
+        <div class="phase">
+          <div class="ph-num">PHASE 01</div>
+          <div class="ph-title">Token Launch</div>
+          <div class="ph-desc">Deploy AIGENT on X Layer. Smart contract audit. Community building. Initial marketing push and brand establishment.</div>
+          <span class="ph-badge live">LIVE</span>
+        </div>
+        <div class="phase">
+          <div class="ph-num">PHASE 02</div>
+          <div class="ph-title">DEX Listing</div>
+          <div class="ph-desc">List on Uniswap V3. Establish AIGENT/USDT liquidity pools. DEX tools verification. Price tracking on DexScreener.</div>
+          <span class="ph-badge upcoming">NEXT</span>
+        </div>
+        <div class="phase">
+          <div class="ph-num">PHASE 03</div>
+          <div class="ph-title">AI Agent SDK</div>
+          <div class="ph-desc">Release developer toolkit for AI agent integration. Documentation, examples, and templates for Permit-based transactions.</div>
+          <span class="ph-badge upcoming">UPCOMING</span>
+        </div>
+        <div class="phase">
+          <div class="ph-num">PHASE 04</div>
+          <div class="ph-title">Agent Economy</div>
+          <div class="ph-desc">Enable agent-to-agent microtransactions. Deploy autonomous trading and reward distribution using AIGENT primitives.</div>
+          <span class="ph-badge upcoming">UPCOMING</span>
+        </div>
+        <div class="phase">
+          <div class="ph-num">PHASE 05</div>
+          <div class="ph-title">DAO Governance</div>
+          <div class="ph-desc">Community-driven protocol. Token holders vote on upgrades, fund allocation, and ecosystem direction via on-chain governance.</div>
+          <span class="ph-badge upcoming">UPCOMING</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── AI AGENTS ── -->
+    <section id="ai">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+          <div class="section-tag">// AI Agents</div>
+          <div class="section-title">Built for Autonomous Agents</div>
+          <p class="section-sub" style="margin-left: 0;">AIGENT implements EIP-2612 — agents sign off-chain, execute on-chain, no OKB required</p>
+        </div>
+        <div class="code-block">
+<pre>
+<span class="c">// AI Agent approves AIGENT spending via off-chain signature</span>
+<span class="k">const</span> signature = <span class="k">await</span> agent.signTypedData(domain, types, {
+  owner: agent.address,
+  spender: <span class="s">"0xProtocolAddress"</span>,
+  value: ethers.parseEther(<span class="s">"1000"</span>),
+  nonce: <span class="k">await</span> token.nonces(agent.address),
+  deadline: MaxUint256
+});
+
+<span class="c">// One transaction: permit + transfer</span>
+<span class="k">await</span> token.permit(agent.address, spender, value, deadline, v, r, s);
+<span class="c">// Zero OKB needed for approval — pure agent autonomy</span>
+</pre>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="#about">About</a>
+        <a href="#">Contract</a>
+        <a href="#">Explorer</a>
+        <a href="#">GitHub</a>
+        <a href="#">Whitepaper</a>
+      </div>
+      <div class="disclaimer">
+        AIGENT is an experimental token. This website and associated smart contracts are for informational purposes only.
+        Cryptocurrency investments carry high risk. Always DYOR.
+      </div>
+      <div class="copy">AIGENT &copy; 2026 &mdash; Built for the Agent Economy</div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Circuit Board Background ── */
+    (function() {
+      const canvas = document.getElementById('circuit-bg');
+      const ctx = canvas.getContext('2d');
+      let W, H, t = 0;
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      // Circuit nodes — fixed positions
+      const nodes = [];
+      const grid = 72;
+      for (let x = grid; x < 2000; x += grid) {
+        for (let y = grid; y < 1400; y += grid) {
+          if (Math.random() < 0.35) {
+            nodes.push({
+              x, y,
+              r: Math.random() * 1.8 + 0.6,
+              pulse: Math.random() * Math.PI * 2,
+              speed: 0.008 + Math.random() * 0.025
+            });
+          }
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        t += 0.005;
+
+        nodes.forEach(n => {
+          if (n.x > W + grid || n.y > H + grid) return;
+          n.pulse += n.speed;
+          const alpha = 0.15 + Math.sin(n.pulse) * 0.08;
+          const glow = 0.2 + Math.sin(n.pulse * 1.7) * 0.1;
+
+          // Node glow
+          const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 6);
+          grad.addColorStop(0, `rgba(0,229,255,${glow})`);
+          grad.addColorStop(0.4, `rgba(0,229,255,${alpha * 0.6})`);
+          grad.addColorStop(1, 'rgba(0,229,255,0)');
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r * 6, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          // Node core
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0,229,255,${alpha + 0.15})`;
+          ctx.fill();
+
+          // Draw connections to nearby nodes
+          nodes.forEach(m => {
+            if (m === n || m.x > W + grid || m.y > H + grid) return;
+            const dx = n.x - m.x;
+            const dy = n.y - m.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < grid * 2.2 && dist > 10) {
+              const connAlpha = (1 - dist / (grid * 2.2)) * 0.07;
+              ctx.beginPath();
+              ctx.moveTo(n.x, n.y);
+
+              // Manhattan-style circuit traces
+              const midX = (n.x + m.x) / 2;
+              if (Math.random() < 0.5) {
+                ctx.lineTo(midX, n.y);
+                ctx.lineTo(midX, m.y);
+              } else {
+                ctx.lineTo(n.x, midX > n.y ? n.y + (m.y - n.y) / 2 : m.y + (n.y - m.y) / 2);
+              }
+              ctx.lineTo(m.x, m.y);
+              ctx.strokeStyle = `rgba(0,229,255,${connAlpha})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          });
+        });
+
+        // Flowing data particles along the top circuit paths (decorative)
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    /* ── Typewriter ── */
+    (function() {
+      const phrases = [
+        'Autonomous Intelligence Agent Token',
+        'Gasless Approvals via EIP-2612',
+        'Built for AI Agent Economies',
+        '500M Fixed Supply on X Layer',
+      ];
+      let pi = 0, ci = 0, del = false;
+      const el = document.getElementById('typed');
+
+      function tick() {
+        const cur = phrases[pi];
+        if (!del) {
+          el.textContent = cur.slice(0, ci + 1);
+          ci++;
+          if (ci === cur.length) { setTimeout(() => { del = true; }, 2200); return setTimeout(tick, 2200); }
+        } else {
+          el.textContent = cur.slice(0, ci - 1);
+          ci--;
+          if (ci === 0) { del = false; pi = (pi + 1) % phrases.length; }
+        }
+        setTimeout(tick, del ? 28 : 55);
+      }
+      tick();
+    })();
+
+    /* ── Copy ── */
+    function copyEl(elId, btn) {
+      const addr = document.getElementById(elId).textContent;
+      navigator.clipboard.writeText(addr).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+      }).catch(() => {
+        btn.textContent = 'Error';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+      });
+    }
+
+    function copyAddr() {
+      copyEl('contract-addr', document.getElementById('copy-btn'));
+    }
+
+    /* ── Scroll Reveal ── */
+    (function() {
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    })();
+  </script>
+
+  <!-- ── AIGENT DApp — Wallet interaction via viem CDN ── -->
+  <script type="module">
+    import { createPublicClient, createWalletClient, http, custom, formatEther, parseEther } from 'https://esm.sh/viem@2';
+    import { xLayer } from 'https://esm.sh/viem@2/chains';
+
+    const CHAIN_ID = 196;
+    const AIGENT_ADDRESS = '0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';
+    const AIGENT_ABI = [
+      'function transfer(address to, uint256 amount) external returns (bool)',
+      'function balanceOf(address account) external view returns (uint256)',
+      'function decimals() external view returns (uint8)',
+      'function symbol() external view returns (string)',
+      'function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external',
+      'function nonces(address owner) external view returns (uint256)',
+      'function DOMAIN_SEPARATOR() external view returns (bytes32)',
+      'function transferFrom(address from, address to, uint256 amount) external returns (bool)',
+    ];
+    const XLAYER_RPC = 'https://rpc.xlayer.tech';
+    const XLAYER_EXPLORER = 'https://www.oklink.com/xlayer';
+    const EIP712_DOMAIN = { name: 'AIGENT', version: '1', chainId: 196, verifyingContract: AIGENT_ADDRESS };
+    const PERMIT_TYPES = { Permit: [{ name:'owner', type:'address' },{ name:'spender', type:'address' },{ name:'value', type:'uint256' },{ name:'nonce', type:'uint256' },{ name:'deadline', type:'uint256' }] };
+    const MAX_DEADLINE = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffn;
+    const PRESALE_ADDR = '0x316b1cE062cC4525F0129C3D41351a976981ccD9';
+    const USDT_ADDR = '0x779Ded0c9e1022225f8E0630b35a9b54bE713736';
+    const PRESALE_ABI = [
+      'function buy(uint256 usdtAmount) external',
+      'function previewBuy(uint256 usdtAmount) external view returns (uint256)',
+      'function rate() external view returns (uint256)',
+      'function totalSold() external view returns (uint256)',
+      'function cap() external view returns (uint256)',
+      'function remaining() external view returns (uint256)',
+    ];
+    const USDT_ABI = [
+      'function approve(address spender, uint256 amount) external returns (bool)',
+      'function allowance(address owner, address spender) external view returns (uint256)',
+      'function decimals() external view returns (uint8)',
+    ];
+
+    const $ = (id) => document.getElementById(id);
+    const el = {
+      dot: $('dapp-dot'), addr: $('dapp-addr'), chain: $('dapp-chain'),
+      msg: $('dapp-msg'), divider: $('dapp-divider'),
+      balanceSection: $('dapp-balance-section'), balance: $('dapp-balance'),
+      transferSection: $('dapp-transfer-section'),
+      recipient: $('dapp-recipient'), amount: $('dapp-amount'),
+      btnConnect: $('btn-connect'), btnTransfer: $('btn-transfer'),
+      agentDivider: $('agent-divider'), agentConsole: $('agent-console'),
+      agentCmd: $('agent-cmd'), agentMsg: $('agent-msg'),
+      agentSteps: $('agent-steps'),
+      presaleDivider: $('presale-divider'), presaleSection: $('presale-buy-section'),
+      presaleAmt: $('presale-usdt-amt'), presaleMsg: $('presale-msg'),
+      btnPresaleBuy: $('btn-presale-buy'),
+    };
+
+    let userAddress = null, publicClient = null, walletClient = null;
+
+    function showMsg(text, type) {
+      el.msg.innerHTML = text;
+      el.msg.className = 'dapp-msg show ' + type;
+    }
+    function hideMsg() { el.msg.className = 'dapp-msg'; el.msg.textContent = ''; }
+    function shorten(addr) { return addr.slice(0,6) + '...' + addr.slice(-4); }
+
+    function renderConnected() {
+      el.dot.className = 'dapp-dot connected';
+      el.addr.textContent = shorten(userAddress);
+      el.btnConnect.textContent = 'Disconnect';
+      el.btnConnect.onclick = dappDisconnect;
+      el.divider.style.display = 'block';
+      el.balanceSection.style.display = 'flex';
+      el.transferSection.style.display = 'block';
+      el.agentDivider.style.display = 'block';
+      el.agentConsole.style.display = 'block';
+      el.presaleDivider.style.display = 'block';
+      el.presaleSection.style.display = 'block';
+    }
+
+    function renderDisconnected() {
+      userAddress = null; publicClient = null; walletClient = null;
+      el.dot.className = 'dapp-dot disconnected';
+      el.addr.textContent = 'Not connected';
+      el.chain.textContent = 'X Layer';
+      el.chain.className = 'dapp-chain-badge';
+      el.btnConnect.textContent = 'Connect Wallet';
+      el.btnConnect.onclick = dappConnect;
+      el.divider.style.display = 'none';
+      el.balanceSection.style.display = 'none';
+      el.transferSection.style.display = 'none';
+      el.agentDivider.style.display = 'none';
+      el.agentConsole.style.display = 'none';
+      el.agentSteps.style.display = 'none';
+      el.presaleDivider.style.display = 'none';
+      el.presaleSection.style.display = 'none';
+      el.balance.textContent = '--';
+      el.recipient.value = ''; el.amount.value = '';
+      el.presaleAmt.value = '';
+      hideMsg();
+    }
+
+    window.dappConnect = async function() {
+      if (!window.ethereum && !window.okxwallet) {
+        showMsg('No wallet detected. Please install <a href="https://metamask.io" target="_blank" style="color:var(--cyan);">MetaMask</a> or OKX Wallet.', 'error');
+        return;
+      }
+      try {
+        showMsg('Connecting...', 'loading');
+        const provider = window.okxwallet || window.ethereum;
+        const accounts = await provider.request({ method: 'eth_requestAccounts' });
+        if (!accounts || accounts.length === 0) {
+          showMsg('No accounts found. Please unlock your wallet.', 'error');
+          return;
+        }
+        userAddress = accounts[0];
+        const chainIdHex = await provider.request({ method: 'eth_chainId' });
+        const currentChainId = parseInt(chainIdHex, 16);
+        el.chain.textContent = currentChainId === CHAIN_ID ? 'X Layer' : 'Chain ' + currentChainId;
+        el.chain.className = currentChainId === CHAIN_ID ? 'dapp-chain-badge' : 'dapp-chain-badge wrong';
+
+        if (currentChainId !== CHAIN_ID) {
+          try {
+            await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xc4' }] });
+          } catch (switchErr) {
+            if (switchErr.code === 4902) {
+              try {
+                await provider.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{ chainId: '0xc4', chainName: 'X Layer Mainnet', nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 }, rpcUrls: [XLAYER_RPC], blockExplorerUrls: [XLAYER_EXPLORER] }],
+                });
+              } catch (addErr) {
+                showMsg('Failed to add X Layer to wallet. Please add it manually.', 'error');
+                return;
+              }
+            } else {
+              showMsg('Please switch to X Layer Mainnet (Chain ID 196).', 'error');
+              return;
+            }
+          }
+          el.chain.textContent = 'X Layer'; el.chain.className = 'dapp-chain-badge';
+        }
+
+        publicClient = createPublicClient({ chain: xLayer, transport: http(XLAYER_RPC) });
+        walletClient = createWalletClient({ chain: xLayer, transport: custom(provider) });
+        renderConnected(); hideMsg();
+        await dappRefreshBalance();
+      } catch (err) {
+        console.error('Connect error:', err);
+        renderDisconnected();
+        if (err.code === 4001) showMsg('Connection rejected by user.', 'error');
+        else showMsg('Connection failed: ' + (err.message || 'Unknown error'), 'error');
+      }
+    };
+
+    window.dappDisconnect = function() {
+      renderDisconnected();
+      showMsg('Wallet disconnected from DApp. Still connected in wallet.', 'success');
+    };
+
+    window.dappRefreshBalance = async function() {
+      if (!userAddress || !publicClient) return;
+      try {
+        const bal = await publicClient.readContract({ address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'balanceOf', args: [userAddress] });
+        el.balance.textContent = Number(formatEther(bal)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+      } catch (err) {
+        el.balance.textContent = 'Error';
+        console.error('Balance error:', err);
+      }
+    };
+
+    window.dappTransfer = async function() {
+      if (!userAddress || !walletClient) { showMsg('Please connect your wallet first.', 'error'); return; }
+      const to = el.recipient.value.trim();
+      const amt = el.amount.value.trim();
+      if (!to.startsWith('0x') || to.length !== 42) { showMsg('Invalid recipient address.', 'error'); return; }
+      if (!amt || isNaN(Number(amt)) || Number(amt) <= 0) { showMsg('Invalid amount. Enter a positive number.', 'error'); return; }
+
+      el.btnTransfer.disabled = true;
+      showMsg('Please confirm the transaction in your wallet...', 'loading');
+      try {
+        const hash = await walletClient.writeContract({
+          address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'transfer',
+          args: [to, parseEther(amt)], chain: xLayer, account: userAddress,
+        });
+        showMsg('Transaction submitted! <a href="' + XLAYER_EXPLORER + '/tx/' + hash + '" target="_blank" style="color:var(--cyan);">View on Explorer</a>', 'success');
+        el.recipient.value = ''; el.amount.value = '';
+
+        try {
+          const receipt = await publicClient.waitForTransactionReceipt({ hash });
+          if (receipt.status === 'success') {
+            await dappRefreshBalance();
+            showMsg('Transfer confirmed! <a href="' + XLAYER_EXPLORER + '/tx/' + hash + '" target="_blank" style="color:var(--cyan);">View on Explorer</a>', 'success');
+          } else {
+            showMsg('Transaction failed on-chain. Check the explorer for details.', 'error');
+          }
+        } catch (w) { console.error('Wait receipt error:', w); }
+      } catch (err) {
+        console.error('Transfer error:', err);
+        if (err.code === 4001) showMsg('Transaction rejected by user.', 'error');
+        else showMsg('Transfer failed: ' + (err.shortMessage || err.message || 'Unknown error'), 'error');
+      } finally { el.btnTransfer.disabled = false; }
+    };
+
+    window.dappOpenUniswap = function() {
+      window.open('https://app.uniswap.org/swap?chain=xlayer&outputCurrency=' + AIGENT_ADDRESS, '_blank');
+    };
+
+    // ── AI Agent Console ──
+
+    function agentShowMsg(text, type) {
+      el.agentMsg.innerHTML = text;
+      el.agentMsg.className = 'dapp-msg show ' + type;
+    }
+    function agentHideMsg() { el.agentMsg.className = 'dapp-msg'; el.agentMsg.textContent = ''; }
+
+    function agentResetSteps() {
+      el.agentSteps.style.display = 'block';
+      [1,2,3,4].forEach(i => {
+        const step = document.getElementById('step-' + i);
+        step.classList.remove('done','active','error-step');
+        document.getElementById('step'+i+'-status').className = 'step-status';
+        document.getElementById('step'+i+'-status').innerHTML = '';
+        document.getElementById('step'+i+'-detail').textContent = '';
+      });
+    }
+
+    function agentStepDone(n, detail) {
+      const step = document.getElementById('step-' + n);
+      step.classList.remove('active','error-step'); step.classList.add('done');
+      document.getElementById('step'+n+'-status').className = 'step-status done';
+      document.getElementById('step'+n+'-status').innerHTML = '&#10003;';
+      if (detail) document.getElementById('step'+n+'-detail').textContent = detail;
+    }
+
+    function agentStepActive(n, detail) {
+      const step = document.getElementById('step-' + n);
+      step.classList.remove('done','error-step'); step.classList.add('active');
+      document.getElementById('step'+n+'-status').className = 'step-status active';
+      document.getElementById('step'+n+'-status').innerHTML = '<div class="spinner"></div>';
+      if (detail) document.getElementById('step'+n+'-detail').textContent = detail;
+    }
+
+    function agentStepError(n, detail) {
+      const step = document.getElementById('step-' + n);
+      step.classList.remove('done','active'); step.classList.add('error-step');
+      document.getElementById('step'+n+'-status').className = 'step-status error';
+      document.getElementById('step'+n+'-status').innerHTML = '&#10007;';
+      if (detail) document.getElementById('step'+n+'-detail').textContent = detail;
+    }
+
+    function parseCommand(text) {
+      const t = text.trim();
+      if (!t) return { intent: 'empty' };
+
+      // Transfer patterns
+      const sendRe = /(?:send|transfer|pay|give)\s+(\d+(?:\.\d+)?)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})/i;
+      const sendRev = /(?:send|transfer|pay|give)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})\s+(\d+(?:\.\d+)?)/i;
+      let m = t.match(sendRe) || t.match(sendRev);
+      if (m) {
+        const addr = m[1].startsWith('0x') ? m[1] : m[2];
+        const amt = m[1].startsWith('0x') ? m[2] : m[1];
+        return { intent: 'transfer', params: { to: addr, amount: amt } };
+      }
+
+      if (/\b(balance|how much|check balance|show balance|my balance|my tokens|my aigent)\b/i.test(t))
+        return { intent: 'balance' };
+
+      if (/\b(total supply|supply|how many tokens|total tokens|circulation)\b/i.test(t))
+        return { intent: 'supply' };
+
+      return { intent: 'unknown' };
+    }
+
+    window.agentFill = function(text) {
+      el.agentCmd.value = text;
+    };
+
+    window.agentExecute = async function() {
+      if (!userAddress || !walletClient) {
+        agentShowMsg('Please connect your wallet first.', 'error');
+        return;
+      }
+      const cmd = el.agentCmd.value.trim();
+      if (!cmd) { agentShowMsg('Type a command. Examples: "check balance", "send 10 to 0x..."', 'error'); return; }
+
+      const parsed = parseCommand(cmd);
+      agentHideMsg();
+      el.agentSteps.style.display = 'none';
+
+      if (parsed.intent === 'balance') {
+        el.agentSteps.style.display = 'block';
+        agentResetSteps();
+        agentStepActive(1, 'Intent: balance — reading on-chain data...');
+        try {
+          const bal = await publicClient.readContract({ address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'balanceOf', args: [userAddress] });
+          const display = Number(formatEther(bal)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+          agentStepDone(1, 'Intent: balance');
+          agentStepDone(2, 'Balance: ' + display + ' AIGENT');
+          agentShowMsg('Balance: <strong>' + display + ' AIGENT</strong>', 'success');
+        } catch (e) { agentStepError(1, e.message); agentShowMsg('Failed to read balance.', 'error'); }
+        return;
+      }
+
+      if (parsed.intent === 'supply') {
+        el.agentSteps.style.display = 'block';
+        agentResetSteps();
+        agentStepActive(1, 'Intent: total supply — reading on-chain...');
+        try {
+          const sup = await publicClient.readContract({ address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'totalSupply' });
+          const display = Number(formatEther(sup)).toLocaleString();
+          agentStepDone(1, 'Intent: total supply');
+          agentStepDone(2, 'Total Supply: ' + display + ' AIGENT');
+          agentShowMsg('Total Supply: <strong>' + display + ' AIGENT</strong>', 'success');
+        } catch (e) { agentStepError(1, e.message); agentShowMsg('Failed to read supply.', 'error'); }
+        return;
+      }
+
+      if (parsed.intent === 'transfer') {
+        await agentExecuteTransfer(parsed.params.to, parsed.params.amount);
+        return;
+      }
+
+      // Unknown
+      agentShowMsg(
+        'Unknown command. Try:<br>' +
+        '<span style="color:var(--cyan);">check balance</span> — view your AIGENT<br>' +
+        '<span style="color:var(--cyan);">total supply</span> — view total supply<br>' +
+        '<span style="color:var(--cyan);">send 100 to 0x...</span> — transfer via EIP-2612',
+        'error'
+      );
+    };
+
+    async function agentExecuteTransfer(to, amountStr) {
+      el.agentSteps.style.display = 'block';
+      agentResetSteps();
+
+      // Step 1: Parse
+      agentStepDone(1, 'Send ' + amountStr + ' AIGENT to ' + shorten(to));
+
+      const provider = window.okxwallet || window.ethereum;
+      const amount = parseEther(amountStr);
+
+      // Step 2: Sign EIP-2612 Permit
+      agentStepActive(2, 'Reading nonce + building EIP-712 typed data...');
+      try {
+        const nonce = await publicClient.readContract({ address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'nonces', args: [userAddress] });
+
+        const typedData = {
+          types: { EIP712Domain: [
+            { name:'name', type:'string' },{ name:'version', type:'string' },
+            { name:'chainId', type:'uint256' },{ name:'verifyingContract', type:'address' }
+          ], ...PERMIT_TYPES },
+          primaryType: 'Permit',
+          domain: EIP712_DOMAIN,
+          message: { owner: userAddress, spender: userAddress, value: amount.toString(), nonce: nonce.toString(), deadline: MAX_DEADLINE.toString() }
+        };
+
+        const sigHex = await provider.request({ method: 'eth_signTypedData_v4', params: [userAddress, JSON.stringify(typedData)] });
+        const r = '0x' + sigHex.slice(2, 66);
+        const s = '0x' + sigHex.slice(66, 130);
+        const v = parseInt(sigHex.slice(130, 132), 16);
+        agentStepDone(2, 'Permit signed — v: ' + v + ' r: ' + r.slice(0,18) + '... s: ' + s.slice(0,18) + '...');
+
+        // Step 3: Submit permit()
+        agentStepActive(3, 'Submitting permit(owner,spender,' + amountStr + ',max,...)');
+        try {
+          const permitHash = await walletClient.writeContract({
+            address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'permit',
+            args: [userAddress, userAddress, amount, MAX_DEADLINE, v, r, s],
+            chain: xLayer, account: userAddress,
+          });
+          agentStepDone(3, 'permit() tx: ' + permitHash);
+          showMsg('Permit submitted. Waiting for confirmation...', 'loading');
+
+          await publicClient.waitForTransactionReceipt({ hash: permitHash });
+
+          // Step 4: Submit transferFrom()
+          agentStepActive(4, 'Submitting transferFrom(' + shorten(userAddress) + ',' + shorten(to) + ',' + amountStr + ')');
+          const tfHash = await walletClient.writeContract({
+            address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'transferFrom',
+            args: [userAddress, to, amount], chain: xLayer, account: userAddress,
+          });
+          agentStepDone(4, 'transferFrom() tx: ' + tfHash);
+          agentShowMsg(
+            'Transfer complete! <a href="' + XLAYER_EXPLORER + '/tx/' + tfHash + '" target="_blank" style="color:var(--cyan);">View on Explorer</a>',
+            'success'
+          );
+          hideMsg();
+          el.agentCmd.value = '';
+          await dappRefreshBalance();
+
+        } catch (e) {
+          agentStepError(3, e.shortMessage || e.message);
+          agentShowMsg('Permit submission failed: ' + (e.shortMessage || e.message), 'error');
+        }
+      } catch (e) {
+        agentStepError(2, e.message || 'Signing failed');
+        agentShowMsg('Permit signing failed. Your wallet may not support eth_signTypedData_v4.', 'error');
+      }
+    }
+
+    // ── Presale Buy ──
+
+    async function presaleShowMsg(text, type) {
+      el.presaleMsg.innerHTML = text;
+      el.presaleMsg.className = 'dapp-msg show ' + type;
+    }
+
+    window.presaleBuy = async function() {
+      if (!userAddress || !walletClient) { presaleShowMsg('Please connect your wallet first.', 'error'); return; }
+      const amtStr = el.presaleAmt.value.trim();
+      if (!amtStr || isNaN(Number(amtStr)) || Number(amtStr) < 1) { presaleShowMsg('Minimum 1 USDT.', 'error'); return; }
+
+      const usdtAmt = BigInt(Math.floor(Number(amtStr) * 1e6)); // USDT 6 decimals
+      el.btnPresaleBuy.disabled = true;
+
+      try {
+        // Step 1: Preview
+        const previewAigent = await publicClient.readContract({
+          address: PRESALE_ADDR, abi: PRESALE_ABI, functionName: 'previewBuy', args: [usdtAmt],
+        });
+        const aigentDisplay = (BigInt(previewAigent) / BigInt(1e12)).toString(); // 1e18 → 1e6 for display
+        presaleShowMsg('You will receive ~' + BigInt(previewAigent) / BigInt(1e18) + ' AIGENT. Approving USDT...', 'loading');
+
+        // Step 2: Check allowance
+        const allowance = await publicClient.readContract({
+          address: USDT_ADDR, abi: USDT_ABI, functionName: 'allowance', args: [userAddress, PRESALE_ADDR],
+        });
+
+        // Step 3: Approve if needed
+        if (BigInt(allowance) < usdtAmt) {
+          presaleShowMsg('Please approve USDT spending in your wallet...', 'loading');
+          const appHash = await walletClient.writeContract({
+            address: USDT_ADDR, abi: USDT_ABI, functionName: 'approve',
+            args: [PRESALE_ADDR, usdtAmt], chain: xLayer, account: userAddress,
+          });
+          presaleShowMsg('USDT approved. Waiting for confirmation...', 'loading');
+          await publicClient.waitForTransactionReceipt({ hash: appHash });
+        }
+
+        // Step 4: Buy
+        presaleShowMsg('Buying AIGENT... Confirm in wallet.', 'loading');
+        const buyHash = await walletClient.writeContract({
+          address: PRESALE_ADDR, abi: PRESALE_ABI, functionName: 'buy',
+          args: [usdtAmt], chain: xLayer, account: userAddress,
+        });
+        presaleShowMsg('Transaction submitted! <a href="' + XLAYER_EXPLORER + '/tx/' + buyHash + '" target="_blank" style="color:var(--cyan);">View</a>', 'success');
+
+        await publicClient.waitForTransactionReceipt({ hash: buyHash });
+        const gotAigent = BigInt(previewAigent) / BigInt(1e18);
+        presaleShowMsg('Purchase complete! +' + gotAigent + ' AIGENT. <a href="' + XLAYER_EXPLORER + '/tx/' + buyHash + '" target="_blank" style="color:var(--cyan);">View</a>', 'success');
+        el.presaleAmt.value = '';
+        await dappRefreshBalance();
+
+      } catch (err) {
+        console.error('Presale error:', err);
+        if (err.code === 4001) presaleShowMsg('Transaction rejected by user.', 'error');
+        else presaleShowMsg('Failed: ' + (err.shortMessage || err.message || 'Unknown error'), 'error');
+      } finally { el.btnPresaleBuy.disabled = false; }
+    };
+
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length === 0) { renderDisconnected(); showMsg('Wallet disconnected.', 'error'); }
+        else if (userAddress && accounts[0] !== userAddress) { userAddress = accounts[0]; renderConnected(); dappRefreshBalance(); showMsg('Account changed to ' + shorten(userAddress), 'success'); }
+      });
+      window.ethereum.on('chainChanged', () => { window.location.reload(); });
+    }
+  </script>
+</body>
+</html>

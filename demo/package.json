@@ -1,0 +1,22 @@
+{
+  "name": "aigent-agent-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "agent": "tsx agent.ts",
+    "agent:repl": "tsx agent.ts --repl"
+  },
+  "dependencies": {
+    "@aigent/sdk": "file:../sdk",
+    "ai": "^4.0.0",
+    "@ai-sdk/anthropic": "^1.0.0",
+    "@ai-sdk/openai": "^1.0.0",
+    "viem": "^2.0.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0"
+  }
+}
