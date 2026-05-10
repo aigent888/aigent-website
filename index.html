@@ -1844,12 +1844,12 @@
 
   <!-- ── AIGENT DApp — Wallet interaction via viem CDN ── -->
   <script type="module">
-    import { createPublicClient, createWalletClient, http, custom, formatEther, parseEther } from 'https://esm.sh/viem@2';
+    import { createPublicClient, createWalletClient, http, custom, formatEther, parseEther, parseAbi } from 'https://esm.sh/viem@2';
     import { xLayer } from 'https://esm.sh/viem@2/chains';
 
     const CHAIN_ID = 196;
     const AIGENT_ADDRESS = '0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';
-    const AIGENT_ABI = [
+    const AIGENT_ABI = parseAbi([
       'function transfer(address to, uint256 amount) external returns (bool)',
       'function balanceOf(address account) external view returns (uint256)',
       'function decimals() external view returns (uint8)',
@@ -1858,7 +1858,7 @@
       'function nonces(address owner) external view returns (uint256)',
       'function DOMAIN_SEPARATOR() external view returns (bytes32)',
       'function transferFrom(address from, address to, uint256 amount) external returns (bool)',
-    ];
+    ]);
     const XLAYER_RPC = 'https://rpc.xlayer.tech';
     const XLAYER_EXPLORER = 'https://www.oklink.com/xlayer';
     const EIP712_DOMAIN = { name: 'AIGENT', version: '1', chainId: 196, verifyingContract: AIGENT_ADDRESS };
@@ -1866,22 +1866,22 @@
     const MAX_DEADLINE = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffn;
     const PRESALE_ADDR = '0x316b1cE062cC4525F0129C3D41351a976981ccD9';
     const USDT_ADDR = '0x779Ded0c9e1022225f8E0630b35a9b54bE713736';
-    const PRESALE_ABI = [
+    const PRESALE_ABI = parseAbi([
       'function buy(uint256 usdtAmount) external',
       'function previewBuy(uint256 usdtAmount) external view returns (uint256)',
       'function rate() external view returns (uint256)',
       'function totalSold() external view returns (uint256)',
       'function cap() external view returns (uint256)',
       'function remaining() external view returns (uint256)',
-    ];
-    const USDT_ABI = [
+    ]);
+    const USDT_ABI = parseAbi([
       'function approve(address spender, uint256 amount) external returns (bool)',
       'function allowance(address owner, address spender) external view returns (uint256)',
       'function decimals() external view returns (uint8)',
-    ];
+    ]);
 
     const STAKING_ADDR = '0x69cfAdE9D7a628242617F5Ef95c6E62eA64170eB';
-    const STAKING_ABI = [
+    const STAKING_ABI = parseAbi([
       'function stake(uint256 amount) external',
       'function unstake(uint256 amount) external',
       'function claimReward() external',
@@ -1891,10 +1891,10 @@
       'function totalStaked() external view returns (uint256)',
       'function rewardPerSecond() external view returns (uint256)',
       'function rewardEndTime() external view returns (uint256)',
-    ];
+    ]);
 
     const LPFARM_ADDR = '0xB02728bf2D11C43Faf86bfDd1429b10bF41E571a';
-    const LPFARM_ABI = [
+    const LPFARM_ABI = parseAbi([
       'function stakeLP(uint256 amount) external',
       'function unstakeLP(uint256 amount) external',
       'function claimReward() external',
@@ -1904,7 +1904,7 @@
       'function totalStakedLP() external view returns (uint256)',
       'function rewardPerSecond() external view returns (uint256)',
       'function rewardEndTime() external view returns (uint256)',
-    ];
+    ]);
 
     const $ = (id) => document.getElementById(id);
     const el = {
