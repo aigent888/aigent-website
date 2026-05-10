@@ -389,7 +389,7 @@ AIGENT is an experimental token project. This whitepaper is provided for informa
 
 | Resource | URL |
 |----------|-----|
-| **Website** | `https://mrxu6995.github.io/aigent/` |
+| **Website** | `https://www.aigent.ink` |
 | **Contract (AIGENT)** | `0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39` |
 | **Contract (Presale)** | `0x316b1cE062cC4525F0129C3D41351a976981ccD9` |
 | **Network** | X Layer Mainnet (Chain ID 196) |
