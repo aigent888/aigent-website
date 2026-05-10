@@ -925,6 +925,35 @@
       .contract-bar { flex-direction: column; }
       .token-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── Presale Progress Bar ── */
+    .progress-wrap { margin-top: 18px; }
+    .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+    .progress-sold { font-size: 13px; color: var(--text-bright); font-weight: 600; }
+    .progress-cap { font-size: 11px; color: var(--dim); }
+    .progress-bar-outer { height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+    .progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--magenta)); border-radius: 4px; transition: width 0.6s; }
+    .progress-pct { text-align: right; font-size: 11px; color: var(--cyan); margin-top: 4px; }
+
+    /* ── Staking & LP Farm Panels ── */
+    .farm-card { margin-bottom: 14px; padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+    .farm-card .farm-title { font-size: 14px; font-weight: 700; color: var(--text-bright); margin-bottom: 4px; }
+    .farm-card .farm-sub { font-size: 10px; color: var(--dim); margin-bottom: 12px; }
+    .farm-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    .farm-stat { flex: 1; min-width: 90px; padding: 8px 12px; background: rgba(255,255,255,0.02); border-radius: 8px; }
+    .farm-stat .fs-label { font-size: 9px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+    .farm-stat .fs-val { font-size: 13px; font-weight: 600; color: var(--text-bright); margin-top: 2px; }
+    .farm-input-row { display: flex; gap: 8px; }
+    .farm-input { flex: 1; padding: 9px 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; color: var(--text-bright); font-size: 13px; outline: none; font-family: inherit; }
+    .farm-input:focus { border-color: var(--cyan); box-shadow: 0 0 6px rgba(0,229,255,0.15); }
+    .farm-input::placeholder { color: var(--dim); }
+    .farm-btn { padding: 9px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.2s; background: var(--cyan); color: var(--bg); font-family: inherit; }
+    .farm-btn:hover { box-shadow: var(--glow-cyan); }
+    .farm-btn.magenta { background: var(--magenta); color: #fff; }
+    .farm-btn.magenta:hover { box-shadow: var(--glow-magenta); }
+    .farm-btn.red { background: rgba(255,68,68,0.15); color: #ff4444; border: 1px solid rgba(255,68,68,0.3); }
+    .farm-btn.red:hover { box-shadow: 0 0 10px rgba(255,68,68,0.3); }
+    .farm-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
   </style>
 </head>
 <body>
@@ -961,6 +990,8 @@
       <li><a href="#tokenomics">Tokenomics</a></li>
       <li><a href="#presale">Presale</a></li>
       <li><a href="#dapp">DApp</a></li>
+      <li><a href="#staking">Staking</a></li>
+      <li><a href="#lpfarm">LP Farm</a></li>
       <li><a href="#roadmap">Roadmap</a></li>
       <li><a href="https://github.com/Mrxu6995/aigent/blob/master/whitepaper.md" target="_blank">Whitepaper</a></li>
       <li><a href="#ai">AI Agents</a></li>
@@ -1172,6 +1203,18 @@
           </div>
         </div>
 
+        <!-- Progress Bar -->
+        <div class="progress-wrap" id="presale-progress-wrap">
+          <div class="progress-header">
+            <span class="progress-sold" id="progress-sold-text">0 AIGENT sold</span>
+            <span class="progress-cap" id="progress-cap-text">/ 50,000,000 cap</span>
+          </div>
+          <div class="progress-bar-outer">
+            <div class="progress-bar-inner" id="progress-bar-fill" style="width:0%;"></div>
+          </div>
+          <div class="progress-pct" id="progress-pct">0%</div>
+        </div>
+
         <!-- Network Info -->
         <div class="presale-info-grid">
           <div class="presale-info-box">
@@ -1363,6 +1406,58 @@
             <div class="dapp-msg" id="presale-msg"></div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ── STAKING ── -->
+    <section id="staking">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+          <div class="section-tag">// Earn</div>
+          <div class="section-title">Stake AIGENT</div>
+          <p class="section-sub" style="margin-left: 0;">Stake AIGENT to earn rewards. 80M reward pool, 1-year duration.</p>
+        </div>
+
+        <div class="farm-row" id="stake-stats">
+          <div class="farm-stat"><div class="fs-label">Total Staked</div><div class="fs-val" id="st-total">--</div></div>
+          <div class="farm-stat"><div class="fs-label">Reward Rate</div><div class="fs-val" id="st-rate">--</div></div>
+          <div class="farm-stat"><div class="fs-label">Your Staked</div><div class="fs-val" id="st-yours">--</div></div>
+          <div class="farm-stat"><div class="fs-label">Pending Rewards</div><div class="fs-val" id="st-pending">--</div></div>
+        </div>
+
+        <div class="farm-input-row" style="margin-bottom:8px;">
+          <input class="farm-input" id="stake-amount" type="text" placeholder="AIGENT amount" autocomplete="off">
+          <button class="farm-btn" id="btn-stake" onclick="stakeTokens()">Stake</button>
+          <button class="farm-btn magenta" id="btn-unstake" onclick="unstakeTokens()">Unstake</button>
+          <button class="farm-btn red" id="btn-claim-stake" onclick="claimStakeReward()">Claim</button>
+        </div>
+        <div class="dapp-msg" id="stake-msg"></div>
+      </div>
+    </section>
+
+    <!-- ── LP FARM ── -->
+    <section id="lpfarm">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+          <div class="section-tag">// Farm</div>
+          <div class="section-title">LP Farm</div>
+          <p class="section-sub" style="margin-left: 0;">Stake LP tokens to earn AIGENT rewards. 60M reward pool, 1-year duration.</p>
+        </div>
+
+        <div class="farm-row" id="lp-stats">
+          <div class="farm-stat"><div class="fs-label">Total LP Staked</div><div class="fs-val" id="lp-total">--</div></div>
+          <div class="farm-stat"><div class="fs-label">Reward Rate</div><div class="fs-val" id="lp-rate">--</div></div>
+          <div class="farm-stat"><div class="fs-label">Your LP Staked</div><div class="fs-val" id="lp-yours">--</div></div>
+          <div class="farm-stat"><div class="fs-label">Pending Rewards</div><div class="fs-val" id="lp-pending">--</div></div>
+        </div>
+
+        <div class="farm-input-row" style="margin-bottom:8px;">
+          <input class="farm-input" id="lp-amount" type="text" placeholder="LP token amount" autocomplete="off">
+          <button class="farm-btn" id="btn-stake-lp" onclick="stakeLP()">Stake LP</button>
+          <button class="farm-btn magenta" id="btn-unstake-lp" onclick="unstakeLP()">Unstake LP</button>
+          <button class="farm-btn red" id="btn-claim-lp" onclick="claimLPReward()">Claim</button>
+        </div>
+        <div class="dapp-msg" id="lp-msg"></div>
       </div>
     </section>
 
@@ -1785,6 +1880,32 @@
       'function decimals() external view returns (uint8)',
     ];
 
+    const STAKING_ADDR = '0x69cfAdE9D7a628242617F5Ef95c6E62eA64170eB';
+    const STAKING_ABI = [
+      'function stake(uint256 amount) external',
+      'function unstake(uint256 amount) external',
+      'function claimReward() external',
+      'function emergencyWithdraw() external',
+      'function pendingReward(address user) external view returns (uint256)',
+      'function userInfo(address user) external view returns (uint256 stakedAmount, uint256 rewardDebt, uint256 pendingRewards)',
+      'function totalStaked() external view returns (uint256)',
+      'function rewardPerSecond() external view returns (uint256)',
+      'function rewardEndTime() external view returns (uint256)',
+    ];
+
+    const LPFARM_ADDR = '0xB02728bf2D11C43Faf86bfDd1429b10bF41E571a';
+    const LPFARM_ABI = [
+      'function stakeLP(uint256 amount) external',
+      'function unstakeLP(uint256 amount) external',
+      'function claimReward() external',
+      'function emergencyWithdraw() external',
+      'function pendingReward(address user) external view returns (uint256)',
+      'function userInfo(address user) external view returns (uint256 stakedLPAmount, uint256 rewardDebt, uint256 pendingRewards)',
+      'function totalStakedLP() external view returns (uint256)',
+      'function rewardPerSecond() external view returns (uint256)',
+      'function rewardEndTime() external view returns (uint256)',
+    ];
+
     const $ = (id) => document.getElementById(id);
     const el = {
       dot: $('dapp-dot'), addr: $('dapp-addr'), chain: $('dapp-chain'),
@@ -1800,6 +1921,15 @@
       presaleAmt: $('presale-usdt-amt'), presaleMsg: $('presale-msg'),
       btnPresaleBuy: $('btn-presale-buy'),
     };
+
+    function stakeMsg(text, type) {
+      $('stake-msg').innerHTML = text;
+      $('stake-msg').className = 'dapp-msg show ' + (type || '');
+    }
+    function lpMsg(text, type) {
+      $('lp-msg').innerHTML = text;
+      $('lp-msg').className = 'dapp-msg show ' + (type || '');
+    }
 
     let userAddress = null, publicClient = null, walletClient = null;
 
@@ -1822,6 +1952,9 @@
       el.agentConsole.style.display = 'block';
       el.presaleDivider.style.display = 'block';
       el.presaleSection.style.display = 'block';
+      refreshStaking();
+      refreshLPFarm();
+      updatePresaleProgress();
     }
 
     function renderDisconnected() {
@@ -2204,6 +2337,194 @@
         if (err.code === 4001) presaleShowMsg('Transaction rejected by user.', 'error');
         else presaleShowMsg('Failed: ' + (err.shortMessage || err.message || 'Unknown error'), 'error');
       } finally { el.btnPresaleBuy.disabled = false; }
+    };
+
+    // ── Presale Progress Bar ──
+    async function updatePresaleProgress() {
+      try {
+        const [sold, cap, rate] = await Promise.all([
+          publicClient.readContract({ address: PRESALE_ADDR, abi: PRESALE_ABI, functionName: 'totalSold' }),
+          publicClient.readContract({ address: PRESALE_ADDR, abi: PRESALE_ABI, functionName: 'cap' }),
+          publicClient.readContract({ address: PRESALE_ADDR, abi: PRESALE_ABI, functionName: 'rate' }),
+        ]);
+        const soldNum = Number(sold / BigInt(1e18));
+        const capNum = Number(cap / BigInt(1e18));
+        const pct = capNum > 0 ? (soldNum / capNum * 100).toFixed(1) : '0';
+        $('progress-sold-text').textContent = soldNum.toLocaleString() + ' AIGENT sold';
+        $('progress-cap-text').textContent = '/ ' + capNum.toLocaleString() + ' cap';
+        $('progress-bar-fill').style.width = Math.min(parseFloat(pct), 100) + '%';
+        $('progress-pct').textContent = pct + '%';
+      } catch (e) { /* silent */ }
+    }
+
+    // ── Staking ──
+    async function refreshStaking() {
+      try {
+        const [totalStaked, rate, user, pending] = await Promise.all([
+          publicClient.readContract({ address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'totalStaked' }),
+          publicClient.readContract({ address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'rewardPerSecond' }),
+          publicClient.readContract({ address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'userInfo', args: [userAddress] }),
+          publicClient.readContract({ address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'pendingReward', args: [userAddress] }),
+        ]);
+        $('st-total').textContent = (Number(totalStaked) / 1e18).toLocaleString() + ' AIGENT';
+        $('st-rate').textContent = (Number(rate) / 1e18).toFixed(4) + ' / sec';
+        $('st-yours').textContent = (Number(user[0]) / 1e18).toLocaleString() + ' AIGENT';
+        $('st-pending').textContent = (Number(pending) / 1e18).toFixed(4) + ' AIGENT';
+      } catch (e) { /* silent */ }
+    }
+
+    window.stakeTokens = async function() {
+      if (!walletClient) { stakeMsg('Connect wallet first.', 'error'); return; }
+      const amt = $('stake-amount').value.trim();
+      if (!amt || isNaN(amt) || Number(amt) <= 0) { stakeMsg('Enter valid amount.', 'error'); return; }
+      const amtWei = BigInt(Math.floor(Number(amt) * 1e18));
+      try {
+        stakeMsg('Approving AIGENT...', 'loading');
+        $('btn-stake').disabled = true;
+        const approveHash = await walletClient.writeContract({
+          address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'approve',
+          args: [STAKING_ADDR, amtWei], chain: xLayer, account: userAddress,
+        });
+        await publicClient.waitForTransactionReceipt({ hash: approveHash });
+        stakeMsg('Staking... Confirm in wallet.', 'loading');
+        const hash = await walletClient.writeContract({
+          address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'stake',
+          args: [amtWei], chain: xLayer, account: userAddress,
+        });
+        await publicClient.waitForTransactionReceipt({ hash });
+        stakeMsg('Staked! <a href="' + XLAYER_EXPLORER + '/tx/' + hash + '" target="_blank" style="color:var(--cyan);">View</a>', 'success');
+        $('stake-amount').value = '';
+        await refreshStaking();
+        await dappRefreshBalance();
+      } catch (err) {
+        if (err.code !== 4001) stakeMsg('Failed: ' + (err.shortMessage || err.message), 'error');
+        else stakeMsg('Transaction rejected.', 'error');
+      } finally { $('btn-stake').disabled = false; }
+    };
+
+    window.unstakeTokens = async function() {
+      if (!walletClient) { stakeMsg('Connect wallet first.', 'error'); return; }
+      const amt = $('stake-amount').value.trim();
+      if (!amt || isNaN(amt) || Number(amt) <= 0) { stakeMsg('Enter valid amount.', 'error'); return; }
+      try {
+        stakeMsg('Unstaking... Confirm in wallet.', 'loading');
+        $('btn-unstake').disabled = true;
+        const hash = await walletClient.writeContract({
+          address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'unstake',
+          args: [BigInt(Math.floor(Number(amt) * 1e18))], chain: xLayer, account: userAddress,
+        });
+        await publicClient.waitForTransactionReceipt({ hash });
+        stakeMsg('Unstaked! <a href="' + XLAYER_EXPLORER + '/tx/' + hash + '" target="_blank" style="color:var(--cyan);">View</a>', 'success');
+        $('stake-amount').value = '';
+        await refreshStaking();
+        await dappRefreshBalance();
+      } catch (err) {
+        if (err.code !== 4001) stakeMsg('Failed: ' + (err.shortMessage || err.message), 'error');
+        else stakeMsg('Transaction rejected.', 'error');
+      } finally { $('btn-unstake').disabled = false; }
+    };
+
+    window.claimStakeReward = async function() {
+      if (!walletClient) { stakeMsg('Connect wallet first.', 'error'); return; }
+      try {
+        stakeMsg('Claiming rewards...', 'loading');
+        $('btn-claim-stake').disabled = true;
+        const hash = await walletClient.writeContract({
+          address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'claimReward',
+          chain: xLayer, account: userAddress,
+        });
+        await publicClient.waitForTransactionReceipt({ hash });
+        stakeMsg('Rewards claimed! <a href="' + XLAYER_EXPLORER + '/tx/' + hash + '" target="_blank" style="color:var(--cyan);">View</a>', 'success');
+        await refreshStaking();
+        await dappRefreshBalance();
+      } catch (err) {
+        if (err.code !== 4001) stakeMsg('Failed: ' + (err.shortMessage || err.message), 'error');
+        else stakeMsg('Claim rejected.', 'error');
+      } finally { $('btn-claim-stake').disabled = false; }
+    };
+
+    // ── LP Farm ──
+    async function refreshLPFarm() {
+      try {
+        const [totalStakedLP, rate, user, pending] = await Promise.all([
+          publicClient.readContract({ address: LPFARM_ADDR, abi: LPFARM_ABI, functionName: 'totalStakedLP' }),
+          publicClient.readContract({ address: LPFARM_ADDR, abi: LPFARM_ABI, functionName: 'rewardPerSecond' }),
+          publicClient.readContract({ address: LPFARM_ADDR, abi: LPFARM_ABI, functionName: 'userInfo', args: [userAddress] }),
+          publicClient.readContract({ address: LPFARM_ADDR, abi: LPFARM_ABI, functionName: 'pendingReward', args: [userAddress] }),
+        ]);
+        $('lp-total').textContent = (Number(totalStakedLP) / 1e18).toLocaleString() + ' LP';
+        $('lp-rate').textContent = (Number(rate) / 1e18).toFixed(4) + ' / sec';
+        $('lp-yours').textContent = (Number(user[0]) / 1e18).toLocaleString() + ' LP';
+        $('lp-pending').textContent = (Number(pending) / 1e18).toFixed(4) + ' AIGENT';
+      } catch (e) { /* silent */ }
+    }
+
+    window.stakeLP = async function() {
+      if (!walletClient) { lpMsg('Connect wallet first.', 'error'); return; }
+      const amt = $('lp-amount').value.trim();
+      if (!amt || isNaN(amt) || Number(amt) <= 0) { lpMsg('Enter valid amount.', 'error'); return; }
+      const amtWei = BigInt(Math.floor(Number(amt) * 1e18));
+      try {
+        lpMsg('Approving LP tokens...', 'loading');
+        $('btn-stake-lp').disabled = true;
+        const approveHash = await walletClient.writeContract({
+          address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'approve',
+          args: [LPFARM_ADDR, amtWei], chain: xLayer, account: userAddress,
+        });
+        await publicClient.waitForTransactionReceipt({ hash: approveHash });
+        lpMsg('Staking LP... Confirm in wallet.', 'loading');
+        const hash = await walletClient.writeContract({
+          address: LPFARM_ADDR, abi: LPFARM_ABI, functionName: 'stakeLP',
+          args: [amtWei], chain: xLayer, account: userAddress,
+        });
+        await publicClient.waitForTransactionReceipt({ hash });
+        lpMsg('LP staked! <a href="' + XLAYER_EXPLORER + '/tx/' + hash + '" target="_blank" style="color:var(--cyan);">View</a>', 'success');
+        $('lp-amount').value = '';
+        await refreshLPFarm();
+      } catch (err) {
+        if (err.code !== 4001) lpMsg('Failed: ' + (err.shortMessage || err.message), 'error');
+        else lpMsg('Transaction rejected.', 'error');
+      } finally { $('btn-stake-lp').disabled = false; }
+    };
+
+    window.unstakeLP = async function() {
+      if (!walletClient) { lpMsg('Connect wallet first.', 'error'); return; }
+      const amt = $('lp-amount').value.trim();
+      if (!amt || isNaN(amt) || Number(amt) <= 0) { lpMsg('Enter valid amount.', 'error'); return; }
+      try {
+        lpMsg('Unstaking LP... Confirm in wallet.', 'loading');
+        $('btn-unstake-lp').disabled = true;
+        const hash = await walletClient.writeContract({
+          address: LPFARM_ADDR, abi: LPFARM_ABI, functionName: 'unstakeLP',
+          args: [BigInt(Math.floor(Number(amt) * 1e18))], chain: xLayer, account: userAddress,
+        });
+        await publicClient.waitForTransactionReceipt({ hash });
+        lpMsg('LP unstaked! <a href="' + XLAYER_EXPLORER + '/tx/' + hash + '" target="_blank" style="color:var(--cyan);">View</a>', 'success');
+        $('lp-amount').value = '';
+        await refreshLPFarm();
+      } catch (err) {
+        if (err.code !== 4001) lpMsg('Failed: ' + (err.shortMessage || err.message), 'error');
+        else lpMsg('Transaction rejected.', 'error');
+      } finally { $('btn-unstake-lp').disabled = false; }
+    };
+
+    window.claimLPReward = async function() {
+      if (!walletClient) { lpMsg('Connect wallet first.', 'error'); return; }
+      try {
+        lpMsg('Claiming rewards...', 'loading');
+        $('btn-claim-lp').disabled = true;
+        const hash = await walletClient.writeContract({
+          address: LPFARM_ADDR, abi: LPFARM_ABI, functionName: 'claimReward',
+          chain: xLayer, account: userAddress,
+        });
+        await publicClient.waitForTransactionReceipt({ hash });
+        lpMsg('Rewards claimed! <a href="' + XLAYER_EXPLORER + '/tx/' + hash + '" target="_blank" style="color:var(--cyan);">View</a>', 'success');
+        await refreshLPFarm();
+        await dappRefreshBalance();
+      } catch (err) {
+        if (err.code !== 4001) lpMsg('Failed: ' + (err.shortMessage || err.message), 'error');
+        else lpMsg('Claim rejected.', 'error');
+      } finally { $('btn-claim-lp').disabled = false; }
     };
 
     if (window.ethereum) {
