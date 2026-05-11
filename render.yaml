@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: aigent-agent-server
+    env: node
+    rootDir: demo
+    buildCommand: npm install
+    startCommand: npx tsx server.ts
+    envVars:
+      - key: PORT
+        value: "10000"

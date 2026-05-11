@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "agent": "tsx agent.ts",
-    "agent:repl": "tsx agent.ts --repl"
+    "agent:repl": "tsx agent.ts --repl",
+    "server": "tsx server.ts"
   },
   "dependencies": {
     "@aigent/sdk": "file:../sdk",

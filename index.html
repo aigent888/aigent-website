@@ -891,6 +891,45 @@
     .step-status.done { color: var(--green); font-size: 14px; }
     .step-status.error { color: #ff4444; font-size: 14px; }
 
+    /* ── Agent Chat ── */
+    .agent-chat {
+      max-height: 320px; overflow-y: auto; margin-bottom: 14px;
+      padding: 12px; border-radius: 8px;
+      background: rgba(0,0,0,0.25); border: 1px solid var(--border);
+      display: none; flex-direction: column; gap: 10px;
+    }
+    .agent-chat.active { display: flex; }
+    .chat-bubble {
+      max-width: 88%; padding: 10px 14px; border-radius: 12px;
+      font-size: 13px; line-height: 1.55; word-break: break-word;
+    }
+    .chat-bubble.agent {
+      align-self: flex-start; background: rgba(0,229,255,0.06);
+      border: 1px solid rgba(0,229,255,0.15); border-bottom-left-radius: 2px;
+      color: var(--text-bright);
+    }
+    .chat-bubble.user {
+      align-self: flex-end; background: rgba(213,0,249,0.08);
+      border: 1px solid rgba(213,0,249,0.18); border-bottom-right-radius: 2px;
+      color: var(--text);
+    }
+    .chat-bubble .chat-label {
+      font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+      margin-bottom: 4px; opacity: 0.7;
+    }
+    .agent-server-indicator {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 10px; color: var(--dim); margin-left: 8px;
+    }
+    .agent-server-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #444; transition: background 0.3s;
+    }
+    .agent-server-dot.live { background: var(--green); box-shadow: 0 0 4px var(--green); }
+    .agent-server-dot.offline { background: #ff4444; }
+    .agent-chat::-webkit-scrollbar { width: 4px; }
+    .agent-chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
     /* ── Mobile ── */
     @media (max-width: 768px) {
       nav { padding: 12px 16px; }
@@ -995,6 +1034,7 @@
       <li><a href="#roadmap">Roadmap</a></li>
       <li><a href="https://github.com/Mrxu6995/aigent/blob/master/whitepaper.md" target="_blank">Whitepaper</a></li>
       <li><a href="#ai">AI Agents</a></li>
+      <li><a href="#article">Article</a></li>
       <li><a href="#presale" class="nav-btn">Buy $AIGENT</a></li>
     </ul>
   </nav>
@@ -1355,25 +1395,16 @@
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="10" r="1.5" fill="var(--cyan)"/><circle cx="15.5" cy="10" r="1.5" fill="var(--cyan)"/><path d="M8.5 15c1.5 2 3.5 1.5 7 0"/></svg>
             <div>
-              <div style="font-size:14px;font-weight:700;color:var(--text-bright);">AI Agent Console</div>
-              <div style="font-size:11px;color:var(--dim);">Natural language commands — no API key required</div>
+              <div style="font-size:14px;font-weight:700;color:var(--text-bright);">AI Agent Console <span class="agent-server-indicator" id="agent-server-ind"><span class="agent-server-dot" id="agent-server-dot"></span><span id="agent-server-label">local</span></span></div>
+              <div style="font-size:11px;color:var(--dim);">Chat with the AI agent — natural language commands</div>
             </div>
           </div>
 
-          <div class="dapp-input-group" style="margin-bottom:10px;">
-            <input class="dapp-input" id="agent-cmd" type="text" placeholder='Try: "send 100 to 0x..." | "check balance" | "total supply"' autocomplete="off" onkeydown="if(event.key==='Enter')agentExecute()">
-            <button class="dapp-btn" id="btn-agent" onclick="agentExecute()">Execute</button>
-          </div>
+          <!-- Chat history -->
+          <div class="agent-chat" id="agent-chat"></div>
 
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
-            <button class="btn" onclick="agentFill('check balance')" style="font-size:10px;padding:4px 10px;">Balance</button>
-            <button class="btn" onclick="agentFill('total supply')" style="font-size:10px;padding:4px 10px;">Supply</button>
-            <button class="btn" onclick="agentFill('send 10 to 0x...')" style="font-size:10px;padding:4px 10px;">Send 10</button>
-          </div>
-
-          <div class="dapp-msg" id="agent-msg"></div>
-
-          <div id="agent-steps" style="display:none;margin-top:14px;">
+          <!-- EIP-2612 step visualization (for transfers) -->
+          <div id="agent-steps" style="display:none;margin-bottom:14px;">
             <div class="agent-step" id="step-1">
               <div class="step-num">1</div><div class="step-content"><div class="step-title">Parse Command</div><div class="step-detail" id="step1-detail"></div></div><div class="step-status" id="step1-status"></div>
             </div>
@@ -1386,6 +1417,20 @@
             <div class="agent-step" id="step-4">
               <div class="step-num">4</div><div class="step-content"><div class="step-title">Submit transferFrom() Transaction</div><div class="step-detail" id="step4-detail"></div></div><div class="step-status" id="step4-status"></div>
             </div>
+          </div>
+
+          <div class="dapp-msg" id="agent-msg"></div>
+
+          <div class="dapp-input-group" style="margin-bottom:10px;">
+            <input class="dapp-input" id="agent-cmd" type="text" placeholder='Chat: "check balance" | "total supply" | "send 10 to 0x..."' autocomplete="off" onkeydown="if(event.key==='Enter')agentExecute()">
+            <button class="dapp-btn" id="btn-agent" onclick="agentExecute()">Send</button>
+          </div>
+
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn" onclick="agentQuick('Check my balance')" style="font-size:10px;padding:4px 10px;">Balance</button>
+            <button class="btn" onclick="agentQuick('What is the total supply?')" style="font-size:10px;padding:4px 10px;">Supply</button>
+            <button class="btn" onclick="agentQuick('send 10 to 0xAbC...')" style="font-size:10px;padding:4px 10px;">Send 10</button>
+            <button class="btn" onclick="agentQuick('help')" style="font-size:10px;padding:4px 10px;">Help</button>
           </div>
 
           <!-- Presale Buy -->
@@ -1680,6 +1725,211 @@
         </div>
       </div>
     </section>
+
+    <!-- ── TECHNICAL ARTICLE ── -->
+    <section id="article">
+      <div class="section-header reveal">
+        <div class="section-tag">// Deep Dive</div>
+        <div class="section-title">Building Gasless AI Agent Transactions with EIP-2612</div>
+        <p class="section-sub">How Permit signatures eliminate the gas token barrier for autonomous on-chain agents</p>
+      </div>
+
+      <div class="card reveal" style="max-width: 900px; margin: 0 auto;">
+        <div style="font-size:16px; line-height: 1.9; color: var(--text);">
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;">1. The Problem: AI Agents Can't Hold Gas Tokens</h3>
+
+          <p>Autonomous AI agents are increasingly performing on-chain actions — trading, arbitrage, data marketplace payments, and service orchestration. Industry projections estimate that by 2027, over 60% of on-chain transaction volume will involve non-human initiators.</p>
+          <br>
+          <p>But there's a fundamental problem. Traditional ERC-20 tokens require a two-step pattern:</p>
+          <br>
+          <p><code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">approve(spender, amount)</code> → <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">transferFrom(owner, to, amount)</code></p>
+          <br>
+          <p>The <code>approve()</code> call is a separate on-chain transaction that <strong style="color:var(--cyan);">requires the chain's native gas token</strong> (OKB on X Layer, ETH on Ethereum). For an AI agent, this means:</p>
+          <br>
+          <ul style="padding-left:20px;color:var(--dim);">
+            <li style="margin-bottom:8px;"><strong style="color:#ff4444;">Capital inefficiency</strong> — Agents must maintain gas token balances across multiple chains</li>
+            <li style="margin-bottom:8px;"><strong style="color:#ff4444;">Operational fragility</strong> — Gas price spikes cause approval transactions to fail</li>
+            <li style="margin-bottom:8px;"><strong style="color:#ff4444;">Centralization pressure</strong> — Agents must rely on trusted relayers or gas stations</li>
+          </ul>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">2. The Solution: EIP-2612 Permit</h3>
+
+          <p>EIP-2612 introduces <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">permit()</code> — a function that allows token holders to approve spending via an <strong style="color:var(--cyan);">off-chain signature</strong> rather than an on-chain transaction. The signature is bundled with the transfer in a single transaction.</p>
+          <br>
+
+          <div class="code-block" style="margin: 16px 0;">
+<pre>
+<span class="c">// Step 1: Agent signs a typed data message OFF-CHAIN (no gas)</span>
+<span class="k">const</span> typedData = {
+  types: { EIP712Domain: [
+    { name: <span class="s">'name'</span>,    type: <span class="s">'string'</span> },
+    { name: <span class="s">'version'</span>, type: <span class="s">'string'</span> },
+    { name: <span class="s">'chainId'</span>, type: <span class="s">'uint256'</span> },
+    { name: <span class="s">'verifyingContract'</span>, type: <span class="s">'address'</span> }
+  ], Permit: [
+    { name: <span class="s">'owner'</span>,    type: <span class="s">'address'</span> },
+    { name: <span class="s">'spender'</span>,  type: <span class="s">'address'</span> },
+    { name: <span class="s">'value'</span>,    type: <span class="s">'uint256'</span> },
+    { name: <span class="s">'nonce'</span>,    type: <span class="s">'uint256'</span> },
+    { name: <span class="s">'deadline'</span>, type: <span class="s">'uint256'</span> }
+  ]},
+  primaryType: <span class="s">'Permit'</span>,
+  domain: { name: <span class="s">'AIGENT'</span>, version: <span class="s">'1'</span>, chainId: 196,
+            verifyingContract: <span class="s">'0xE543...'</span> },
+  message: { owner, spender, value, nonce, deadline: MaxUint256 }
+};
+
+<span class="k">const</span> sig = <span class="k">await</span> wallet.signTypedData(typedData);
+<span class="c">// Zero gas cost — this happens entirely off-chain</span>
+
+<span class="c">// Step 2: Relayer or agent submits permit + transfer in ONE tx</span>
+<span class="k">await</span> token.permit(owner, spender, value, deadline, v, r, s);
+<span class="k">await</span> token.transferFrom(owner, to, value);
+<span class="c">// Only this single transaction costs gas</span>
+</pre>
+          </div>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">3. Why This Matters for AI Agents</h3>
+
+          <div class="feature-grid" style="margin: 16px 0;">
+            <div class="feature-card" style="padding: 24px;">
+              <div class="fc-title" style="font-size:15px;">ZERO Gas Token Requirement</div>
+              <div class="fc-desc" style="font-size:12px;">AI agents approve spending without holding OKB, ETH, or any other native gas token. A single relayer can sponsor gas for thousands of agents.</div>
+            </div>
+            <div class="feature-card" style="padding: 24px;">
+              <div class="fc-title" style="font-size:15px;">Atomic Execution</div>
+              <div class="fc-desc" style="font-size:12px;">The <code>permit()</code> and <code>transferFrom()</code> can be bundled in a single transaction. No two-step approval dance that can fail halfway.</div>
+            </div>
+            <div class="feature-card" style="padding: 24px;">
+              <div class="fc-title" style="font-size:15px;">Relayer Marketplace</div>
+              <div class="fc-desc" style="font-size:12px;">Third-party relayers compete to submit agent transactions for the lowest fee. Agents choose the cheapest or fastest submitter — a free market for gas sponsorship.</div>
+            </div>
+            <div class="feature-card" style="padding: 24px;">
+              <div class="fc-title" style="font-size:15px;">Full Self-Custody</div>
+              <div class="fc-desc" style="font-size:12px;">Agents retain complete control of their keys and tokens. No trusted third party, no multi-sig complexity, no delegation of asset custody.</div>
+            </div>
+          </div>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">4. Architecture: How It All Fits Together</h3>
+
+          <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:24px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:12px;line-height:1.8;overflow-x:auto;">
+<pre style="color:var(--text);">
+  ┌─────────────┐     Off-chain Permit Signature      ┌──────────────┐
+  │             │ ──────────────────────────────────> │              │
+  │  AI Agent   │    signTypedData(domain, types,     │   Relayer    │
+  │  (no OKB)   │      { owner, spender, value,       │  (has OKB)   │
+  │             │        nonce, deadline })            │              │
+  └─────────────┘                                     └──────┬───────┘
+                                                            │
+                                              Single tx:     │
+                                              permit() +     │
+                                              transferFrom() │
+                                                            │
+                                                  ┌─────────▼───────┐
+                                                  │  AIGENT Token   │
+                                                  │  (X Layer)      │
+                                                  │  EIP-2612       │
+                                                  └─────────────────┘
+</pre>
+          </div>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">5. Real Implementation: AIGENT on X Layer</h3>
+
+          <p>AIGENT implements the full EIP-2612 specification with the following interface:</p>
+          <br>
+
+          <div class="code-block" style="margin: 16px 0;">
+<pre>
+<span class="c">// EIP-2612 Permit interface (AIGENT Token)</span>
+<span class="k">function</span> <span class="f">permit</span>(
+    address owner,
+    address spender,
+    uint256 value,
+    uint256 deadline,
+    uint8 v,
+    bytes32 r,
+    bytes32 s
+) <span class="k">external</span>;
+
+<span class="k">function</span> <span class="f">nonces</span>(address owner) <span class="k">external</span> <span class="k">view</span> <span class="k">returns</span> (uint256);
+
+<span class="k">function</span> <span class="f">DOMAIN_SEPARATOR</span>() <span class="k">external</span> <span class="k">view</span> <span class="k">returns</span> (bytes32);
+
+<span class="c">// Standard ERC-20 + Burnable</span>
+<span class="k">function</span> <span class="f">transferFrom</span>(address from, address to, uint256 value) <span class="k">external</span>;
+<span class="k">function</span> <span class="f">burn</span>(uint256 value) <span class="k">external</span>;
+<span class="k">function</span> <span class="f">burnFrom</span>(address from, uint256 value) <span class="k">external</span>;
+</pre>
+          </div>
+
+          <p><strong style="color:var(--cyan);">Contract address:</strong> <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39</code> on X Layer mainnet (Chain ID 196).</p>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">6. Integration Example: TypeScript SDK</h3>
+
+          <p>The AIGENT SDK provides a one-line API for AI agents to execute gasless transfers:</p>
+          <br>
+
+          <div class="code-block" style="margin: 16px 0;">
+<pre>
+<span class="k">import</span> { createAgentContext } <span class="k">from</span> <span class="s">"./setup"</span>;
+<span class="k">import</span> { aigentTools } <span class="k">from</span> <span class="s">"@aigent/sdk"</span>;
+<span class="k">import</span> { generateText } <span class="k">from</span> <span class="s">"ai"</span>;
+
+<span class="c">// Create agent context with wallet + RPC</span>
+<span class="k">const</span> { account, wallet, publicClient } = createAgentContext();
+
+<span class="c">// Generate AI-compatible tools (Vercel AI SDK / LangChain)</span>
+<span class="k">const</span> tools = aigentTools(account, wallet, publicClient);
+
+<span class="c">// AI agent processes natural language commands</span>
+<span class="k">const</span> result = <span class="k">await</span> generateText({
+  model: anthropic(<span class="s">"claude-sonnet-4-6"</span>),
+  tools,
+  prompt: <span class="s">"Send 100 AIGENT to 0xAbC123... and check the balance"</span>
+});
+
+<span class="c">// Agent autonomously: signs Permit → submits tx → reports result</span>
+</pre>
+          </div>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">7. Security Considerations</h3>
+
+          <div style="background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0;">
+            <p><strong style="color:var(--green);">Nonce replay protection</strong> — Each Permit uses an incrementing nonce, preventing signature replay attacks.</p>
+            <br>
+            <p><strong style="color:var(--green);">Deadline enforcement</strong> — Every Permit has a configurable deadline. After expiration, the signature is invalid. Agents should set reasonable time windows (e.g., 30 minutes) rather than MaxUint256 in production.</p>
+            <br>
+            <p><strong style="color:var(--green);">No proxy/upgradeability</strong> — AIGENT is an immutable deployment. The contract code cannot be changed, eliminating upgrade-based attack vectors.</p>
+            <br>
+            <p><strong style="color:var(--green);">OpenZeppelin v5 foundation</strong> — Built on audited, battle-tested contracts with ReentrancyGuard, Pausable, and SafeERC20.</p>
+            <br>
+            <p><strong style="color:#ff9100;">Signature front-running</strong> — A signed Permit could theoretically be front-run if broadcast publicly. In practice, relayers submit directly to miners/validators. For high-value transactions, use EIP-712 domain binding to a specific relayer address.</p>
+          </div>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">8. The Bigger Picture</h3>
+
+          <p>EIP-2612 isn't just a gas optimization — it's a <strong style="color:var(--cyan);">fundamental enabler for the agent economy</strong>. When AI agents can transact without managing gas tokens, the design space opens up dramatically:</p>
+          <br>
+          <ul style="padding-left:20px;color:var(--dim);">
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">Agent-to-agent micropayments</strong> — sub-cent transactions between autonomous services</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">Programmatic reward distribution</strong> — agents earn and spend rewards automatically</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">Cross-chain agent coordination</strong> — one agent can operate across multiple chains without holding native gas on each</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">Autonomous organizations</strong> — DAOs operated entirely by AI agents with zero human gas management overhead</li>
+          </ul>
+          <br>
+
+          <div style="border-left: 2px solid var(--cyan); padding: 12px 20px; margin: 20px 0; background: rgba(0,229,255,0.03);">
+            <p style="color:var(--text-bright);font-style:italic;">"The combination of EIP-2612 gasless approvals and AI agent autonomy is the missing piece for on-chain agent economies. Applications that were previously impossible due to the gas-token constraint are now feasible — we're at the beginning of a new paradigm in decentralized automation."</p>
+          </div>
+
+          <p style="color:var(--dim);font-size:13px;margin-top:28px;">Try the <a href="#dapp" style="color:var(--cyan);">AI Agent Console</a> above to see EIP-2612 in action — or run the CLI demo: <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">cd demo && npx tsx agent.ts --repl</code></p>
+
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- ── FOOTER ── -->
@@ -1916,7 +2166,8 @@
       btnConnect: $('btn-connect'), btnTransfer: $('btn-transfer'),
       agentDivider: $('agent-divider'), agentConsole: $('agent-console'),
       agentCmd: $('agent-cmd'), agentMsg: $('agent-msg'),
-      agentSteps: $('agent-steps'),
+      agentSteps: $('agent-steps'), agentChat: $('agent-chat'),
+      agentServerDot: $('agent-server-dot'), agentServerLabel: $('agent-server-label'),
       presaleDivider: $('presale-divider'), presaleSection: $('presale-buy-section'),
       presaleAmt: $('presale-usdt-amt'), presaleMsg: $('presale-msg'),
       btnPresaleBuy: $('btn-presale-buy'),
@@ -1955,6 +2206,7 @@
       refreshStaking();
       refreshLPFarm();
       updatePresaleProgress();
+      agentCheckServer();
     }
 
     function renderDisconnected() {
@@ -2087,11 +2339,45 @@
 
     // ── AI Agent Console ──
 
+    const AGENT_SERVER = 'http://localhost:3721';
+    let agentServerLive = false;
+
+    // Check if local AI agent server is running
+    async function agentCheckServer() {
+      try {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 1500);
+        const r = await fetch(AGENT_SERVER + '/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'ping' }), signal: ctrl.signal });
+        clearTimeout(t);
+        agentServerLive = r.ok;
+      } catch (_) { agentServerLive = false; }
+      if (agentServerLive) {
+        el.agentServerDot.className = 'agent-server-dot live';
+        el.agentServerLabel.textContent = 'AI live';
+      } else {
+        el.agentServerDot.className = 'agent-server-dot offline';
+        el.agentServerLabel.textContent = 'local';
+      }
+    }
+
     function agentShowMsg(text, type) {
       el.agentMsg.innerHTML = text;
       el.agentMsg.className = 'dapp-msg show ' + type;
     }
     function agentHideMsg() { el.agentMsg.className = 'dapp-msg'; el.agentMsg.textContent = ''; }
+
+    // Chat history
+    let agentChatHistory = [];
+    function agentChatAdd(role, text) {
+      agentChatHistory.push({ role, text });
+      el.agentChat.classList.add('active');
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + role;
+      const label = role === 'agent' ? 'AI AGENT' : 'YOU';
+      bubble.innerHTML = '<div class="chat-label">' + label + '</div>' + text.replace(/\n/g, '<br>');
+      el.agentChat.appendChild(bubble);
+      el.agentChat.scrollTop = el.agentChat.scrollHeight;
+    }
 
     function agentResetSteps() {
       el.agentSteps.style.display = 'block';
@@ -2132,9 +2418,9 @@
       const t = text.trim();
       if (!t) return { intent: 'empty' };
 
-      // Transfer patterns
-      const sendRe = /(?:send|transfer|pay|give)\s+(\d+(?:\.\d+)?)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})/i;
-      const sendRev = /(?:send|transfer|pay|give)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})\s+(\d+(?:\.\d+)?)/i;
+      // Transfer patterns — both orders
+      const sendRe = /(?:send|transfer|pay|give|move)\s+(\d+(?:\.\d+)?)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})/i;
+      const sendRev = /(?:send|transfer|pay|give|move)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})\s+(\d+(?:\.\d+)?)/i;
       let m = t.match(sendRe) || t.match(sendRev);
       if (m) {
         const addr = m[1].startsWith('0x') ? m[1] : m[2];
@@ -2142,85 +2428,117 @@
         return { intent: 'transfer', params: { to: addr, amount: amt } };
       }
 
-      if (/\b(balance|how much|check balance|show balance|my balance|my tokens|my aigent)\b/i.test(t))
+      // Fuzzy transfer
+      const fuzzyRe = /(?:send|transfer|pay|give).+?(\d+(?:\.\d+)?).+?(0x[a-fA-F0-9]{40})/i;
+      let fm = t.match(fuzzyRe);
+      if (fm) return { intent: 'transfer', params: { to: fm[2], amount: fm[1] } };
+
+      if (/\b(balance|how much|check balance|show balance|my balance|my tokens|my aigent|how many (tokens|aigent) do i have)\b/i.test(t))
         return { intent: 'balance' };
 
-      if (/\b(total supply|supply|how many tokens|total tokens|circulation)\b/i.test(t))
+      if (/\b(total supply|supply|how many tokens exist|total tokens|circulation|max supply|total aigent)\b/i.test(t))
         return { intent: 'supply' };
+
+      if (/^(hi|hey|hello|yo|greet)/i.test(t)) return { intent: 'greet' };
+      if (/\b(help|what can you do|commands|capabilities)\b/i.test(t)) return { intent: 'help' };
 
       return { intent: 'unknown' };
     }
 
-    window.agentFill = function(text) {
+    function agentReply(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--cyan);">$1</strong>')
+        .replace(/`([^`]+)`/g, '<code style="background:rgba(0,229,255,0.08);padding:1px 4px;border-radius:3px;font-family:SF Mono,Fira Code,monospace;">$1</code>');
+    }
+
+    window.agentQuick = function(text) {
       el.agentCmd.value = text;
+      agentExecute();
     };
 
     window.agentExecute = async function() {
-      if (!userAddress || !walletClient) {
-        agentShowMsg('Please connect your wallet first.', 'error');
-        return;
-      }
+      if (!userAddress || !walletClient) { agentShowMsg('Please connect your wallet first.', 'error'); return; }
       const cmd = el.agentCmd.value.trim();
-      if (!cmd) { agentShowMsg('Type a command. Examples: "check balance", "send 10 to 0x..."', 'error'); return; }
+      if (!cmd) { agentShowMsg('Type a command or question.', 'error'); return; }
 
-      const parsed = parseCommand(cmd);
       agentHideMsg();
       el.agentSteps.style.display = 'none';
+      agentChatAdd('user', cmd);
+      el.agentCmd.value = '';
+
+      // Try AI server first
+      if (agentServerLive) {
+        try {
+          const r = await fetch(AGENT_SERVER + '/api/chat', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: cmd }),
+          });
+          const data = await r.json();
+          if (data.reply) {
+            agentChatAdd('agent', agentReply(data.reply));
+            if (data.action === 'transfer' && data.steps) {
+              // Server parsed a transfer — proceed with EIP-2612 flow
+              const parsed = parseCommand(cmd);
+              if (parsed.intent === 'transfer') await agentExecuteTransfer(parsed.params.to, parsed.params.amount);
+            }
+          }
+          return;
+        } catch (_) { agentServerLive = false; el.agentServerDot.className = 'agent-server-dot offline'; el.agentServerLabel.textContent = 'local'; }
+      }
+
+      // Fallback to local parser
+      const parsed = parseCommand(cmd);
+
+      if (parsed.intent === 'greet') {
+        agentChatAdd('agent', 'Hello! I\'m your AIGENT AI agent on X Layer. I can help you:<br><br>• <strong style="color:var(--cyan);">Check balance</strong> — view your AIGENT<br>• <strong style="color:var(--cyan);">Total supply</strong> — 500M fixed supply<br>• <strong style="color:var(--cyan);">Send tokens</strong> — transfer via gasless EIP-2612 Permit<br><br>What would you like to do?');
+        return;
+      }
+
+      if (parsed.intent === 'help') {
+        agentChatAdd('agent', 'I\'m an autonomous AI agent on X Layer. Here\'s what I can do:<br><br><code>check balance</code> — Read your AIGENT balance<br><code>total supply</code> — View the fixed 500M supply<br><code>send 100 to 0x...</code> — Transfer via gasless EIP-2612 Permit<br><br>All transfers use <strong style="color:var(--cyan);">EIP-2612</strong>: I sign off-chain, meaning <strong style="color:var(--green);">zero OKB</strong> needed for approval.');
+        return;
+      }
 
       if (parsed.intent === 'balance') {
-        el.agentSteps.style.display = 'block';
-        agentResetSteps();
-        agentStepActive(1, 'Intent: balance — reading on-chain data...');
+        agentChatAdd('agent', 'Let me check your AIGENT balance on-chain...');
         try {
           const bal = await publicClient.readContract({ address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'balanceOf', args: [userAddress] });
           const display = Number(formatEther(bal)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 });
-          agentStepDone(1, 'Intent: balance');
-          agentStepDone(2, 'Balance: ' + display + ' AIGENT');
-          agentShowMsg('Balance: <strong>' + display + ' AIGENT</strong>', 'success');
-        } catch (e) { agentStepError(1, e.message); agentShowMsg('Failed to read balance.', 'error'); }
+          agentChatAdd('agent', 'Your balance: <strong style="color:var(--green);">' + display + ' AIGENT</strong><br><br>Contract: <code>' + shorten(AIGENT_ADDRESS) + '</code> on X Layer.');
+        } catch (e) { agentChatAdd('agent', 'Failed to read balance: ' + (e.shortMessage || e.message)); }
         return;
       }
 
       if (parsed.intent === 'supply') {
-        el.agentSteps.style.display = 'block';
-        agentResetSteps();
-        agentStepActive(1, 'Intent: total supply — reading on-chain...');
+        agentChatAdd('agent', 'Reading the total AIGENT supply from the contract...');
         try {
           const sup = await publicClient.readContract({ address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'totalSupply' });
           const display = Number(formatEther(sup)).toLocaleString();
-          agentStepDone(1, 'Intent: total supply');
-          agentStepDone(2, 'Total Supply: ' + display + ' AIGENT');
-          agentShowMsg('Total Supply: <strong>' + display + ' AIGENT</strong>', 'success');
-        } catch (e) { agentStepError(1, e.message); agentShowMsg('Failed to read supply.', 'error'); }
+          const pct = (Number(formatEther(sup)) / 500000000 * 100).toFixed(1);
+          agentChatAdd('agent', 'Total Supply: <strong style="color:var(--cyan);">' + display + ' AIGENT</strong><br>Fixed cap: 500,000,000 (no mint, no inflation)<br>Circulating: ' + pct + '% of total');
+        } catch (e) { agentChatAdd('agent', 'Failed to read supply: ' + (e.shortMessage || e.message)); }
         return;
       }
 
       if (parsed.intent === 'transfer') {
+        agentChatAdd('agent', 'Preparing a gasless transfer of <strong style="color:var(--magenta);">' + parsed.params.amount + ' AIGENT</strong> to <code>' + shorten(parsed.params.to) + '</code>...\n\nThis will use <strong style="color:var(--cyan);">EIP-2612 Permit</strong> — you sign off-chain, no OKB needed for approval.');
         await agentExecuteTransfer(parsed.params.to, parsed.params.amount);
         return;
       }
 
       // Unknown
-      agentShowMsg(
-        'Unknown command. Try:<br>' +
-        '<span style="color:var(--cyan);">check balance</span> — view your AIGENT<br>' +
-        '<span style="color:var(--cyan);">total supply</span> — view total supply<br>' +
-        '<span style="color:var(--cyan);">send 100 to 0x...</span> — transfer via EIP-2612',
-        'error'
-      );
+      agentChatAdd('agent', 'I\'m not sure what you mean. Try:<br><br>• <strong style="color:var(--cyan);">Check my balance</strong><br>• <strong style="color:var(--cyan);">What\'s the total supply?</strong><br>• <strong style="color:var(--cyan);">Send 100 to 0xAbC...</strong><br><br>Or say <strong style="color:var(--magenta);">help</strong> for all commands.');
     };
 
     async function agentExecuteTransfer(to, amountStr) {
       el.agentSteps.style.display = 'block';
       agentResetSteps();
 
-      // Step 1: Parse
       agentStepDone(1, 'Send ' + amountStr + ' AIGENT to ' + shorten(to));
 
       const provider = window.okxwallet || window.ethereum;
       const amount = parseEther(amountStr);
 
-      // Step 2: Sign EIP-2612 Permit
       agentStepActive(2, 'Reading nonce + building EIP-712 typed data...');
       try {
         const nonce = await publicClient.readContract({ address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'nonces', args: [userAddress] });
@@ -2239,9 +2557,8 @@
         const r = '0x' + sigHex.slice(2, 66);
         const s = '0x' + sigHex.slice(66, 130);
         const v = parseInt(sigHex.slice(130, 132), 16);
-        agentStepDone(2, 'Permit signed — v: ' + v + ' r: ' + r.slice(0,18) + '... s: ' + s.slice(0,18) + '...');
+        agentStepDone(2, 'Permit signed — v:' + v + ' r:' + r.slice(0,10) + '... s:' + s.slice(0,10) + '...');
 
-        // Step 3: Submit permit()
         agentStepActive(3, 'Submitting permit(owner,spender,' + amountStr + ',max,...)');
         try {
           const permitHash = await walletClient.writeContract({
@@ -2250,32 +2567,25 @@
             chain: xLayer, account: userAddress,
           });
           agentStepDone(3, 'permit() tx: ' + permitHash);
-          showMsg('Permit submitted. Waiting for confirmation...', 'loading');
 
           await publicClient.waitForTransactionReceipt({ hash: permitHash });
 
-          // Step 4: Submit transferFrom()
           agentStepActive(4, 'Submitting transferFrom(' + shorten(userAddress) + ',' + shorten(to) + ',' + amountStr + ')');
           const tfHash = await walletClient.writeContract({
             address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'transferFrom',
             args: [userAddress, to, amount], chain: xLayer, account: userAddress,
           });
           agentStepDone(4, 'transferFrom() tx: ' + tfHash);
-          agentShowMsg(
-            'Transfer complete! <a href="' + XLAYER_EXPLORER + '/tx/' + tfHash + '" target="_blank" style="color:var(--cyan);">View on Explorer</a>',
-            'success'
-          );
-          hideMsg();
-          el.agentCmd.value = '';
+          agentChatAdd('agent', 'Transfer complete!<br><br><a href="' + XLAYER_EXPLORER + '/tx/' + tfHash + '" target="_blank" style="color:var(--cyan);">View on Explorer &rarr;</a>');
           await dappRefreshBalance();
 
         } catch (e) {
           agentStepError(3, e.shortMessage || e.message);
-          agentShowMsg('Permit submission failed: ' + (e.shortMessage || e.message), 'error');
+          agentChatAdd('agent', 'Permit submission failed: ' + (e.shortMessage || e.message));
         }
       } catch (e) {
         agentStepError(2, e.message || 'Signing failed');
-        agentShowMsg('Permit signing failed. Your wallet may not support eth_signTypedData_v4.', 'error');
+        agentChatAdd('agent', 'Permit signing failed. Your wallet may not support <code>eth_signTypedData_v4</code>.');
       }
     }
 
