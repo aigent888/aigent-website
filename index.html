@@ -939,10 +939,13 @@
         position: absolute; top: 100%; left: 0; right: 0;
         background: rgba(6, 11, 20, 0.96); padding: 16px 24px; gap: 14px;
         border-bottom: 1px solid var(--border);
+        transition: max-height 0.3s ease, opacity 0.3s ease;
+        max-height: 0; opacity: 0; overflow: hidden;
       }
-      nav .nav-links.open { display: flex; }
+      nav .nav-links.open { display: flex; max-height: 500px; opacity: 1; }
       .nav-toggle { display: block; }
 
+      section { padding: 60px 0; }
       .section-title { font-size: 28px; }
       .card { padding: 28px 20px; }
       .feature-grid { grid-template-columns: 1fr; }
@@ -958,12 +961,34 @@
       .dapp-balance-row { flex-direction: column; }
       .dapp-input-group { flex-direction: column; }
       .dapp-btn { width: 100%; }
+
+      .rise-card { padding: 20px 16px; }
+      .rise-curve-chip { padding: 6px 10px !important; font-size: 11px !important; }
+      .rise-grid { gap: 16px; }
+      .rise-input-row { flex-direction: column; }
+      .rise-currency { padding: 8px 14px; justify-content: center; }
+      .rise-stats { gap: 6px; }
+      .rise-stat { min-width: 60px; padding: 8px 10px; }
+      .rise-stat-val { font-size: 12px; }
+      .rise-toast { max-width: calc(100vw - 40px); font-size: 12px; padding: 12px 16px; }
+      .rise-toast-container { right: 10px; left: 10px; top: 10px; }
+      .rise-trade-table { font-size: 10px; }
+      .rise-trade-table th, .rise-trade-table td { padding: 4px 6px; }
+      body { padding-bottom: 52px; }
     }
 
     @media (max-width: 480px) {
       .hero-title { letter-spacing: 3px; }
       .contract-bar { flex-direction: column; }
       .token-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 400px) {
+      .rise-card { padding: 14px 10px; }
+      .rise-header { flex-wrap: wrap; gap: 8px; }
+      .rise-title { font-size: 16px; }
+      .rise-btn { font-size: 13px; padding: 12px; }
+      .rise-input { font-size: 14px; }
     }
 
     /* ── Presale Progress Bar ── */
@@ -1017,6 +1042,15 @@
       background: linear-gradient(135deg, #ffd700, #ff8c00);
       display: flex; align-items: center; justify-content: center;
       font-size: 22px; box-shadow: 0 0 20px rgba(255,215,0,0.3);
+      overflow: hidden; flex-shrink: 0;
+    }
+    .rise-avatar-img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .chip-avatar {
+      width: 20px; height: 20px; border-radius: 50%;
+      object-fit: cover; flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.1);
     }
     .rise-title { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
     .rise-tag {
@@ -1118,6 +1152,32 @@
       0%, 70% { opacity: 1; transform: translateX(0); }
       100% { opacity: 0; transform: translateX(60px); }
     }
+
+    /* ── Trade History ── */
+    .rise-trade-history {
+      margin-top: 20px; position: relative; z-index: 2;
+      max-height: 340px; overflow-y: auto;
+    }
+    .rise-trade-history h4 {
+      font-size: 12px; color: var(--dim); text-transform: uppercase;
+      letter-spacing: 2px; margin-bottom: 10px;
+    }
+    .rise-trade-table {
+      width: 100%; border-collapse: collapse; font-size: 11px;
+    }
+    .rise-trade-table th {
+      text-align: left; padding: 6px 8px; color: var(--dim);
+      font-size: 9px; text-transform: uppercase; letter-spacing: 1px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .rise-trade-table td {
+      padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.03);
+      font-family: 'SF Mono','Fira Code',monospace; color: var(--text);
+    }
+    .trade-buy { color: var(--green); font-weight: 700; }
+    .trade-sell { color: #ff4444; font-weight: 700; }
+    .rise-trade-table a { color: var(--cyan); text-decoration: none; }
+    .rise-trade-table a:hover { text-decoration: underline; }
 
     /* ── Ticker Bar ── */
     .rise-ticker {
@@ -1685,8 +1745,26 @@
       <div class="card reveal">
         <div class="section-header" style="text-align:left;margin-bottom:24px;">
           <div class="section-tag">// Trade</div>
-          <div class="section-title">AIgent Rise</div>
+          <div class="section-title" style="display:flex;align-items:center;gap:12px;">
+            AIgent Rise
+            <button id="rise-copy-link" onclick="riseCopyCurveLink()" style="
+              padding:4px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);
+              background:rgba(255,255,255,0.03);color:var(--dim);font-size:11px;cursor:pointer;
+              font-family:inherit;transition:all 0.2s;font-weight:400;letter-spacing:0;
+            " onmouseenter="this.style.borderColor='rgba(0,229,255,0.3)';this.style.color='var(--cyan)'"
+               onmouseleave="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--dim)'"
+            title="Copy shareable link">🔗 Share</button>
+          </div>
           <p class="section-sub" style="margin-left:0;">Permanent bonding curve — trade anytime. Creators can optionally add Uniswap V3 liquidity.</p>
+        </div>
+
+        <!-- Current Token Header (dynamic) -->
+        <div class="rise-header" id="rise-header">
+          <div class="rise-icon" id="rise-icon">🚀</div>
+          <div>
+            <div class="rise-title" id="rise-token-title">Select a Token</div>
+            <div class="rise-tag" id="rise-token-tag">CURVE #--</div>
+          </div>
         </div>
 
         <!-- Search + Curve Selector -->
@@ -1750,6 +1828,10 @@
                 <div class="rise-stat-label">Status</div>
                 <div class="rise-stat-val" id="rise-status" style="color:#ffd700;">Trading</div>
               </div>
+              <div class="rise-stat">
+                <div class="rise-stat-label">Market Cap</div>
+                <div class="rise-stat-val" id="rise-mcap">--</div>
+              </div>
             </div>
           </div>
 
@@ -1779,6 +1861,20 @@
             <button class="rise-btn rise-btn-buy" id="rise-action-btn" onclick="riseExecute()">BUY</button>
             <div class="rise-msg" id="rise-msg"></div>
           </div>
+        </div>
+
+        <!-- Trade History -->
+        <div class="rise-trade-history" id="rise-trade-history" style="display:none;">
+          <h4>Recent Trades</h4>
+          <div style="overflow-x:auto;">
+            <table class="rise-trade-table">
+              <thead>
+                <tr><th>Type</th><th>Amount</th><th>AIGENT</th><th>Account</th><th>Tx</th></tr>
+              </thead>
+              <tbody id="rise-trade-tbody"></tbody>
+            </table>
+          </div>
+          <div id="rise-trade-empty" style="font-size:11px;color:var(--dim);text-align:center;padding:20px;">No trades yet</div>
         </div>
 
         <!-- Uniswap V3 Creator Panel -->
@@ -2448,7 +2544,7 @@
 
   <!-- ── AIGENT DApp — Wallet interaction via viem CDN ── -->
   <script type="module">
-    import { createPublicClient, createWalletClient, http, custom, formatEther, parseEther, parseAbi, maxUint256 } from 'https://esm.sh/viem@2';
+    import { createPublicClient, createWalletClient, http, custom, formatEther, parseEther, parseAbi, maxUint256, keccak256, toHex } from 'https://esm.sh/viem@2';
     import { xLayer } from 'https://esm.sh/viem@2/chains';
 
     // ethers compatibility alias (codebase uses ethers.xxx convention)
@@ -3067,6 +3163,10 @@
           '<tr><td style="padding:6px 8px;">Network</td><td style="padding:6px 8px;">X Layer (Chain 196)</td></tr>' +
           '</table><br>' +
           'Your token will support <strong style="color:var(--cyan);">gasless transfers</strong> via EIP-2612.<br><br>' +
+          '<div style="margin-top:6px;">' +
+          '<label style="font-size:10px;color:var(--dim);">Token Image URL (optional):</label>' +
+          '<input id="deploy-token-image" type="text" placeholder="https://example.com/token-icon.png" style="width:100%;margin-top:4px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#fff;font-size:12px;font-family:inherit;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor=\'rgba(0,229,255,0.4)\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.1)\'">' +
+          '</div><br>' +
           'To deploy, confirm the transaction in your wallet.<br><br>' +
           '<strong style="color:var(--cyan);">AIgent Rise</strong> will create your token + a permanent bonding curve.'
         );
@@ -3522,7 +3622,31 @@
       el.innerHTML = text; el.className = 'rise-msg show ' + (type || 'info');
     }
 
-    function riseUpdateUI() {
+    let _cachedAigentPrice = 0.0001;
+    let _cachedAigentPriceTs = 0;
+
+    async function _riseGetAigentPrice() {
+      const now = Date.now();
+      if (now - _cachedAigentPriceTs < 60000) return _cachedAigentPrice;
+      try {
+        const resp = await fetch('https://api.dexscreener.com/latest/dex/pairs/xlayer/0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39');
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.pairs && data.pairs.length > 0) {
+            const price = parseFloat(data.pairs[0].priceUsd);
+            if (!isNaN(price) && price > 0) {
+              _cachedAigentPrice = price;
+              _cachedAigentPriceTs = now;
+              return price;
+            }
+          }
+        }
+      } catch (e) { /* fallback */ }
+      _cachedAigentPriceTs = now;
+      return _cachedAigentPrice;
+    }
+
+    async function riseUpdateUI() {
       if (!riseCurveData) return;
       const d = riseCurveData;
       const sold = parseFloat(ethers.formatEther(d.sold));
@@ -3541,6 +3665,43 @@
       $('rise-progress-fill').style.width = pct + '%';
       $('rise-curve-label').textContent = reserve.toFixed(2) + ' AIGENT locked in curve';
 
+      // Token header with avatar
+      var titleEl = $('rise-token-title');
+      var tagEl = $('rise-token-tag');
+      var iconEl = $('rise-icon');
+      if (titleEl) titleEl.textContent = d.name + ' ($' + d.symbol + ')';
+      if (tagEl) tagEl.textContent = 'CURVE #' + riseSelectedCurveId + (d.uniswapPool && d.uniswapPool !== '0x0000000000000000000000000000000000000000' ? ' ★ UNISWAP' : '');
+      if (iconEl) {
+        var avatarUrl = riseTokenAvatarUrl(riseSelectedCurveId, d.token);
+        if (avatarUrl) {
+          iconEl.innerHTML = '<img class="rise-avatar-img" src="' + avatarUrl + '" onerror="this.parentElement.innerHTML=\'🚀\'">';
+        } else {
+          iconEl.innerHTML = '🚀';
+        }
+      }
+
+      // Market Cap
+      try {
+        const aigentPriceUsd = await _riseGetAigentPrice();
+        const totalSup = parseFloat(ethers.formatEther(d.totalCurveSupply));
+        const mcapUsd = price * totalSup * aigentPriceUsd;
+        const mcapEl = $('rise-mcap');
+        if (mcapEl) {
+          if (mcapUsd >= 1e6) {
+            mcapEl.textContent = '$' + (mcapUsd / 1e6).toFixed(2) + 'M';
+          } else if (mcapUsd >= 1e3) {
+            mcapEl.textContent = '$' + (mcapUsd / 1e3).toFixed(2) + 'K';
+          } else if (mcapUsd >= 0.01) {
+            mcapEl.textContent = '$' + mcapUsd.toFixed(2);
+          } else {
+            mcapEl.textContent = '$' + mcapUsd.toFixed(6);
+          }
+        }
+      } catch (e) {
+        const mcapEl = $('rise-mcap');
+        if (mcapEl) mcapEl.textContent = '--';
+      }
+
       // Show/hide Uniswap panel for creator
       const uniswapPanel = $('rise-uniswap-panel');
       if (uniswapPanel && d.creator && userAddress && d.creator.toLowerCase() === userAddress.toLowerCase()) {
@@ -3553,7 +3714,6 @@
           $('rise-uni-pool-input').value = '';
           $('rise-uni-pool-input').removeAttribute('disabled');
         }
-        // Update Step 1 button to point to actual token
       } else if (uniswapPanel) {
         uniswapPanel.style.display = 'none';
       }
@@ -3859,6 +4019,103 @@
       }
     }
 
+    // ── Trade History ──
+
+    const RISE_BUY_TOPIC = keccak256(toHex('Buy(uint256,address,uint256,uint256,uint256,uint256)'));
+    const RISE_SELL_TOPIC = keccak256(toHex('Sell(uint256,address,uint256,uint256,uint256,uint256)'));
+
+    async function riseLoadTradeHistory(curveId) {
+      var panel = document.getElementById('rise-trade-history');
+      var tbody = document.getElementById('rise-trade-tbody');
+      var empty = document.getElementById('rise-trade-empty');
+      if (!panel || !tbody) return;
+      if (!publicClient) { panel.style.display = 'none'; return; }
+
+      try {
+        var curveTopic = '0x' + BigInt(curveId).toString(16).padStart(64, '0');
+        var logs = await publicClient.getLogs({
+          address: BONDING_CURVE_ADDR,
+          topics: [[RISE_BUY_TOPIC, RISE_SELL_TOPIC], curveTopic],
+          fromBlock: 0n,
+          toBlock: 'latest',
+        });
+
+        if (logs.length === 0) {
+          empty.style.display = 'block';
+          tbody.innerHTML = '';
+          panel.style.display = 'block';
+          return;
+        }
+
+        logs.sort(function(a, b) { return Number(b.blockNumber - a.blockNumber); });
+        var recent = logs.slice(0, 20);
+        empty.style.display = 'none';
+
+        var html = '';
+        for (var i = 0; i < recent.length; i++) {
+          var log = recent[i];
+          var isBuy = log.topics[0] === RISE_BUY_TOPIC;
+          // data: tokenAmount (uint256), aigentAmt (uint256), fee (uint256), creatorCut (uint256)
+          var data = log.data;
+          var tokenAmount = BigInt('0x' + data.slice(2, 66));
+          var aigentAmt = BigInt('0x' + data.slice(66, 130));
+          var trader = '0x' + log.topics[2].slice(26);
+
+          var typeLabel = isBuy ? 'BUY' : 'SELL';
+          var typeClass = isBuy ? 'trade-buy' : 'trade-sell';
+          var amountStr = parseFloat(formatEther(tokenAmount)).toFixed(2);
+          var aigentStr = parseFloat(formatEther(aigentAmt)).toFixed(4);
+          var txHash = log.transactionHash;
+
+          html += '<tr>' +
+            '<td class="' + typeClass + '">' + typeLabel + '</td>' +
+            '<td>' + amountStr + '</td>' +
+            '<td>' + aigentStr + ' AIGENT</td>' +
+            '<td style="font-size:10px;"><code>' + trader.slice(0,6) + '...' + trader.slice(-4) + '</code></td>' +
+            '<td><a href="' + XLAYER_EXPLORER + '/tx/' + txHash + '" target="_blank">' + txHash.slice(2,8) + '...</a></td>' +
+            '</tr>';
+        }
+        tbody.innerHTML = html;
+        panel.style.display = 'block';
+      } catch (e) {
+        console.error('riseLoadTradeHistory:', e);
+        panel.style.display = 'none';
+      }
+    }
+
+    // ── Token Image Storage ──
+
+    function _riseLoadImages() {
+      try { return JSON.parse(localStorage.getItem('aigent_curve_images') || '{}'); }
+      catch (_) { return {}; }
+    }
+    function _riseSaveImage(curveId, url) {
+      try {
+        const imgs = _riseLoadImages();
+        imgs[curveId] = url;
+        localStorage.setItem('aigent_curve_images', JSON.stringify(imgs));
+      } catch (_) { /* quota exceeded, ignore */ }
+    }
+
+    function riseTokenAvatarUrl(curveId, tokenAddr) {
+      var stored = _riseLoadImages();
+      if (stored[curveId]) return stored[curveId];
+      if (!tokenAddr) return null;
+      // Generate deterministic gradient SVG from address
+      var hue = parseInt(tokenAddr.slice(2, 10), 16) % 360;
+      var initials = tokenAddr.slice(2, 4).toUpperCase();
+      return 'data:image/svg+xml,' + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">' +
+        '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0%" stop-color="hsl(' + hue + ',70%,45%)"/>' +
+        '<stop offset="100%" stop-color="hsl(' + ((hue + 40) % 360) + ',70%,30%)"/>' +
+        '</linearGradient></defs>' +
+        '<circle cx="40" cy="40" r="40" fill="url(#g)"/>' +
+        '<text x="40" y="46" text-anchor="middle" fill="white" font-size="26" font-family="sans-serif" font-weight="bold">' +
+        initials + '</text></svg>'
+      );
+    }
+
     async function riseRefreshCurve(curveId) {
       if (!publicClient || BONDING_CURVE_ADDR === '0x0000000000000000000000000000000000000000') return;
       try {
@@ -3885,6 +4142,7 @@
 
         $('rise-preview-symbol').textContent = symbol;
         riseUpdateUI();
+        riseLoadTradeHistory(curveId);
       } catch (e) {
         console.error('riseRefreshCurve:', e);
       }
@@ -3928,15 +4186,19 @@
           const sold = c[3] ? Number(c[3]) / 1e18 : 0;
           const total = c[2] ? Number(c[2]) / 1e18 : 0;
           const progressPct = total > 0 ? Math.round(sold / total * 100) : 0;
+          var avatarUrl = riseTokenAvatarUrl(i, c[0]);
+          var avatarPart = avatarUrl
+            ? '<img class="chip-avatar" src="' + avatarUrl + '" onerror="this.style.display=\'none\'" style="margin-right:2px;">'
+            : '';
           html += '<button class="rise-curve-chip' + (active ? ' active' : '') + '" data-id="' + i + '" onclick="riseSelectCurve(' + i + ')"' +
             ' style="' +
-            'display:inline-flex;flex-direction:column;align-items:center;gap:2px;' +
+            'display:inline-flex;flex-direction:row;align-items:center;gap:8px;' +
             'padding:8px 14px;border-radius:20px;' +
             'border:1px solid ' + (hasPool ? 'rgba(255,215,0,0.5)' : (active ? 'rgba(0,229,255,0.5)' : 'rgba(255,255,255,0.1)')) + ';' +
             'background:' + (hasPool ? 'rgba(255,215,0,0.08)' : (active ? 'rgba(0,229,255,0.06)' : 'rgba(255,255,255,0.02)')) + ';' +
             'color:' + (hasPool ? '#ffd700' : 'var(--text-bright)') + ';font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;' +
             (active ? 'box-shadow:0 0 8px rgba(0,229,255,0.2);' : '') +
-            '"' + title + '><span>' + symbol + (hasPool ? ' ★' : '') + '</span><span style="font-size:9px;opacity:0.5;font-weight:400;">' + progressPct + '% sold</span></button>';
+            '"' + title + '>' + avatarPart + '<span style="display:flex;flex-direction:column;align-items:flex-start;gap:1px;line-height:1.2;"><span>' + symbol + (hasPool ? ' ★' : '') + '</span><span style="font-size:9px;opacity:0.5;font-weight:400;">' + progressPct + '% sold</span></span></button>';
         }
         if (n > 50) html += '<span style="font-size:11px;color:var(--dim);padding:8px;">+ ' + (n - 50) + ' more</span>';
         container.innerHTML = html;
@@ -3967,6 +4229,12 @@
         }
       });
       await riseRefreshCurve(id);
+      // Update URL without reload
+      try {
+        const url = new URL(window.location);
+        url.searchParams.set('curve', id);
+        window.history.replaceState({ curveId: id }, '', url);
+      } catch (e) { /* ignore */ }
     };
 
     // ── Notification Toast ──
@@ -3986,6 +4254,26 @@
         if (toast.parentNode) toast.remove();
       }, 4200);
     }
+
+    // ── Copy shareable link ──
+
+    window.riseCopyCurveLink = function() {
+      const url = new URL(window.location);
+      url.searchParams.set('curve', riseSelectedCurveId);
+      url.hash = 'rise';
+      const link = url.toString();
+      navigator.clipboard.writeText(link).then(function() {
+        const btn = document.getElementById('rise-copy-link');
+        if (btn) {
+          btn.textContent = '✓ Copied!';
+          btn.style.color = 'var(--green)';
+          setTimeout(function() { btn.textContent = '🔗 Share'; btn.style.color = 'var(--dim)'; }, 2000);
+        }
+        showNotification('Link copied! Share this token with anyone.', 'success');
+      }).catch(function() {
+        showNotification('Failed to copy link', 'info');
+      });
+    };
 
     // ── Quick-jump to newly launched token ──
 
@@ -4068,11 +4356,53 @@
     };
 
     window.riseGoToNewToken = async function(curveId) {
+      // Save token image if user entered one
+      var imgInput = document.getElementById('deploy-token-image');
+      if (imgInput && imgInput.value.trim()) {
+        _riseSaveImage(curveId, imgInput.value.trim());
+      }
       const riseSection = document.getElementById('rise');
       if (riseSection) riseSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       await riseLoadCurveList();
       await riseSelectCurve(parseInt(curveId));
     };
+
+    // ── URL param handler (shareable links) ──
+
+    async function _riseHandleUrlParams(curveParam, qParam) {
+      if (!publicClient || BONDING_CURVE_ADDR === '0x0000000000000000000000000000000000000000') return;
+      if (curveParam !== null && /^\d+$/.test(curveParam)) {
+        const id = parseInt(curveParam);
+        try {
+          const count = Number(await publicClient.readContract({
+            address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'curveCount',
+          }));
+          if (id >= 0 && id < count) {
+            await riseSelectCurve(id);
+            setTimeout(function() {
+              const el = document.getElementById('rise');
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 400);
+          }
+        } catch (e) { /* ignore */ }
+      }
+      if (qParam !== null && qParam.trim()) {
+        const input = document.getElementById('rise-search');
+        if (input) { input.value = qParam; }
+        try { await riseSearchTokens(); } catch (e) { /* ignore */ }
+      }
+    }
+
+    // Check URL on init (called after wallet auto-reconnect loads curve list)
+    (async function _riseInitFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const cp = params.get('curve');
+      const qp = params.get('q');
+      if (!cp && !qp) return;
+      // Wait for wallet reconnect to complete
+      await new Promise(function(r) { setTimeout(r, 1200); });
+      await _riseHandleUrlParams(cp, qp);
+    })();
 
     window.addEventListener('resize', () => { if (riseCurveData) riseRenderChart(); });
 
