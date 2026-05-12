@@ -4607,7 +4607,6 @@
   </script>
 
 <!-- PWA Service Worker + Install + QR -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').then(function(reg) {
@@ -4637,25 +4636,26 @@ document.getElementById('pwa-install-btn').addEventListener('click', function() 
   });
 });
 
-// QR code toggle
+// QR code toggle — no external dependency, uses API
 window.toggleQR = function() {
   var wrap = document.getElementById('qr-wrap');
   if (!wrap) return;
-  var showing = wrap.classList.contains('show');
-  if (showing) {
+  if (wrap.classList.contains('show')) {
     wrap.classList.remove('show');
     return;
   }
   wrap.classList.add('show');
   var container = document.getElementById('qr-code');
   if (!container) return;
+  var img = document.createElement('img');
+  img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(window.location.href);
+  img.width = 180; img.height = 180; img.alt = 'QR Code';
+  img.style.cssText = 'border-radius:10px;background:#fff;padding:8px;';
+  img.onerror = function() {
+    container.innerHTML = '<p style="color:var(--dim)">Could not load QR. Open <b>' + window.location.host + '</b> on your phone.</p>';
+  };
   container.innerHTML = '';
-  new QRCode(container, {
-    text: window.location.href,
-    width: 160, height: 160,
-    colorDark: '#060b14', colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.M
-  });
+  container.appendChild(img);
 };
 </script>
 
