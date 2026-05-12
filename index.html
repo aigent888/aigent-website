@@ -34,6 +34,7 @@
       color: var(--text);
       line-height: 1.6;
       overflow-x: hidden;
+      padding-bottom: 40px;
     }
 
     /* ── Circuit Background ── */
@@ -1117,6 +1118,47 @@
       0%, 70% { opacity: 1; transform: translateX(0); }
       100% { opacity: 0; transform: translateX(60px); }
     }
+
+    /* ── Ticker Bar ── */
+    .rise-ticker {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 9998;
+      height: 32px; background: rgba(0,0,0,0.85);
+      border-top: 1px solid rgba(255,215,0,0.15);
+      backdrop-filter: blur(12px);
+      display: flex; align-items: center; overflow: hidden;
+    }
+    .rise-ticker-label {
+      flex-shrink: 0; padding: 0 14px; height: 100%;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 2px; color: #ffd700;
+      border-right: 1px solid rgba(255,215,0,0.15);
+      background: linear-gradient(90deg, rgba(255,215,0,0.08), transparent);
+    }
+    .rise-ticker-track {
+      flex: 1; overflow: hidden; position: relative; height: 100%;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 5%, #000 95%, transparent 100%);
+    }
+    .rise-ticker-content {
+      display: flex; align-items: center; gap: 40px; height: 100%;
+      white-space: nowrap; animation: riseTickerScroll 60s linear infinite;
+      padding-left: 20px;
+    }
+    @keyframes riseTickerScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .rise-ticker-item {
+      display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--dim);
+    }
+    .rise-ticker-item .ticker-tag {
+      padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .ticker-tag.new { background: rgba(0,230,118,0.15); color: var(--green); }
+    .ticker-tag.trade { background: rgba(0,229,255,0.15); color: var(--cyan); }
+    .ticker-tag.price { background: rgba(255,215,0,0.15); color: #ffd700; }
+    .rise-ticker-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.15); flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -4135,6 +4177,78 @@
         await dappRefreshBalance();
       } catch (_) { /* wallet locked or not connected */ }
     })();
+
+    // ── Ticker Bar ──
+
+    async function riseUpdateTicker() {
+      const content = document.getElementById('rise-ticker-content');
+      if (!content) return;
+      let items = [
+        '<div class="rise-ticker-item"><span class="ticker-tag price">AIGENT</span> $0.0001 · Uniswap V3 · X Layer</div>',
+        '<div class="rise-ticker-item"><span class="ticker-tag trade">FEE</span> 1% trade fee + 0.3% creator cut</div>',
+        '<div class="rise-ticker-item"><span class="ticker-tag price">LAUNCH</span> 50,000 AIGENT (~$5) to launch a token</div>',
+        '<div class="rise-ticker-item"><span class="ticker-tag trade">EIP-2612</span> Gasless approvals for AI agents</div>',
+      ];
+
+      // Add live curve data if connected
+      if (publicClient && BONDING_CURVE_ADDR !== '0x0000000000000000000000000000000000000000') {
+        try {
+          const count = Number(await publicClient.readContract({
+            address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'curveCount',
+          }));
+          const TOKEN_ABI = parseAbi(['function symbol() view returns (string)']);
+          const recent = [];
+          const start = Math.max(0, count - 10);
+          for (let i = start; i < count; i++) {
+            const c = await publicClient.readContract({
+              address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'curves', args: [i],
+            });
+            let symbol = 'TOKEN';
+            try { symbol = await publicClient.readContract({ address: c[0], abi: TOKEN_ABI, functionName: 'symbol' }); } catch(e) {}
+            const sold = c[3] ? Number(c[3]) / 1e18 : 0;
+            const total = c[2] ? Number(c[2]) / 1e18 : 0;
+            const pct = total > 0 ? Math.round(sold / total * 100) : 0;
+            const icon = c[8] && c[8] !== '0x0000000000000000000000000000000000000000' ? ' ★' : '';
+            recent.push(
+              '<div class="rise-ticker-item"><span class="ticker-tag new">NEW</span> $' + symbol + icon + ' · Curve #' + i + ' · ' + pct + '% sold</div>'
+            );
+          }
+          if (recent.length > 0) {
+            items = items.concat(recent);
+          }
+        } catch (e) { /* ignore */ }
+      }
+
+      // Add platform stats
+      items.push('<div class="rise-ticker-item"><div class="rise-ticker-dot"></div> AIgent Rise — Launch. Trade. Thrive.</div>');
+
+      // Duplicate content for seamless scroll
+      const html = items.join('<div class="rise-ticker-dot" style="margin:0 2px;"></div>');
+      content.innerHTML = html + '<div style="width:40px;flex-shrink:0;"></div>' + html;
+    }
+
+    // Start ticker
+    if (document.readyState === 'complete') {
+      riseUpdateTicker();
+    } else {
+      window.addEventListener('load', riseUpdateTicker);
+    }
+    // Refresh ticker data every 60s
+    setInterval(riseUpdateTicker, 60000);
+
   </script>
+
+<!-- Ticker Bar -->
+<div class="rise-ticker">
+  <div class="rise-ticker-label">
+    <span style="font-size:14px;">📡</span> AIgent Rise
+  </div>
+  <div class="rise-ticker-track">
+    <div class="rise-ticker-content" id="rise-ticker-content">
+      <div class="rise-ticker-item">Loading...</div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
