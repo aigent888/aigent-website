@@ -1721,6 +1721,83 @@
             <div class="rise-msg" id="rise-msg"></div>
           </div>
         </div>
+
+        <!-- Uniswap V3 Creator Panel -->
+        <div class="rise-uniswap-panel" id="rise-uniswap-panel" style="display:none;margin-top:24px;position:relative;z-index:2;">
+          <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:24px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ff007a,#ff4da6);display:flex;align-items:center;justify-content:center;font-size:18px;">🦄</div>
+              <div>
+                <div style="font-size:15px;font-weight:700;color:#fff;">Uniswap V3 Liquidity</div>
+                <div style="font-size:11px;color:var(--dim);">Add deeper liquidity — your token trades on both the bonding curve AND Uniswap</div>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+              <!-- Step 1 -->
+              <div style="padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
+                <div style="font-size:11px;font-weight:700;color:var(--magenta);margin-bottom:8px;">STEP 1</div>
+                <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;">Create Uniswap V3 Pool</div>
+                <div style="font-size:11px;color:var(--dim);margin-bottom:10px;">
+                  Pool: <strong style="color:var(--text-bright);" id="rise-uni-pair">$TOKEN / AIGENT</strong><br>
+                  Fee tier: <strong style="color:var(--cyan);">1%</strong> (recommended for new tokens)<br>
+                  Price range: <strong style="color:var(--cyan);">Full range</strong>
+                </div>
+                <button onclick="riseOpenUniswapCreate()" style="
+                  width:100%;padding:10px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+                  background:linear-gradient(135deg,#ff007a,#ff4da6);color:#fff;font-family:inherit;transition:all 0.2s;
+                " onmouseenter="this.style.boxShadow='0 0 20px rgba(255,0,122,0.4)'" onmouseleave="this.style.boxShadow='none'">
+                  Open Uniswap Interface →
+                </button>
+              </div>
+
+              <!-- Step 2 -->
+              <div style="padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
+                <div style="font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:8px;">STEP 2</div>
+                <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;">Link Pool to Curve</div>
+                <div style="font-size:11px;color:var(--dim);margin-bottom:10px;">
+                  Paste the Uniswap V3 pool address below and click "Link Pool". This adds the ★ badge to your token.
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <input id="rise-uni-pool-input" type="text" placeholder="0x... pool address" style="
+                    flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);
+                    background:rgba(255,255,255,0.03);color:#fff;font-size:11px;font-family:'SF Mono','Fira Code',monospace;
+                    outline:none;
+                  " onfocus="this.style.borderColor='rgba(0,229,255,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                  <button onclick="riseSetUniswapPool()" style="
+                    padding:8px 14px;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;
+                    background:linear-gradient(135deg,#00c853,#00e676);color:#000;font-family:inherit;white-space:nowrap;transition:all 0.2s;
+                  " onmouseenter="this.style.boxShadow='0 0 16px rgba(0,230,118,0.4)'" onmouseleave="this.style.boxShadow='none'">
+                    Link Pool
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Add Liquidity -->
+            <div style="padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
+              <div style="font-size:11px;font-weight:700;color:#ffd700;margin-bottom:8px;">STEP 3</div>
+              <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;">Add Liquidity to the Pool</div>
+              <div style="font-size:11px;color:var(--dim);margin-bottom:10px;">
+                After creating the pool, add both tokens as liquidity. The more liquidity you add, the better the trading experience.
+                <br><br>
+                <strong style="color:var(--text-bright);">Why 1% fee tier?</strong> New tokens benefit from wider spreads — LPs earn more, encouraging deeper liquidity.
+                <br>
+                <strong style="color:var(--text-bright);">Why Full Range?</strong> Allows trading at any price, maximizing accessibility for early buyers.
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button onclick="riseOpenUniswapAdd()" style="
+                  padding:10px 18px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+                  background:linear-gradient(135deg,#ff007a,#ff4da6);color:#fff;font-family:inherit;transition:all 0.2s;
+                " onmouseenter="this.style.boxShadow='0 0 20px rgba(255,0,122,0.4)'" onmouseleave="this.style.boxShadow='none'">
+                  Add Liquidity on Uniswap →
+                </button>
+              </div>
+            </div>
+
+            <div id="rise-uni-msg" style="font-size:12px;margin-top:10px;padding:10px 14px;border-radius:8px;display:none;"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -3405,6 +3482,23 @@
       $('rise-progress-fill').style.width = pct + '%';
       $('rise-curve-label').textContent = reserve.toFixed(2) + ' AIGENT locked in curve';
 
+      // Show/hide Uniswap panel for creator
+      const uniswapPanel = $('rise-uniswap-panel');
+      if (uniswapPanel && d.creator && userAddress && d.creator.toLowerCase() === userAddress.toLowerCase()) {
+        uniswapPanel.style.display = 'block';
+        $('rise-uni-pair').textContent = '$' + d.symbol + ' / AIGENT';
+        if (d.uniswapPool && d.uniswapPool !== '0x0000000000000000000000000000000000000000') {
+          $('rise-uni-pool-input').value = d.uniswapPool;
+          $('rise-uni-pool-input').setAttribute('disabled', 'true');
+        } else {
+          $('rise-uni-pool-input').value = '';
+          $('rise-uni-pool-input').removeAttribute('disabled');
+        }
+        // Update Step 1 button to point to actual token
+      } else if (uniswapPanel) {
+        uniswapPanel.style.display = 'none';
+      }
+
       // Update preview with current inputs
       riseUpdatePreview();
       // Render chart
@@ -3844,6 +3938,80 @@
     };
 
     window.addEventListener('resize', () => { if (riseCurveData) riseRenderChart(); });
+
+    // ── Uniswap V3 Creator Tools ──
+
+    window.riseOpenUniswapCreate = function() {
+      if (!riseCurveData || !riseCurveData.token) return;
+      // Open Uniswap V3 pool creation on X Layer
+      const tokenAddr = riseCurveData.token;
+      const aigentAddr = '0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';
+      // Uniswap V3 create pool URL: token1=AIGENT (base), token0=new token (quote)
+      const uniUrl = 'https://app.uniswap.org/pool/create?' +
+        'chain=xlayer&' +
+        'token0=' + tokenAddr.toLowerCase() + '&' +
+        'token1=' + aigentAddr.toLowerCase() + '&' +
+        'fee=10000'; // 1% fee tier
+      window.open(uniUrl, '_blank');
+    };
+
+    window.riseOpenUniswapAdd = function() {
+      if (!riseCurveData || !riseCurveData.token) return;
+      const tokenAddr = riseCurveData.token;
+      const aigentAddr = '0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';
+      const rangeToken0 = tokenAddr.toLowerCase() < aigentAddr.toLowerCase() ? tokenAddr : aigentAddr;
+      const rangeToken1 = tokenAddr.toLowerCase() < aigentAddr.toLowerCase() ? aigentAddr : tokenAddr;
+      const uniUrl = 'https://app.uniswap.org/pool/add?' +
+        'chain=xlayer&' +
+        'token0=' + rangeToken0.toLowerCase() + '&' +
+        'token1=' + rangeToken1.toLowerCase() + '&' +
+        'fee=10000&' +
+        'minPrice=0&maxPrice=Infinity'; // Full range
+      window.open(uniUrl, '_blank');
+    };
+
+    window.riseSetUniswapPool = async function() {
+      if (!walletClient || !userAddress) {
+        showNotification('Connect wallet first', 'info');
+        return;
+      }
+      if (!riseCurveData) return;
+      const poolInput = document.getElementById('rise-uni-pool-input');
+      const poolAddr = (poolInput.value || '').trim();
+      if (!/^0x[a-fA-F0-9]{40}$/.test(poolAddr)) {
+        showMsgRiseUni('Invalid pool address.', 'error');
+        return;
+      }
+      const msgEl = document.getElementById('rise-uni-msg');
+      msgEl.style.display = 'block';
+      msgEl.className = 'rise-msg show info';
+      msgEl.textContent = 'Linking Uniswap V3 pool to curve #' + riseSelectedCurveId + '...';
+      try {
+        const txHash = await walletClient.writeContract({
+          address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI,
+          functionName: 'setUniswapPool',
+          args: [BigInt(riseSelectedCurveId), poolAddr],
+          chain: xLayer, account: userAddress,
+        });
+        msgEl.className = 'rise-msg show success';
+        msgEl.innerHTML = 'Pool linked! <a href="' + XLAYER_EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--cyan);">View tx</a>';
+        showNotification('Uniswap V3 pool linked to curve #' + riseSelectedCurveId, 'success');
+        // Refresh
+        await riseRefreshCurve(riseSelectedCurveId);
+        await riseLoadCurveList();
+      } catch (e) {
+        msgEl.className = 'rise-msg show error';
+        msgEl.textContent = e.shortMessage || e.message;
+      }
+    };
+
+    function showMsgRiseUni(text, type) {
+      const el = document.getElementById('rise-uni-msg');
+      if (!el) return;
+      el.style.display = 'block';
+      el.className = 'rise-msg show ' + (type || 'info');
+      el.textContent = text;
+    }
 
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', (accounts) => {
