@@ -993,6 +993,100 @@
     .farm-btn.red { background: rgba(255,68,68,0.15); color: #ff4444; border: 1px solid rgba(255,68,68,0.3); }
     .farm-btn.red:hover { box-shadow: 0 0 10px rgba(255,68,68,0.3); }
     .farm-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
+    /* ── AIgent Rise — Trading Panel ── */
+    .rise-card {
+      position: relative; overflow: hidden;
+      border: 1px solid rgba(255,215,0,0.2); border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(255,215,0,0.03) 0%, rgba(0,0,0,0.4) 50%, rgba(0,229,255,0.02) 100%);
+      padding: 28px 30px; margin-bottom: 24px;
+    }
+    .rise-card::before {
+      content: ''; position: absolute; top: -1px; left: 20px; right: 20px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,215,0,0.4), rgba(0,229,255,0.4), rgba(255,215,0,0.4), transparent);
+    }
+    .rise-card::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 30% 0%, rgba(255,215,0,0.05) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 100%, rgba(0,229,255,0.04) 0%, transparent 60%);
+    }
+    .rise-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; position: relative; z-index: 2; }
+    .rise-icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; box-shadow: 0 0 20px rgba(255,215,0,0.3);
+    }
+    .rise-title { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .rise-tag {
+      font-size: 9px; text-transform: uppercase; letter-spacing: 3px; color: #ffd700;
+      padding: 3px 8px; border: 1px solid rgba(255,215,0,0.25); border-radius: 4px;
+      background: rgba(255,215,0,0.06);
+    }
+    .rise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; position: relative; z-index: 2; }
+    @media (max-width: 768px) { .rise-grid { grid-template-columns: 1fr; } }
+    .rise-chart-wrap {
+      border: 1px solid rgba(255,255,255,0.06); border-radius: 12px;
+      background: rgba(0,0,0,0.3); padding: 4px;
+    }
+    .rise-chart-wrap canvas { display: block; width: 100%; height: 220px; border-radius: 10px; }
+    .rise-progress-section { margin-top: 16px; position: relative; z-index: 2; }
+    .rise-progress-header { display: flex; justify-content: space-between; font-size: 11px; color: var(--dim); margin-bottom: 6px; }
+    .rise-progress-header span:last-child { color: #ffd700; }
+    .rise-progress-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.05); overflow: hidden; }
+    .rise-progress-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #ff8c00, #ffd700, #00e5ff); background-size: 200% 100%;
+      animation: riseShimmer 2s ease-in-out infinite; transition: width 0.5s ease;
+    }
+    @keyframes riseShimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+    .rise-curve-label { font-size: 10px; margin-top: 4px; text-align: right; color: rgba(255,215,0,0.6); }
+    .rise-stats { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; position: relative; z-index: 2; }
+    .rise-stat {
+      flex: 1; min-width: 70px; padding: 10px 12px; background: rgba(255,255,255,0.02);
+      border-radius: 8px; border: 1px solid rgba(255,255,255,0.04);
+    }
+    .rise-stat-label { font-size: 9px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+    .rise-stat-val { font-size: 14px; font-weight: 700; color: var(--text-bright); margin-top: 3px; font-family: 'SF Mono','Fira Code',monospace; }
+    /* Trade form */
+    .rise-trade { position: relative; z-index: 2; }
+    .rise-tabs { display: flex; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px; }
+    .rise-tab {
+      flex: 1; padding: 11px; text-align: center; font-size: 13px; font-weight: 700; cursor: pointer;
+      border: none; font-family: inherit; transition: all 0.25s; background: rgba(255,255,255,0.02); color: var(--dim);
+    }
+    .rise-tab.active-buy { background: rgba(0,230,118,0.12); color: var(--green); box-shadow: inset 0 -2px 0 var(--green); }
+    .rise-tab.active-sell { background: rgba(255,68,68,0.12); color: #ff4444; box-shadow: inset 0 -2px 0 #ff4444; }
+    .rise-input-group { margin-bottom: 14px; }
+    .rise-input-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--dim); margin-bottom: 6px; }
+    .rise-input-row { display: flex; gap: 8px; }
+    .rise-input {
+      flex: 1; padding: 12px 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; color: #fff; font-size: 16px; font-family: 'SF Mono','Fira Code',monospace;
+      outline: none; transition: border-color 0.2s;
+    }
+    .rise-input:focus { border-color: rgba(0,229,255,0.5); box-shadow: 0 0 12px rgba(0,229,255,0.1); }
+    .rise-input::placeholder { color: rgba(255,255,255,0.15); }
+    .rise-currency {
+      display: flex; align-items: center; gap: 6px; padding: 0 14px;
+      background: rgba(255,255,255,0.04); border-radius: 10px; font-size: 12px; font-weight: 600;
+      color: var(--text-bright); white-space: nowrap;
+    }
+    .rise-preview { padding: 12px 14px; background: rgba(255,255,255,0.02); border-radius: 10px; margin-bottom: 14px; font-size: 12px; color: var(--dim); }
+    .rise-preview strong { color: var(--text-bright); }
+    .rise-btn {
+      width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 800;
+      cursor: pointer; transition: all 0.3s; font-family: inherit; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .rise-btn-buy { background: linear-gradient(135deg, #00c853, #00e676); color: #000; box-shadow: 0 0 20px rgba(0,230,118,0.2); }
+    .rise-btn-buy:hover { box-shadow: 0 0 40px rgba(0,230,118,0.5); transform: translateY(-1px); }
+    .rise-btn-sell { background: linear-gradient(135deg, #d50000, #ff1744); color: #fff; box-shadow: 0 0 20px rgba(255,23,68,0.2); }
+    .rise-btn-sell:hover { box-shadow: 0 0 40px rgba(255,23,68,0.5); transform: translateY(-1px); }
+    .rise-msg { font-size: 12px; margin-top: 10px; padding: 10px 14px; border-radius: 8px; display: none; }
+    .rise-msg.show { display: block; }
+    .rise-msg.info { background: rgba(0,229,255,0.08); color: var(--cyan); border: 1px solid rgba(0,229,255,0.15); }
+    .rise-msg.error { background: rgba(255,68,68,0.08); color: #ff4444; border: 1px solid rgba(255,68,68,0.15); }
+    .rise-msg.success { background: rgba(0,230,118,0.08); color: var(--green); border: 1px solid rgba(0,230,118,0.15); }
   </style>
 </head>
 <body>
@@ -1357,6 +1451,7 @@
           <div class="dapp-dot disconnected" id="dapp-dot"></div>
           <span class="dapp-addr" id="dapp-addr">Not connected</span>
           <span class="dapp-chain-badge" id="dapp-chain">X Layer</span>
+          <button id="dapp-switch-chain" onclick="dappSwitchChain()" style="display:none;margin-left:6px;padding:2px 8px;background:var(--magenta);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;font-family:inherit;">Switch to X Layer</button>
         </div>
 
         <!-- Action Buttons -->
@@ -1403,7 +1498,7 @@
           <!-- Chat history -->
           <div class="agent-chat" id="agent-chat"></div>
 
-          <!-- EIP-2612 step visualization (for transfers) -->
+          <!-- Step visualization (shared by transfer & deploy flows) -->
           <div id="agent-steps" style="display:none;margin-bottom:14px;">
             <div class="agent-step" id="step-1">
               <div class="step-num">1</div><div class="step-content"><div class="step-title">Parse Command</div><div class="step-detail" id="step1-detail"></div></div><div class="step-status" id="step1-status"></div>
@@ -1417,16 +1512,20 @@
             <div class="agent-step" id="step-4">
               <div class="step-num">4</div><div class="step-content"><div class="step-title">Submit transferFrom() Transaction</div><div class="step-detail" id="step4-detail"></div></div><div class="step-status" id="step4-status"></div>
             </div>
+            <div class="agent-step" id="step-5">
+              <div class="step-num">5</div><div class="step-content"><div class="step-title">Verify on Explorer</div><div class="step-detail" id="step5-detail"></div></div><div class="step-status" id="step5-status"></div>
+            </div>
           </div>
 
           <div class="dapp-msg" id="agent-msg"></div>
 
           <div class="dapp-input-group" style="margin-bottom:10px;">
-            <input class="dapp-input" id="agent-cmd" type="text" placeholder='Chat: "check balance" | "total supply" | "send 10 to 0x..."' autocomplete="off" onkeydown="if(event.key==='Enter')agentExecute()">
+            <input class="dapp-input" id="agent-cmd" type="text" placeholder='Chat: "deploy token DogKing symbol DKING supply 1M" | "check balance" | "send 10 to 0x..."' autocomplete="off" onkeydown="if(event.key==='Enter')agentExecute()">
             <button class="dapp-btn" id="btn-agent" onclick="agentExecute()">Send</button>
           </div>
 
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn" onclick="agentQuick('deploy a token called MyCoin symbol MYC supply 1000000')" style="font-size:10px;padding:4px 10px;background:linear-gradient(135deg,var(--magenta),var(--purple));color:#fff;border:none;">🚀 Launch Token</button>
             <button class="btn" onclick="agentQuick('Check my balance')" style="font-size:10px;padding:4px 10px;">Balance</button>
             <button class="btn" onclick="agentQuick('What is the total supply?')" style="font-size:10px;padding:4px 10px;">Supply</button>
             <button class="btn" onclick="agentQuick('send 10 to 0xAbC...')" style="font-size:10px;padding:4px 10px;">Send 10</button>
@@ -1503,6 +1602,92 @@
           <button class="farm-btn red" id="btn-claim-lp" onclick="claimLPReward()">Claim</button>
         </div>
         <div class="dapp-msg" id="lp-msg"></div>
+      </div>
+    </section>
+
+    <!-- ── AIGENT RISE — Bonding Curve Trading ── -->
+    <section id="rise">
+      <div class="card reveal">
+        <div class="section-header" style="text-align:left;margin-bottom:24px;">
+          <div class="section-tag">// Trade</div>
+          <div class="section-title">AIgent Rise</div>
+          <p class="section-sub" style="margin-left:0;">Permanent bonding curve — trade anytime. Creators can optionally add Uniswap V3 liquidity.</p>
+        </div>
+
+        <!-- Curve Selector -->
+        <div style="margin-bottom:20px;display:flex;gap:8px;flex-wrap:wrap;" id="rise-curve-list">
+          <button class="rise-curve-chip active" data-id="0" onclick="riseSelectCurve(0)" style="
+            padding:8px 16px;border-radius:20px;border:1px solid rgba(255,215,0,0.3);background:rgba(255,215,0,0.08);
+            color:#ffd700;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;
+          ">Loading...</button>
+        </div>
+
+        <!-- Main Grid: Chart + Trade -->
+        <div class="rise-grid">
+          <!-- LEFT: Chart + Progress -->
+          <div>
+            <div class="rise-chart-wrap">
+              <canvas id="rise-canvas"></canvas>
+            </div>
+            <div class="rise-progress-section">
+              <div class="rise-progress-header">
+                <span>Curve Progress</span>
+                <span id="rise-progress-pct">0%</span>
+              </div>
+              <div class="rise-progress-bar">
+                <div class="rise-progress-fill" id="rise-progress-fill" style="width:0%"></div>
+              </div>
+              <div class="rise-curve-label" id="rise-curve-label">
+                AIGENT locked in curve reserve
+              </div>
+            </div>
+            <div class="rise-stats" id="rise-stats">
+              <div class="rise-stat">
+                <div class="rise-stat-label">Price</div>
+                <div class="rise-stat-val" id="rise-price">--</div>
+              </div>
+              <div class="rise-stat">
+                <div class="rise-stat-label">AIGENT Reserve</div>
+                <div class="rise-stat-val" id="rise-reserve">--</div>
+              </div>
+              <div class="rise-stat">
+                <div class="rise-stat-label">Sold / Total</div>
+                <div class="rise-stat-val" id="rise-sold">--</div>
+              </div>
+              <div class="rise-stat">
+                <div class="rise-stat-label">Status</div>
+                <div class="rise-stat-val" id="rise-status" style="color:#ffd700;">Trading</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Buy/Sell -->
+          <div class="rise-trade">
+            <div class="rise-tabs">
+              <button class="rise-tab active-buy" id="rise-tab-buy" onclick="riseSetMode('buy')">BUY</button>
+              <button class="rise-tab" id="rise-tab-sell" onclick="riseSetMode('sell')">SELL</button>
+            </div>
+
+            <div class="rise-input-group">
+              <div class="rise-input-label">
+                <span id="rise-input-label">You Pay (AIGENT)</span>
+                <span id="rise-balance-hint"></span>
+              </div>
+              <div class="rise-input-row">
+                <input class="rise-input" id="rise-amount" type="text" placeholder="0.0" autocomplete="off" oninput="riseUpdatePreview()">
+                <div class="rise-currency" id="rise-currency-in">AIGENT</div>
+              </div>
+            </div>
+
+            <div class="rise-preview" id="rise-preview">
+              <div>You Receive: <strong id="rise-preview-amount">0</strong> <span id="rise-preview-symbol">TOKEN</span></div>
+              <div style="margin-top:4px;font-size:10px;">Fee: <span id="rise-preview-fee">1%</span> &nbsp;|&nbsp; Creator: <span id="rise-preview-cut">0.3%</span></div>
+            </div>
+
+            <button class="rise-btn rise-btn-buy" id="rise-action-btn" onclick="riseExecute()">BUY</button>
+            <div class="rise-msg" id="rise-msg"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2094,8 +2279,11 @@
 
   <!-- ── AIGENT DApp — Wallet interaction via viem CDN ── -->
   <script type="module">
-    import { createPublicClient, createWalletClient, http, custom, formatEther, parseEther, parseAbi } from 'https://esm.sh/viem@2';
+    import { createPublicClient, createWalletClient, http, custom, formatEther, parseEther, parseAbi, maxUint256 } from 'https://esm.sh/viem@2';
     import { xLayer } from 'https://esm.sh/viem@2/chains';
+
+    // ethers compatibility alias (codebase uses ethers.xxx convention)
+    const ethers = { parseEther, formatEther, MaxUint256: maxUint256 };
 
     const CHAIN_ID = 196;
     const AIGENT_ADDRESS = '0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';
@@ -2104,6 +2292,9 @@
       'function balanceOf(address account) external view returns (uint256)',
       'function decimals() external view returns (uint8)',
       'function symbol() external view returns (string)',
+      'function totalSupply() external view returns (uint256)',
+      'function allowance(address owner, address spender) external view returns (uint256)',
+      'function approve(address spender, uint256 amount) external returns (bool)',
       'function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external',
       'function nonces(address owner) external view returns (uint256)',
       'function DOMAIN_SEPARATOR() external view returns (bytes32)',
@@ -2114,6 +2305,7 @@
     const EIP712_DOMAIN = { name: 'AIGENT', version: '1', chainId: 196, verifyingContract: AIGENT_ADDRESS };
     const PERMIT_TYPES = { Permit: [{ name:'owner', type:'address' },{ name:'spender', type:'address' },{ name:'value', type:'uint256' },{ name:'nonce', type:'uint256' },{ name:'deadline', type:'uint256' }] };
     const MAX_DEADLINE = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffn;
+    const AIGENT_FACTORY_ADDRESS = '0xa2F1c873bbe89dedc656d0480524F3AA94F4dbb9'; // AIgent Mint TokenFactory
     const PRESALE_ADDR = '0x316b1cE062cC4525F0129C3D41351a976981ccD9';
     const USDT_ADDR = '0x779Ded0c9e1022225f8E0630b35a9b54bE713736';
     const PRESALE_ABI = parseAbi([
@@ -2156,6 +2348,38 @@
       'function rewardEndTime() external view returns (uint256)',
     ]);
 
+    const FACTORY_ABI = parseAbi([
+      'function deployFee() external view returns (uint256)',
+      'function deploy(string name, string symbol, uint256 totalSupply, address recipient) external returns (address)',
+    ]);
+
+    const BONDING_CURVE_ADDR = '0xa1D24971d18E44Dd7a791dF6f7cdDBd2AD9F9B4f';
+    const BONDING_CURVE_ABI = parseAbi([
+      'function curves(uint256) external view returns (address token, address creator, uint256 totalCurveSupply, uint256 sold, uint256 aigentReserve, uint256 pMin, uint256 pMax, uint256 createdAt, address uniswapPool)',
+      'function curveCount() external view returns (uint256)',
+      'function getPrice(uint256 curveId) external view returns (uint256)',
+      'function getBuyAmount(uint256 curveId, uint256 aigentIn) external view returns (uint256)',
+      'function getSellAmount(uint256 curveId, uint256 tokensIn) external view returns (uint256)',
+      'function getBuyPreview(uint256 curveId, uint256 aigentIn) external view returns (uint256)',
+      'function getSellPreview(uint256 curveId, uint256 tokensIn) external view returns (uint256)',
+      'function getProgress(uint256 curveId) external view returns (uint256 sold, uint256 total, uint256 aigentReserve, uint256 currentPrice, uint256 percentBps)',
+      'function buy(uint256 curveId, uint256 aigentIn, uint256 minTokensOut) external returns (uint256)',
+      'function sell(uint256 curveId, uint256 tokensIn, uint256 minAigentOut) external returns (uint256)',
+      'function setUniswapPool(uint256 curveId, address pool) external',
+      'function launch(string name, string symbol, uint256 totalSupply, uint256 curvePercentBps, uint256 pMin, uint256 pMax, address recipient) external returns (uint256)',
+      'function deployFee() external view returns (uint256)',
+      'function TRADE_FEE_BPS() external view returns (uint256)',
+    ]);
+
+    let pendingDeploy = null; // stores parsed params until user confirms
+    window.executeDeploy = function() {
+      if (!pendingDeploy) { agentChatAdd('agent', 'No pending deploy. Type a deploy command first.'); return; }
+      if (!walletClient || !userAddress) { agentChatAdd('agent', '⚠️ Please <strong>connect your wallet</strong> first, then click Launch again.'); return; }
+      const params = pendingDeploy;
+      pendingDeploy = null;
+      agentExecuteDeploy(params);
+    };
+
     const $ = (id) => document.getElementById(id);
     const el = {
       dot: $('dapp-dot'), addr: $('dapp-addr'), chain: $('dapp-chain'),
@@ -2171,6 +2395,7 @@
       presaleDivider: $('presale-divider'), presaleSection: $('presale-buy-section'),
       presaleAmt: $('presale-usdt-amt'), presaleMsg: $('presale-msg'),
       btnPresaleBuy: $('btn-presale-buy'),
+      switchChainBtn: $('dapp-switch-chain'),
     };
 
     function stakeMsg(text, type) {
@@ -2207,6 +2432,7 @@
       refreshLPFarm();
       updatePresaleProgress();
       agentCheckServer();
+      riseLoadCurveList();
     }
 
     function renderDisconnected() {
@@ -2215,6 +2441,7 @@
       el.addr.textContent = 'Not connected';
       el.chain.textContent = 'X Layer';
       el.chain.className = 'dapp-chain-badge';
+      el.switchChainBtn.style.display = 'none';
       el.btnConnect.textContent = 'Connect Wallet';
       el.btnConnect.onclick = dappConnect;
       el.divider.style.display = 'none';
@@ -2249,10 +2476,13 @@
         const currentChainId = parseInt(chainIdHex, 16);
         el.chain.textContent = currentChainId === CHAIN_ID ? 'X Layer' : 'Chain ' + currentChainId;
         el.chain.className = currentChainId === CHAIN_ID ? 'dapp-chain-badge' : 'dapp-chain-badge wrong';
+        el.switchChainBtn.style.display = currentChainId === CHAIN_ID ? 'none' : 'inline-block';
 
         if (currentChainId !== CHAIN_ID) {
           try {
             await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xc4' }] });
+            el.chain.textContent = 'X Layer'; el.chain.className = 'dapp-chain-badge';
+            el.switchChainBtn.style.display = 'none';
           } catch (switchErr) {
             if (switchErr.code === 4902) {
               try {
@@ -2260,16 +2490,15 @@
                   method: 'wallet_addEthereumChain',
                   params: [{ chainId: '0xc4', chainName: 'X Layer Mainnet', nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 }, rpcUrls: [XLAYER_RPC], blockExplorerUrls: [XLAYER_EXPLORER] }],
                 });
+                el.chain.textContent = 'X Layer'; el.chain.className = 'dapp-chain-badge';
+                el.switchChainBtn.style.display = 'none';
               } catch (addErr) {
-                showMsg('Failed to add X Layer to wallet. Please add it manually.', 'error');
-                return;
+                showMsg('Click <strong>Switch to X Layer</strong> to change network, or add it manually.', 'error');
               }
             } else {
-              showMsg('Please switch to X Layer Mainnet (Chain ID 196).', 'error');
-              return;
+              showMsg('Click <strong>Switch to X Layer</strong> button next to the chain badge.', 'error');
             }
           }
-          el.chain.textContent = 'X Layer'; el.chain.className = 'dapp-chain-badge';
         }
 
         publicClient = createPublicClient({ chain: xLayer, transport: http(XLAYER_RPC) });
@@ -2282,6 +2511,28 @@
         if (err.code === 4001) showMsg('Connection rejected by user.', 'error');
         else showMsg('Connection failed: ' + (err.message || 'Unknown error'), 'error');
       }
+    };
+
+    window.dappSwitchChain = async function() {
+      const provider = window.okxwallet || window.ethereum;
+      if (!provider) { showMsg('No wallet detected.', 'error'); return; }
+      try {
+        await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xc4' }] });
+      } catch (e) {
+        if (e.code === 4902) {
+          try {
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [{ chainId: '0xc4', chainName: 'X Layer Mainnet', nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 }, rpcUrls: [XLAYER_RPC], blockExplorerUrls: [XLAYER_EXPLORER] }],
+            });
+          } catch (e2) { showMsg('Failed to add X Layer. Add manually: Chain ID 196, RPC ' + XLAYER_RPC, 'error'); return; }
+        } else { showMsg('Switch rejected: ' + (e.message||'Unknown error'), 'error'); return; }
+      }
+      el.chain.textContent = 'X Layer'; el.chain.className = 'dapp-chain-badge';
+      el.switchChainBtn.style.display = 'none';
+      publicClient = createPublicClient({ chain: xLayer, transport: http(XLAYER_RPC) });
+      walletClient = createWalletClient({ chain: xLayer, transport: custom(provider) });
+      hideMsg(); await dappRefreshBalance();
     };
 
     window.dappDisconnect = function() {
@@ -2381,13 +2632,28 @@
 
     function agentResetSteps() {
       el.agentSteps.style.display = 'block';
-      [1,2,3,4].forEach(i => {
+      [1,2,3,4,5].forEach(i => {
         const step = document.getElementById('step-' + i);
+        if (!step) return;
         step.classList.remove('done','active','error-step');
         document.getElementById('step'+i+'-status').className = 'step-status';
         document.getElementById('step'+i+'-status').innerHTML = '';
         document.getElementById('step'+i+'-detail').textContent = '';
       });
+    }
+
+    function setStepTitle(n, title) {
+      const step = document.getElementById('step-' + n);
+      if (step) { const titleEl = step.querySelector('.step-title'); if (titleEl) titleEl.textContent = title; }
+    }
+    function setStepTitles(titles) {
+      titles.forEach(function(t, i) { setStepTitle(i + 1, t); });
+    }
+    function showSteps(count) {
+      for (var i = 1; i <= 5; i++) {
+        var s = document.getElementById('step-' + i);
+        if (s) s.style.display = i <= count ? '' : 'none';
+      }
     }
 
     function agentStepDone(n, detail) {
@@ -2414,41 +2680,125 @@
       if (detail) document.getElementById('step'+n+'-detail').textContent = detail;
     }
 
+    function parseChineseNumber(t) {
+      const map = { 零:0, 一:1, 二:2, 两:2, 三:3, 四:4, 五:5, 六:6, 七:7, 八:8, 九:9, 十:10, 百:100, 千:1000, 万:10000, 亿:100000000 };
+      const arabic = t.match(/(\d+(?:\.\d+)?)\s*(万亿|万|亿|k|m|b|million|billion|trillion)?/i);
+      if (arabic) {
+        let n = parseFloat(arabic[1]);
+        const u = (arabic[2]||'').toLowerCase();
+        if (u==='万亿') n*=1e12; else if (u==='万') n*=1e4; else if (u==='亿') n*=1e8;
+        else if (u==='k') n*=1e3; else if (u==='m'||u==='million') n*=1e6;
+        else if (u==='b'||u==='billion') n*=1e9; else if (u==='trillion') n*=1e12;
+        return n;
+      }
+      const cn = t.match(/[一二两三四五六七八九十百千万亿]+/g);
+      if (!cn) return null;
+      for (const seg of cn) {
+        let r=0, cur=0, hasUnit=false;
+        for (let i=0; i<seg.length; i++) {
+          const v = map[seg[i]]; if (v===undefined) continue;
+          hasUnit = hasUnit || v>=10;
+          if (v<10) cur=v;
+          else if (v<=10000) { cur=(cur||1)*v; r+=cur; cur=0; }
+          else { cur=(cur||1)*v; r+=cur; cur=0; }
+        }
+        r+=cur;
+        if (hasUnit||r>0) return r;
+      }
+      return null;
+    }
+
     function parseCommand(text) {
       const t = text.trim();
       if (!t) return { intent: 'empty' };
 
-      // Transfer patterns — both orders
-      const sendRe = /(?:send|transfer|pay|give|move)\s+(\d+(?:\.\d+)?)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})/i;
-      const sendRev = /(?:send|transfer|pay|give|move)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})\s+(\d+(?:\.\d+)?)/i;
-      let m = t.match(sendRe) || t.match(sendRev);
-      if (m) {
-        const addr = m[1].startsWith('0x') ? m[1] : m[2];
-        const amt = m[1].startsWith('0x') ? m[2] : m[1];
-        return { intent: 'transfer', params: { to: addr, amount: amt } };
+      // Deploy token
+      const hasDeployAction = /deploy|create|launch|make|mint|new|发|创建|部署|发行|上/i.test(t);
+      const hasTokenWord = /token|coin|erc20|币|代币|令牌|土狗|meme/i.test(t);
+      if (hasDeployAction && hasTokenWord) {
+        // Name: stop at keywords
+        let nameM = t.match(/(?:called|named|名叫|叫做|叫|名字是?|名称是?|name\s*(?:is)?)\s*["']?([^，。,\.\s]{1,30}?)(?:[，。,\.\s]|币|代币|令牌|符号|代号|代码|缩写|ticker|symbol|总量|供应|发行|数量)/i);
+        let name = nameM ? nameM[1].trim() : undefined;
+        if (name) { name = name.replace(/[的之]?(?:币种|币|代币|名字|名称|符号|代码).*$/i,'').trim(); if (!name) name=undefined; }
+        if (!name) {
+          let m2 = t.match(/(?:个(?:币|代币|token|coin)|币种|代币|token|coin)\s*["']?([^，。,\.\s]{1,30}?)(?:[，。,\.\s]|叫|符号|代号|代码|ticker|symbol|总量|供应|发行)/i);
+          if (m2) name = m2[1].trim();
+        }
+        if (!name) {
+          let im = t.match(/(?:叫|发行|创建|部署|发)\s*(?:一个|个)?\s*["']?([^，。,\.\s叫]{1,30}?)(?:的?[币代]|[，。,\.\s]|$)/i);
+          if (im) { name = im[1].trim().replace(/[的之]?(?:币种|币|代币|名字|名称).*$/i,'').trim(); }
+        }
+
+        let symM = t.match(/(?:symbol|ticker|符号|代码|代号|缩写)\s*["']?([a-zA-Z]{2,10})["']?/i);
+        let symbol = symM ? symM[1].toUpperCase() : undefined;
+        const wantsInitials = /首字母|缩写|initials|abbrev/i.test(t);
+
+        const supplyCtx = t.match(/(?:supply|total|总量|供应|发行量|数量)\s*(.{1,40}?)(?:[，。,\.]|$)/i);
+        const st = supplyCtx ? supplyCtx[1] : t;
+        const cn = parseChineseNumber(st);
+        let supply = cn && cn>=1 ? cn.toString() : undefined;
+
+        if (!symbol && name) {
+          if (wantsInitials) symbol = name.replace(/[^a-zA-Z一-龥]/g,'').slice(0,6).toUpperCase();
+          else { let c = name.replace(/[^a-zA-Z0-9一-龥]/g,'').slice(0,6).toUpperCase(); if (/[A-Z]/.test(c)) symbol = c; }
+        }
+
+        if (name && symbol) return { intent: 'deploy', params: { name, symbol, supply: supply||'1000000' } };
+        if (name || symbol) {
+          const n = name || symbol;
+          const s = symbol || (name ? name.replace(/[^a-zA-Z0-9]/g,'').slice(0,6).toUpperCase()||'TOKEN' : 'TOKEN');
+          return { intent: 'deploy', params: { name: n, symbol: s, supply: supply||'1000000' } };
+        }
+        return { intent: 'deploy', params: { supply: supply||'1000000' } };
       }
 
-      // Fuzzy transfer
-      const fuzzyRe = /(?:send|transfer|pay|give).+?(\d+(?:\.\d+)?).+?(0x[a-fA-F0-9]{40})/i;
-      let fm = t.match(fuzzyRe);
-      if (fm) return { intent: 'transfer', params: { to: fm[2], amount: fm[1] } };
+      // Transfer
+      const sendRe = /(?:send|transfer|pay|give|move|转|发)\s+(\d+(?:\.\d+)?)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})/i;
+      const sendRev = /(?:send|transfer|pay|give|move|转|发)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})\s+(\d+(?:\.\d+)?)/i;
+      let m = t.match(sendRe) || t.match(sendRev);
+      if (m) { const addr = m[1].startsWith('0x')?m[1]:m[2]; const amt = m[1].startsWith('0x')?m[2]:m[1]; return { intent:'transfer', params:{to:addr, amount:amt} }; }
+      let fm = t.match(/(?:send|transfer|pay|give|转|发).+?(\d+(?:\.\d+)?).+?(0x[a-fA-F0-9]{40})/i);
+      if (fm) return { intent:'transfer', params:{to:fm[2], amount:fm[1]} };
 
-      if (/\b(balance|how much|check balance|show balance|my balance|my tokens|my aigent|how many (tokens|aigent) do i have)\b/i.test(t))
-        return { intent: 'balance' };
-
-      if (/\b(total supply|supply|how many tokens exist|total tokens|circulation|max supply|total aigent)\b/i.test(t))
-        return { intent: 'supply' };
-
-      if (/^(hi|hey|hello|yo|greet)/i.test(t)) return { intent: 'greet' };
-      if (/\b(help|what can you do|commands|capabilities)\b/i.test(t)) return { intent: 'help' };
-
-      return { intent: 'unknown' };
+      if (/\b(balance|how much|check balance|show balance|my balance|my tokens|my aigent|how many (tokens|aigent) do i have|余额|查询)\b/i.test(t)) return { intent:'balance' };
+      if (/\b(total supply|how many tokens exist|total tokens|circulation|max supply|total aigent|总供应)\b/i.test(t)) return { intent:'supply' };
+      if (/^(hi|hey|hello|yo|greet|你好|嗨)/i.test(t)) return { intent:'greet' };
+      if (/\b(help|what can you do|commands|capabilities|帮助|功能)\b/i.test(t)) return { intent:'help' };
+      return { intent:'unknown' };
     }
 
     function agentReply(text) {
-      return text
+      let html = text
         .replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--cyan);">$1</strong>')
         .replace(/`([^`]+)`/g, '<code style="background:rgba(0,229,255,0.08);padding:1px 4px;border-radius:3px;font-family:SF Mono,Fira Code,monospace;">$1</code>');
+
+      // Simple table rendering: | key | value | to styled rows
+      if (/\|.*\|.*\|/.test(html)) {
+        const lines = html.split('\n');
+        let tableHtml = '<table style="width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;">';
+        let inTable = false;
+        const out = [];
+        for (const line of lines) {
+          if (/^\|.*\|.*\|/.test(line)) {
+            // skip separator rows like |---|---|
+            if (/^\|[\s\-:|]+\|/.test(line)) continue;
+            if (!inTable) { inTable = true; tableHtml = '<table style="width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;">'; }
+            const cells = line.split('|').filter(c => c.trim()).map(c => c.trim());
+            const tag = cells.length <= 2 && cells[0].includes('**') ? 'th' : 'td';
+            tableHtml += '<tr>';
+            for (const cell of cells) {
+              tableHtml += '<' + tag + ' style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:left;">' + cell + '</' + tag + '>';
+            }
+            tableHtml += '</tr>';
+          } else {
+            if (inTable) { inTable = false; tableHtml += '</table>'; out.push(tableHtml); }
+            out.push(line);
+          }
+        }
+        if (inTable) { tableHtml += '</table>'; out.push(tableHtml); }
+        html = out.join('\n');
+      }
+      return html;
     }
 
     window.agentQuick = function(text) {
@@ -2477,9 +2827,15 @@
           if (data.reply) {
             agentChatAdd('agent', agentReply(data.reply));
             if (data.action === 'transfer' && data.steps) {
-              // Server parsed a transfer — proceed with EIP-2612 flow
               const parsed = parseCommand(cmd);
               if (parsed.intent === 'transfer') await agentExecuteTransfer(parsed.params.to, parsed.params.amount);
+            }
+            if (data.action === 'deploy' && data.steps) {
+              const parsed = parseCommand(cmd);
+              if (parsed.intent === 'deploy') {
+                pendingDeploy = parsed.params;
+                agentChatAdd('agent', '<button class="agent-deploy-btn" onclick="executeDeploy()" style="display:block;width:100%;margin-top:12px;padding:12px 20px;background:linear-gradient(135deg,var(--magenta),var(--purple));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;box-shadow:0 0 20px rgba(192,56,228,0.3);" onmouseover="this.style.boxShadow=\'0 0 30px rgba(192,56,228,0.6)\'" onmouseout="this.style.boxShadow=\'0 0 20px rgba(192,56,228,0.3)\'">🚀 Launch Token Now</button>');
+              }
             }
           }
           return;
@@ -2490,12 +2846,12 @@
       const parsed = parseCommand(cmd);
 
       if (parsed.intent === 'greet') {
-        agentChatAdd('agent', 'Hello! I\'m your AIGENT AI agent on X Layer. I can help you:<br><br>• <strong style="color:var(--cyan);">Check balance</strong> — view your AIGENT<br>• <strong style="color:var(--cyan);">Total supply</strong> — 500M fixed supply<br>• <strong style="color:var(--cyan);">Send tokens</strong> — transfer via gasless EIP-2612 Permit<br><br>What would you like to do?');
+        agentChatAdd('agent', 'Hello! I\'m your AIGENT AI agent on X Layer. I can help you:<br><br>• <strong style="color:var(--magenta);">🚀 Launch a token</strong> — deploy via AIgent Rise + bonding curve<br>• <strong style="color:#ffd700;">📈 Buy tokens</strong> — trade on the bonding curve<br>• <strong style="color:#ffd700;">📉 Sell tokens</strong> — sell back to the curve anytime<br>• <strong style="color:var(--cyan);">Check balance</strong> — view your AIGENT<br>• <strong style="color:var(--cyan);">Total supply</strong> — 500M fixed supply<br>• <strong style="color:var(--cyan);">Send tokens</strong> — transfer via gasless EIP-2612 Permit<br><br>What would you like to do?');
         return;
       }
 
       if (parsed.intent === 'help') {
-        agentChatAdd('agent', 'I\'m an autonomous AI agent on X Layer. Here\'s what I can do:<br><br><code>check balance</code> — Read your AIGENT balance<br><code>total supply</code> — View the fixed 500M supply<br><code>send 100 to 0x...</code> — Transfer via gasless EIP-2612 Permit<br><br>All transfers use <strong style="color:var(--cyan);">EIP-2612</strong>: I sign off-chain, meaning <strong style="color:var(--green);">zero OKB</strong> needed for approval.');
+        agentChatAdd('agent', 'I\'m an autonomous AI agent on X Layer. Here\'s what I can do:<br><br><code>deploy a token called [name] symbol [SYM] supply [N]</code> — Launch via AIgent Rise + bonding curve<br><code>buy 100 AIGENT of [SYMBOL]</code> — Buy tokens on the bonding curve<br><code>sell 1000 [SYMBOL]</code> — Sell tokens back to the curve<br><code>check balance</code> — Read your AIGENT balance<br><code>total supply</code> — View the fixed 500M supply<br><code>send 100 to 0x...</code> — Transfer via gasless EIP-2612 Permit<br><br>All tokens include <strong style="color:var(--cyan);">EIP-2612</strong> for gasless transfers + a permanent bonding curve.');
         return;
       }
 
@@ -2526,13 +2882,39 @@
         return;
       }
 
+      if (parsed.intent === 'deploy') {
+        const p = parsed.params;
+        const name = p.name || 'MyToken';
+        const symbol = (p.symbol || 'MTK').toUpperCase();
+        const supply = p.supply || '1000000';
+        const supplyFmt = parseInt(supply).toLocaleString();
+        agentChatAdd('agent',
+          '🚀 <strong style="color:var(--magenta);font-size:16px;">AIgent Mint — Deploying Token</strong><br><br>' +
+          '<table style="width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;">' +
+          '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Name</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);"><strong>' + name + '</strong></td></tr>' +
+          '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Symbol</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);"><strong>$' + symbol + '</strong></td></tr>' +
+          '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Total Supply</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);"><strong>' + supplyFmt + '</strong></td></tr>' +
+          '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Standard</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">ERC-20 + EIP-2612</td></tr>' +
+          '<tr><td style="padding:6px 8px;">Network</td><td style="padding:6px 8px;">X Layer (Chain 196)</td></tr>' +
+          '</table><br>' +
+          'Your token will support <strong style="color:var(--cyan);">gasless transfers</strong> via EIP-2612.<br><br>' +
+          'To deploy, confirm the transaction in your wallet.<br><br>' +
+          '<strong style="color:var(--cyan);">AIgent Rise</strong> will create your token + a permanent bonding curve.'
+        );
+        pendingDeploy = parsed.params;
+        agentChatAdd('agent', '<button class="agent-deploy-btn" onclick="executeDeploy()" style="display:block;width:100%;margin-top:12px;padding:12px 20px;background:linear-gradient(135deg,var(--magenta),var(--purple));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;box-shadow:0 0 20px rgba(192,56,228,0.3);" onmouseover="this.style.boxShadow=\'0 0 30px rgba(192,56,228,0.6)\'" onmouseout="this.style.boxShadow=\'0 0 20px rgba(192,56,228,0.3)\'">🚀 Launch Token Now</button>');
+        return;
+      }
+
       // Unknown
-      agentChatAdd('agent', 'I\'m not sure what you mean. Try:<br><br>• <strong style="color:var(--cyan);">Check my balance</strong><br>• <strong style="color:var(--cyan);">What\'s the total supply?</strong><br>• <strong style="color:var(--cyan);">Send 100 to 0xAbC...</strong><br><br>Or say <strong style="color:var(--magenta);">help</strong> for all commands.');
+      agentChatAdd('agent', 'I\'m not sure what you mean. Try:<br><br>• <strong style="color:var(--magenta);">Deploy a token called MyCoin symbol MYC supply 1000000</strong><br>• <strong style="color:#ffd700;">Buy 100 AIGENT of MYC</strong><br>• <strong style="color:#ffd700;">Sell 1000 MYC</strong><br>• <strong style="color:var(--cyan);">Check my balance</strong><br>• <strong style="color:var(--cyan);">What\'s the total supply?</strong><br>• <strong style="color:var(--cyan);">Send 100 to 0xAbC...</strong><br><br>Or say <strong style="color:var(--magenta);">help</strong> for all commands.');
     };
 
     async function agentExecuteTransfer(to, amountStr) {
       el.agentSteps.style.display = 'block';
       agentResetSteps();
+      setStepTitles(['Parse Command', 'Sign EIP-2612 Permit (off-chain)', 'Submit permit() Transaction', 'Submit transferFrom() Transaction']);
+      showSteps(4);
 
       agentStepDone(1, 'Send ' + amountStr + ' AIGENT to ' + shorten(to));
 
@@ -2586,6 +2968,117 @@
       } catch (e) {
         agentStepError(2, e.message || 'Signing failed');
         agentChatAdd('agent', 'Permit signing failed. Your wallet may not support <code>eth_signTypedData_v4</code>.');
+      }
+    }
+
+    // ── Deploy Token via AIgent Rise (BondingCurve) ──
+
+    async function agentExecuteDeploy(params) {
+      el.agentSteps.style.display = 'block';
+      agentResetSteps();
+      setStepTitles(['Parse Request', 'Check AIGENT Allowance', 'Approve AIGENT Spend', 'Launch Token + Curve', 'Verify on Explorer']);
+      showSteps(5);
+
+      const name = params.name || 'MyToken';
+      const symbol = (params.symbol || 'MTK').toUpperCase();
+      const supply = params.supply || '1000000';
+      const totalSupply = parseEther(supply);
+      const curveBps = 8000n;        // 80% to curve
+      const pMin = parseEther('0.0001');  // 0.0001 AIGENT starting price
+      const pMax = parseEther('100');     // 100 AIGENT max price per token
+
+      // Step 1: Parse request
+      agentStepDone(1, 'Token: ' + name + ' ($' + symbol + ') — Supply: ' + parseInt(supply).toLocaleString() + ' | 80% to curve');
+
+      // Step 2: Check AIGENT allowance for BondingCurve
+      agentStepActive(2, 'Checking AIGENT allowance for BondingCurve...');
+      try {
+        const bcAddr = BONDING_CURVE_ADDR;
+
+        const deployFee = await publicClient.readContract({
+          address: bcAddr, abi: BONDING_CURVE_ABI, functionName: 'deployFee',
+        });
+
+        // Check AIGENT balance
+        const aigentBal = await publicClient.readContract({
+          address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'balanceOf', args: [userAddress],
+        });
+        if (aigentBal < deployFee) {
+          agentStepError(2, 'Insufficient AIGENT: need ' + formatEther(deployFee) + ', have ' + formatEther(aigentBal));
+          agentChatAdd('agent', '❌ <strong>Not enough AIGENT!</strong><br><br>Deploy fee: <strong>' + formatEther(deployFee) + ' AIGENT</strong><br>Your balance: <strong>' + formatEther(aigentBal) + ' AIGENT</strong><br><br>Get AIGENT from the Presale panel or add liquidity.');
+          return;
+        }
+
+        const allowance = await publicClient.readContract({
+          address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'allowance',
+          args: [userAddress, bcAddr],
+        });
+
+        agentStepDone(2, 'Fee: ' + formatEther(deployFee) + ' AIGENT | Balance: ' + formatEther(aigentBal) + ' | Allowance: ' + formatEther(allowance));
+
+        // Step 3: Approve if needed
+        if (allowance < deployFee) {
+          agentStepActive(3, '⚠️ Check your wallet — confirm the AIGENT approval...');
+          try {
+            const approveHash = await walletClient.writeContract({
+              address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'approve',
+              args: [bcAddr, deployFee], chain: xLayer, account: userAddress,
+            });
+            agentStepDone(3, 'Approved — ' + approveHash);
+            await publicClient.waitForTransactionReceipt({ hash: approveHash });
+          } catch (e) {
+            agentStepError(3, e.shortMessage || e.message);
+            agentChatAdd('agent', '❌ Approval failed: ' + (e.shortMessage || e.message) + '<br><br>Make sure you confirmed the transaction in your wallet.');
+            return;
+          }
+        } else {
+          agentStepDone(3, 'Allowance sufficient — skip approval');
+        }
+
+        // Step 4: Launch token + curve via BondingCurve
+        agentStepActive(4, 'Launching ' + name + ' ($' + symbol + ') via AIgent Rise...');
+        try {
+          const launchHash = await walletClient.writeContract({
+            address: bcAddr, abi: BONDING_CURVE_ABI, functionName: 'launch',
+            args: [name, symbol, totalSupply, curveBps, pMin, pMax, userAddress],
+            chain: xLayer, account: userAddress,
+          });
+          agentStepDone(4, 'Launch tx: ' + launchHash);
+
+          const receipt = await publicClient.waitForTransactionReceipt({ hash: launchHash });
+
+          // Extract token address + curveId from Launched event
+          const topic0 = '0xd0e11d530087619172d445573482c32639eb84569c8f6c75632841704b2b45b8';
+          const deployLog = receipt.logs.find(log =>
+            log.address.toLowerCase() === bcAddr.toLowerCase() && log.topics[0] === topic0
+          );
+          let tokenAddr = 'Unknown';
+          let curveId = '?';
+          if (deployLog) {
+            curveId = BigInt(deployLog.topics[1]).toString();
+            tokenAddr = '0x' + deployLog.topics[2].slice(26);
+          }
+
+          agentStepDone(5, 'Curve #' + curveId + ' — ' + parseInt(supply).toLocaleString() + ' $' + symbol + ' launched');
+          agentChatAdd('agent',
+            '🎉 <strong style="color:var(--green);font-size:16px;">Token Launched on AIgent Rise!</strong><br><br>' +
+            '<table style="width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;">' +
+            '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Token</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);"><strong>' + name + '</strong> ($' + symbol + ')</td></tr>' +
+            '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Address</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);"><code>' + tokenAddr + '</code></td></tr>' +
+            '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Curve ID</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">#' + curveId + ' — 80% supply on bonding curve</td></tr>' +
+            '<tr><td style="padding:6px 8px;">Explorer</td><td style="padding:6px 8px;"><a href="' + XLAYER_EXPLORER + '/address/' + tokenAddr + '" target="_blank" style="color:var(--cyan);">View on OKX Explorer &rarr;</a></td></tr>' +
+            '</table><br>' +
+            '<span style="color:var(--dim);font-size:11px;">Token tradable instantly on <strong style="color:#ffd700;">AIgent Rise</strong> — switch to the Trade tab.</span>'
+          );
+
+        } catch (e) {
+          agentStepError(4, e.shortMessage || e.message);
+          agentChatAdd('agent', 'Deployment failed: ' + (e.shortMessage || e.message));
+        }
+
+      } catch (e) {
+        agentStepError(2, e.shortMessage || e.message);
+        agentChatAdd('agent', 'Failed to read BondingCurve: ' + (e.shortMessage || e.message) + '. Make sure you are connected to X Layer.');
       }
     }
 
@@ -2837,6 +3330,434 @@
       } finally { $('btn-claim-lp').disabled = false; }
     };
 
+    // ═══════════════════════════════════════════════════════
+    //  AIGENT RISE — Bonding Curve Trading
+    // ═══════════════════════════════════════════════════════
+
+    let riseCurveData = null, riseTradeMode = 'buy', riseSelectedCurveId = 0;
+    const riseCanvas = document.getElementById('rise-canvas');
+    const riseCtx = riseCanvas ? riseCanvas.getContext('2d') : null;
+
+    function riseMsg(text, type) {
+      const el = $('rise-msg');
+      el.innerHTML = text; el.className = 'rise-msg show ' + (type || 'info');
+    }
+
+    function riseUpdateUI() {
+      if (!riseCurveData) return;
+      const d = riseCurveData;
+      const sold = parseFloat(ethers.formatEther(d.sold));
+      const total = parseFloat(ethers.formatEther(d.totalCurveSupply));
+      const reserve = parseFloat(ethers.formatEther(d.aigentReserve));
+      const priceRaw = d.currentPrice || d.pMin;
+      const price = parseFloat(ethers.formatEther(priceRaw));
+      const pct = total > 0 ? (sold / total * 100) : 0;
+
+      $('rise-price').textContent = price.toFixed(8) + ' AIGENT';
+      $('rise-reserve').textContent = reserve.toFixed(2) + ' AIGENT';
+      $('rise-sold').textContent = sold.toFixed(0) + ' / ' + total.toFixed(0);
+      $('rise-status').textContent = 'Trading';
+      $('rise-status').style.color = '#00e676';
+      $('rise-progress-pct').textContent = pct.toFixed(1) + '%';
+      $('rise-progress-fill').style.width = pct + '%';
+      $('rise-curve-label').textContent = reserve.toFixed(2) + ' AIGENT locked in curve';
+
+      // Update preview with current inputs
+      riseUpdatePreview();
+      // Render chart
+      riseRenderChart();
+    }
+
+    function riseRenderChart() {
+      if (!riseCtx || !riseCurveData) return;
+      const canvas = riseCanvas;
+      const ctx = riseCtx;
+      const W = canvas.parentElement.clientWidth - 8;
+      const H = 220;
+      canvas.width = W * (window.devicePixelRatio || 1);
+      canvas.height = H * (window.devicePixelRatio || 1);
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(canvas.width / W, 0, 0, canvas.height / H, 0, 0);
+
+      const pad = { top: 20, right: 30, bottom: 30, left: 50 };
+      const pw = W - pad.left - pad.right;
+      const ph = H - pad.top - pad.bottom;
+
+      // Background
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+      ctx.fillRect(0, 0, W, H);
+
+      // Grid lines
+      ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = pad.top + (ph * i) / 4;
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+        const x = pad.left + (pw * i) / 4;
+        ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, H - pad.bottom); ctx.stroke();
+      }
+
+      const d = riseCurveData;
+      const totalSup = parseFloat(ethers.formatEther(d.totalCurveSupply));
+      const sold = parseFloat(ethers.formatEther(d.sold));
+      const pMin = parseFloat(ethers.formatEther(d.pMin));
+      const pMax = parseFloat(ethers.formatEther(d.pMax));
+
+      // Calculate max price for Y axis (price when all tokens sold)
+      const maxPrice = pMax;
+
+      // Draw bonding curve (price vs sold)
+      ctx.beginPath();
+      ctx.strokeStyle = '#00e5ff';
+      ctx.lineWidth = 2.5;
+      ctx.shadowColor = 'rgba(0,229,255,0.5)';
+      ctx.shadowBlur = 8;
+
+      const steps = 100;
+      for (let i = 0; i <= steps; i++) {
+        const xFrac = i / steps;
+        const xSold = xFrac * totalSup;
+        const price = pMin + ((pMax - pMin) * xSold) / totalSup;
+        const px = pad.left + (xFrac * pw);
+        const py = pad.top + ph - ((price / maxPrice) * ph);
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Current position dot
+      const curXFrac = totalSup > 0 ? sold / totalSup : 0;
+      const curPrice = pMin + ((pMax - pMin) * sold) / totalSup;
+      const curPX = pad.left + (curXFrac * pw);
+      const curPY = pad.top + ph - ((curPrice / maxPrice) * ph);
+
+      // Glow ring
+      ctx.beginPath();
+      ctx.arc(curPX, curPY, 8, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,215,0,0.15)';
+      ctx.fill();
+      // Dot
+      ctx.beginPath();
+      ctx.arc(curPX, curPY, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffd700';
+      ctx.shadowColor = 'rgba(255,215,0,0.8)';
+      ctx.shadowBlur = 12;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Price label at current position
+      ctx.fillStyle = '#ffd700';
+      ctx.font = '10px "SF Mono","Fira Code",monospace';
+      ctx.textAlign = curXFrac > 0.8 ? 'right' : 'left';
+      const labelX = curXFrac > 0.8 ? curPX - 12 : curPX + 12;
+      ctx.fillText(parseFloat(curPrice.toFixed(8)) + ' AIGENT', labelX, curPY - 8);
+      ctx.textAlign = 'start';
+
+      // Axes labels
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.font = '9px "Inter",sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Tokens Sold →', pad.left + pw / 2, H - 4);
+      ctx.save();
+      ctx.translate(10, pad.top + ph / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('Price (AIGENT) →', 0, 0);
+      ctx.restore();
+
+      // Area fill under curve
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const xFrac = i / steps;
+        const xSold2 = xFrac * totalSup;
+        const price2 = pMin + ((pMax - pMin) * xSold2) / totalSup;
+        const px2 = pad.left + (xFrac * pw);
+        const py2 = pad.top + ph - ((price2 / maxPrice) * ph);
+        if (i === 0) ctx.moveTo(px2, pad.top + ph);
+        ctx.lineTo(px2, py2);
+      }
+      ctx.lineTo(pad.left + pw, pad.top + ph);
+      ctx.closePath();
+      const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ph);
+      grad.addColorStop(0, 'rgba(0,229,255,0.06)');
+      grad.addColorStop(1, 'rgba(0,229,255,0.01)');
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Sold region fill
+      ctx.beginPath();
+      ctx.moveTo(pad.left, pad.top + ph);
+      for (let i = 0; i <= Math.floor(curXFrac * steps); i++) {
+        const xFrac = i / steps;
+        const xSold3 = xFrac * totalSup;
+        const price3 = pMin + ((pMax - pMin) * xSold3) / totalSup;
+        const px3 = pad.left + (xFrac * pw);
+        const py3 = pad.top + ph - ((price3 / maxPrice) * ph);
+        ctx.lineTo(px3, py3);
+      }
+      ctx.lineTo(curPX, pad.top + ph);
+      ctx.closePath();
+      const grad2 = ctx.createLinearGradient(0, pad.top, 0, pad.top + ph);
+      grad2.addColorStop(0, 'rgba(255,215,0,0.08)');
+      grad2.addColorStop(1, 'rgba(255,140,0,0.02)');
+      ctx.fillStyle = grad2;
+      ctx.fill();
+    }
+
+    window.riseSetMode = function(mode) {
+      riseTradeMode = mode;
+      const tabB = $('rise-tab-buy');
+      const tabS = $('rise-tab-sell');
+      const btn = $('rise-action-btn');
+      tabB.className = 'rise-tab' + (mode === 'buy' ? ' active-buy' : '');
+      tabS.className = 'rise-tab' + (mode === 'sell' ? ' active-sell' : '');
+      if (mode === 'buy') {
+        $('rise-input-label').innerHTML = 'You Pay (AIGENT)';
+        $('rise-currency-in').textContent = 'AIGENT';
+        btn.textContent = 'BUY';
+        btn.className = 'rise-btn rise-btn-buy';
+      } else {
+        $('rise-input-label').innerHTML = 'You Sell (Tokens)';
+        $('rise-currency-in').textContent = 'TOKEN';
+        btn.textContent = 'SELL';
+        btn.className = 'rise-btn rise-btn-sell';
+      }
+      $('rise-amount').value = '';
+      riseUpdatePreview();
+    }
+
+    async function riseUpdatePreview() {
+      if (!riseCurveData || !publicClient || BONDING_CURVE_ADDR === '0x0000000000000000000000000000000000000000') {
+        $('rise-preview-amount').textContent = '--';
+        return;
+      }
+      const amt = $('rise-amount').value.trim();
+      if (!amt || isNaN(parseFloat(amt)) || parseFloat(amt) <= 0) {
+        $('rise-preview-amount').textContent = '0';
+        return;
+      }
+
+      try {
+        const curveId = riseSelectedCurveId;
+        if (riseTradeMode === 'buy') {
+          const aigentIn = ethers.parseEther(amt);
+          const tokensOut = await publicClient.readContract({
+            address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI,
+            functionName: 'getBuyPreview', args: [curveId, aigentIn],
+          });
+          $('rise-preview-amount').textContent = parseFloat(ethers.formatEther(tokensOut)).toFixed(2);
+        } else {
+          const tokensIn = ethers.parseEther(amt);
+          const aigentOut = await publicClient.readContract({
+            address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI,
+            functionName: 'getSellPreview', args: [curveId, tokensIn],
+          });
+          $('rise-preview-amount').textContent = parseFloat(ethers.formatEther(aigentOut)).toFixed(4);
+        }
+      } catch (e) {
+        $('rise-preview-amount').textContent = '--';
+      }
+    }
+
+    window.riseExecute = async function() {
+      if (!walletClient || !riseCurveData) { riseMsg('Connect wallet first.', 'error'); return; }
+      const amt = $('rise-amount').value.trim();
+      if (!amt || parseFloat(amt) <= 0) { riseMsg('Enter an amount.', 'error'); return; }
+
+      const btn = $('rise-action-btn');
+      btn.disabled = true;
+      const origText = btn.textContent;
+      btn.textContent = '...';
+
+      try {
+        const curveId = riseSelectedCurveId;
+        if (riseTradeMode === 'buy') {
+          const aigentIn = ethers.parseEther(amt);
+
+          // Check AIGENT balance
+          const aigentBal = await publicClient.readContract({
+            address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'balanceOf', args: [userAddress],
+          });
+          if (aigentBal < aigentIn) { riseMsg('Insufficient AIGENT balance.', 'error'); btn.disabled = false; btn.textContent = origText; return; }
+
+          // Check remaining curve supply
+          const remaining = riseCurveData.totalCurveSupply - riseCurveData.sold;
+          if (remaining <= 0n) { riseMsg('Curve sold out.', 'error'); btn.disabled = false; btn.textContent = origText; return; }
+
+          // Approve if needed
+          const allowance = await publicClient.readContract({
+            address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'allowance',
+            args: [userAddress, BONDING_CURVE_ADDR],
+          });
+          if (allowance < aigentIn * 2n) { // approve extra for fees
+            riseMsg('Approving AIGENT spend...', 'info');
+            const appHash = await walletClient.writeContract({
+              address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'approve',
+              args: [BONDING_CURVE_ADDR, ethers.MaxUint256], chain: xLayer, account: userAddress,
+            });
+            await publicClient.waitForTransactionReceipt({ hash: appHash });
+          }
+          // Get expected tokens for slippage
+          const expected = await publicClient.readContract({
+            address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'getBuyPreview',
+            args: [curveId, aigentIn],
+          });
+          const minOut = expected * 95n / 100n;
+          riseMsg('Buying tokens...', 'info');
+          const hash = await walletClient.writeContract({
+            address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'buy',
+            args: [curveId, aigentIn, minOut], chain: xLayer, account: userAddress,
+          });
+          await publicClient.waitForTransactionReceipt({ hash });
+          riseMsg('Buy successful! <a href="' + XLAYER_EXPLORER + '/tx/' + hash + '" target="_blank" style="color:var(--cyan);">View tx</a>', 'success');
+        } else {
+          const tokensIn = ethers.parseEther(amt);
+          const tokenAddr = riseCurveData.token;
+
+          // Check token balance
+          const TOKEN_ABI_FULL = parseAbi(['function balanceOf(address) view returns (uint256)', 'function allowance(address,address) view returns (uint256)', 'function approve(address,uint256) external returns (bool)']);
+          const tokBal = await publicClient.readContract({
+            address: tokenAddr, abi: TOKEN_ABI_FULL, functionName: 'balanceOf', args: [userAddress],
+          });
+          if (tokBal < tokensIn) { riseMsg('Insufficient token balance.', 'error'); btn.disabled = false; btn.textContent = origText; return; }
+
+          // Check sell amount > 0
+          if (riseCurveData.sold <= 0n || riseCurveData.aigentReserve <= 0n) { riseMsg('No liquidity in curve.', 'error'); btn.disabled = false; btn.textContent = origText; return; }
+
+          // Approve token if needed
+          const allowance = await publicClient.readContract({
+            address: tokenAddr, abi: TOKEN_ABI_FULL, functionName: 'allowance', args: [userAddress, BONDING_CURVE_ADDR],
+          });
+          if (allowance < tokensIn) {
+            riseMsg('Approving token spend...', 'info');
+            const appHash = await walletClient.writeContract({
+              address: tokenAddr, abi: TOKEN_ABI_FULL, functionName: 'approve',
+              args: [BONDING_CURVE_ADDR, ethers.MaxUint256], chain: xLayer, account: userAddress,
+            });
+            await publicClient.waitForTransactionReceipt({ hash: appHash });
+          }
+          // Get expected AIGENT for slippage
+          const expected = await publicClient.readContract({
+            address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'getSellPreview',
+            args: [curveId, tokensIn],
+          });
+          const minOut = expected * 95n / 100n;
+          riseMsg('Selling tokens...', 'info');
+          const hash = await walletClient.writeContract({
+            address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'sell',
+            args: [curveId, tokensIn, minOut], chain: xLayer, account: userAddress,
+          });
+          await publicClient.waitForTransactionReceipt({ hash });
+          riseMsg('Sell successful! <a href="' + XLAYER_EXPLORER + '/tx/' + hash + '" target="_blank" style="color:var(--cyan);">View tx</a>', 'success');
+        }
+
+        $('rise-amount').value = '';
+        await riseRefreshCurve(curveId);
+      } catch (e) {
+        if (e.code !== 4001) riseMsg('Failed: ' + (e.shortMessage || e.message), 'error');
+        else riseMsg('Transaction rejected.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = origText;
+      }
+    }
+
+    async function riseRefreshCurve(curveId) {
+      if (!publicClient || BONDING_CURVE_ADDR === '0x0000000000000000000000000000000000000000') return;
+      try {
+        const [curve, progress] = await Promise.all([
+          publicClient.readContract({ address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'curves', args: [curveId] }),
+          publicClient.readContract({ address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'getProgress', args: [curveId] }),
+        ]);
+        // Get token info
+        const TOKEN_ABI = parseAbi(['function symbol() view returns (string)', 'function name() view returns (string)']);
+        let symbol = 'TOKEN', name = 'Unknown';
+        try {
+          [symbol, name] = await Promise.all([
+            publicClient.readContract({ address: curve[0], abi: TOKEN_ABI, functionName: 'symbol' }),
+            publicClient.readContract({ address: curve[0], abi: TOKEN_ABI, functionName: 'name' }),
+          ]);
+        } catch (e) { /* ignore */ }
+
+        riseCurveData = {
+          token: curve[0], creator: curve[1], totalCurveSupply: curve[2], sold: curve[3],
+          aigentReserve: curve[4], pMin: curve[5], pMax: curve[6], createdAt: curve[7],
+          uniswapPool: curve[8], currentPrice: progress[3], percentBps: progress[4],
+          symbol: symbol, name: name,
+        };
+
+        $('rise-preview-symbol').textContent = symbol;
+        riseUpdateUI();
+      } catch (e) {
+        console.error('riseRefreshCurve:', e);
+      }
+    }
+
+    async function riseLoadCurveList() {
+      if (!publicClient || BONDING_CURVE_ADDR === '0x0000000000000000000000000000000000000000') return;
+      try {
+        const count = await publicClient.readContract({
+          address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'curveCount',
+        });
+        const n = Number(count);
+        const container = $('rise-curve-list');
+        if (n === 0) {
+          container.innerHTML = '<span style="font-size:12px;color:var(--dim);">No tokens launched yet. Be the first!</span>';
+          return;
+        }
+
+        // Get symbols for all curves
+        const TOKEN_ABI = parseAbi(['function symbol() view returns (string)']);
+        let html = '';
+        for (let i = 0; i < Math.min(n, 20); i++) {
+          const c = await publicClient.readContract({
+            address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'curves', args: [i],
+          });
+          let symbol = '?';
+          try {
+            symbol = await publicClient.readContract({
+              address: c[0], abi: TOKEN_ABI, functionName: 'symbol',
+            });
+          } catch (e) { /* ignore */ }
+          const active = i === riseSelectedCurveId ? ' active' : '';
+          html += '<button class="rise-curve-chip' + active + '" data-id="' + i + '" onclick="riseSelectCurve(' + i + ')" style="' +
+            'padding:8px 16px;border-radius:20px;border:1px solid ' + (c[7] ? 'rgba(255,215,0,0.5)' : 'rgba(255,255,255,0.1)') + ';' +
+            'background:' + (c[7] ? 'rgba(255,215,0,0.08)' : 'rgba(255,255,255,0.02)') + ';' +
+            'color:' + (c[7] ? '#ffd700' : 'var(--text-bright)') + ';font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;' +
+            (i === riseSelectedCurveId ? 'border-color:rgba(0,229,255,0.5)!important;box-shadow:0 0 8px rgba(0,229,255,0.2);' : '') +
+          '">' + symbol + (c[7] ? ' ★' : '') + '</button>';
+        }
+        if (n > 20) html += '<span style="font-size:11px;color:var(--dim);padding:8px;">+ ' + (n - 20) + ' more</span>';
+        container.innerHTML = html;
+
+        // Load first curve if none selected
+        if (riseSelectedCurveId >= n) riseSelectedCurveId = 0;
+        await riseRefreshCurve(riseSelectedCurveId);
+      } catch (e) {
+        console.error('riseLoadCurveList:', e);
+      }
+    }
+
+    window.riseSelectCurve = async function(id) {
+      riseSelectedCurveId = id;
+      // Update chip styles
+      const chips = document.querySelectorAll('#rise-curve-list .rise-curve-chip');
+      chips.forEach(function(chip) {
+        const cid = parseInt(chip.getAttribute('data-id'));
+        if (cid === id) {
+          chip.style.borderColor = 'rgba(0,229,255,0.5)';
+          chip.style.boxShadow = '0 0 8px rgba(0,229,255,0.2)';
+        } else {
+          chip.style.borderColor = 'rgba(255,255,255,0.1)';
+          chip.style.boxShadow = 'none';
+        }
+      });
+      await riseRefreshCurve(id);
+    };
+
+    window.addEventListener('resize', () => { if (riseCurveData) riseRenderChart(); });
+
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', (accounts) => {
         if (accounts.length === 0) { renderDisconnected(); showMsg('Wallet disconnected.', 'error'); }
@@ -2844,6 +3765,26 @@
       });
       window.ethereum.on('chainChanged', () => { window.location.reload(); });
     }
+
+    // Auto-reconnect if wallet was previously connected
+    (async function autoReconnect() {
+      const provider = window.okxwallet || window.ethereum;
+      if (!provider) return;
+      try {
+        const accounts = await provider.request({ method: 'eth_accounts' });
+        if (!accounts || accounts.length === 0) return;
+        userAddress = accounts[0];
+        const chainIdHex = await provider.request({ method: 'eth_chainId' });
+        const currentChainId = parseInt(chainIdHex, 16);
+        el.chain.textContent = currentChainId === CHAIN_ID ? 'X Layer' : 'Chain ' + currentChainId;
+        el.chain.className = currentChainId === CHAIN_ID ? 'dapp-chain-badge' : 'dapp-chain-badge wrong';
+        el.switchChainBtn.style.display = currentChainId === CHAIN_ID ? 'none' : 'inline-block';
+        publicClient = createPublicClient({ chain: xLayer, transport: http(XLAYER_RPC) });
+        walletClient = createWalletClient({ chain: xLayer, transport: custom(provider) });
+        renderConnected();
+        await dappRefreshBalance();
+      } catch (_) { /* wallet locked or not connected */ }
+    })();
   </script>
 </body>
 </html>
