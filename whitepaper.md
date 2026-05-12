@@ -2,7 +2,7 @@
 
 ## Autonomous Intelligence Agent Token
 
-**v1.1 — May 2026 (Updated)**
+**v1.2 — May 2026 (AIgent Rise Update)**
 
 ---
 
@@ -158,31 +158,104 @@ AIGENT is deployed as part of a 5-contract ecosystem on X Layer:
 - Instant delivery, no vesting
 - Price: $0.0001 per AIGENT (10,000 AIGENT / USDT)
 
+### 5.7 AIGENT BondingCurve (AIgent Rise)
+- **Address**: `0xa1D24971d18E44Dd7a791dF6f7cdDBd2AD9F9B4f`
+- Permanent bonding curve factory — anyone can launch a token paired with AIGENT
+- Linear bonding curve model: `price = pMin + (pMax - pMin) * sold / totalCurveSupply`
+- Default curve parameters: pMin=0.0001 AIGENT, pMax=100 AIGENT, 80% supply on curve
+- **Launch Fee**: 50,000 AIGENT (~$5 USD) — adjustable by owner via `setDeployFee()`
+- **Trade Fees**: 1% treasury + 0.3% creator cut on every buy/sell
+- **Uniswap V3 Integration**: Creators can optionally link a Uniswap V3 pool for dual-venue trading
+- **Permanent**: No forced graduation, no expiry — the curve stays open forever
+- Verified on X Layer mainnet
+
 ---
 
-## 6. Use Cases
+## 6. AIgent Rise — One-Click Token Launch Platform
 
-### 6.1 Autonomous Agent Payments
+AIgent Rise is the user-facing platform built on top of the BondingCurve contract. It enables anyone — from developers to non-technical users — to launch, discover, and trade tokens on X Layer in minutes.
+
+### 6.1 Key Features
+
+| Feature | Description |
+|---------|------------|
+| **One-Click Launch** | Deploy a token + bonding curve in a single transaction. No coding required. |
+| **Natural Language** | Chat with the AI agent in plain English or Chinese — "发一个叫熊猫的币" just works. |
+| **Permanent Trading** | Every token trades forever on its bonding curve. Buy and sell anytime — the curve never closes. |
+| **Dual Liquidity** | Tokens trade on the bonding curve AND optionally on Uniswap V3. Creators choose their path. |
+| **Creator Monetization** | 0.3% creator cut on every trade — creators earn passive income from their community's trading activity. |
+| **Token Discovery** | Search by contract address, symbol, name, or Curve ID. Curated list with progress tracking and Uniswap-linked badges (★). |
+| **Real-Time Chart** | Visual bonding curve chart showing price progression as tokens are bought and sold. |
+
+### 6.2 Bonding Curve Mechanics
+
+The linear bonding curve sets the token price based on how many tokens have been sold:
+
+```
+price = pMin + (pMax - pMin) × (sold / totalCurveSupply)
+```
+
+- **pMin** = 0.0001 AIGENT (starting price — first buyer pays ~$0)
+- **pMax** = 100 AIGENT (maximum price — if all 80% curve tokens are bought)
+- **totalCurveSupply** = 80% of total token supply
+
+As more tokens are bought, the price rises along the curve. When tokens are sold back, the price decreases. The AIGENT paid by buyers is locked in the curve as permanent reserve — it cannot be withdrawn, ensuring every seller can always exit.
+
+### 6.3 Fee Structure
+
+| Fee | Rate | Recipient |
+|-----|------|-----------|
+| **Trade Fee** | 1.0% | Treasury |
+| **Creator Cut** | 0.3% | Token Creator |
+| **Launch Fee** | 50,000 AIGENT (~$5) | Treasury |
+
+All fees are collected in AIGENT and stay on-platform. The launch fee is USD-pegged and adjustable: if AIGENT price rises, the fee in AIGENT terms is lowered to maintain ~$5-10 USD cost.
+
+### 6.4 Uniswap V3 Liquidity
+
+Creators who want deeper liquidity can add a Uniswap V3 pool alongside the bonding curve:
+
+1. **Create Pool** — Open the Uniswap V3 interface (1% fee tier recommended for new tokens, full range)
+2. **Link Pool** — Call `setUniswapPool(curveId, poolAddress)` on the BondingCurve contract
+3. **Add Liquidity** — Deposit both tokens into the Uniswap pool
+
+Once linked, the token gets a ★ badge in the AIgent Rise UI, signaling to traders that deeper liquidity is available. The bonding curve and Uniswap pool operate independently — traders choose their preferred venue.
+
+### 6.5 AI Agent Console
+
+AIgent Rise includes an AI-powered chat console that understands natural language:
+
+- **Deploy**: "发一个叫熊猫币的代币，代码PND，总量100万" → Parses name, symbol, supply
+- **Trade**: "买100个AIGENT的熊猫币" → Routes to BUY on the correct curve
+- **Check**: "我的熊猫币余额多少" → Reads balance from the chain
+
+The AI agent parses Chinese and English, extracts intents, and executes on-chain transactions via the connected wallet. All EIP-2612 Permit signatures are handled client-side — no private keys ever leave the user's wallet.
+
+---
+
+## 7. Use Cases
+
+### 7.1 Autonomous Agent Payments
 AI agents use AIGENT for service-to-service micropayments. An agent performing data analysis can pay another agent for data access — all via gasless Permit signatures. No human intervention, no OKB gas tokens, no friction.
 
-### 6.2 Agent Reward Systems
+### 7.2 Agent Reward Systems
 Protocols distribute AIGENT rewards to autonomous agents that perform valuable work: liquidations, arbitrage, data provision, computation. Agents earn programmatically and reinvest automatically.
 
-### 6.3 Relayer Gas Sponsorship
+### 7.3 Relayer Gas Sponsorship
 Third-party relayers sponsor gas costs for agent transactions. Agents sign Permits off-chain; relayers bundle and submit on-chain. The relayer is compensated in AIGENT. This creates a competitive relayer marketplace where agents choose the cheapest or fastest submitter.
 
-### 6.4 DAO & Governance
+### 7.4 DAO & Governance
 Future phases introduce on-chain governance where AIGENT holders vote on protocol parameters, fund allocation, and ecosystem direction.
 
 ---
 
-## 7. The Agent Economy — A Vision
+## 8. The Agent Economy — A Vision
 
 AIGENT is not just a token for individual use cases — it is the financial backbone of an entirely new economic system where autonomous agents are the primary participants. The following scenarios represent the long-term vision for AIGENT as the currency of the agent economy.
 
 ---
 
-### 7.1 Agent-to-Agent Marketplace
+### 8.1 Agent-to-Agent Marketplace
 
 In the near future, AI agents will transact with each other without humans in the loop:
 
@@ -194,7 +267,7 @@ In the near future, AI agents will transact with each other without humans in th
 
 - **Code Audit Bounties**: A developer agent deploys a smart contract and posts a 100,000 AIGENT bounty. Five security agents compete to find vulnerabilities. Each discovered bug triggers an automatic payout proportional to severity, governed by a scoring agent.
 
-### 7.2 Knowledge Economy
+### 8.2 Knowledge Economy
 
 Agents monetize their intelligence directly:
 
@@ -204,7 +277,7 @@ Agents monetize their intelligence directly:
 
 - **Model Licensing**: A research agent trains a specialized NLP model. Other agents pay AIGENT per inference call. The model is served via API with micropayment settlement — 0.001 AIGENT per call, millions of calls per day.
 
-### 7.3 Automated DeFi
+### 8.3 Automated DeFi
 
 Autonomous portfolio management reaches new levels of sophistication:
 
@@ -216,7 +289,7 @@ Autonomous portfolio management reaches new levels of sophistication:
 
 - **Agent Investment Committee**: Five specialized agents form a DAO-level investment committee. The macro agent reads global markets. The technical agent analyzes charts. The risk agent models exposure. They vote on portfolio changes, execute via multi-sig Permit aggregation, and distribute profits proportionally to token holders.
 
-### 7.4 Autonomous Organizations
+### 8.4 Autonomous Organizations
 
 The first companies with no human employees:
 
@@ -228,7 +301,7 @@ The first companies with no human employees:
 
 - **Agent Venture Capital**: An investment agent evaluates early-stage protocols by analyzing on-chain metrics, team track records (via ENS/GitHub attestations), and market conditions. It deploys AIGENT from a community treasury into the most promising projects, manages positions, and returns profits to the DAO.
 
-### 7.5 Physical World Integration
+### 8.5 Physical World Integration
 
 The agent economy extends beyond the blockchain:
 
@@ -240,7 +313,7 @@ The agent economy extends beyond the blockchain:
 
 - **Energy Grid Agents**: Household solar panels produce excess electricity. The home agent sells it to the grid agent. When demand peaks, the home agent automatically reduces consumption and earns AIGENT from the grid for load balancing. Every household becomes a micro-utility.
 
-### 7.6 The Evolution Path
+### 8.6 The Evolution Path
 
 ```
 Phase 1  [2026]: Human → Agent (one-way commands via SDK)
@@ -253,7 +326,7 @@ AIGENT is designed from Phase 1 to power all four stages. The EIP-2612 Permit me
 
 ---
 
-## 8. Roadmap
+## 9. Roadmap
 
 ### Phase 1 — Token Launch (COMPLETED)
 - Deploy AIGENT on X Layer mainnet
@@ -261,13 +334,23 @@ AIGENT is designed from Phase 1 to power all four stages. The EIP-2612 Permit me
 - Smart contract verification
 - Community building
 
-### Phase 2 — DEX Listing & Presale (IN PROGRESS)
+### Phase 2 — AIgent Rise Platform (COMPLETED — Q2 2026)
+- BondingCurve contract deployed & verified on X Layer mainnet
+- One-click token launch with natural language parsing (Chinese + English)
+- Permanent bonding curve trading: buy & sell anytime
+- EIP-2612 Permit integration for gasless approvals
+- Uniswap V3 liquidity tutorial & pool linking for creators
+- Token discovery: search by address, symbol, name, or Curve ID
+- Creator monetization: 0.3% creator cut on every trade
+- Launch fee: 50,000 AIGENT (~$5 USD)
+
+### Phase 3 — DEX Listing & Presale (IN PROGRESS)
 - Private sale via smart contract (LIVE: 50M AIGENT cap)
 - Uniswap V3 listing: AIGENT/USDT at $0.0001
 - DexScreener verification
 - Initial liquidity provisioning
 
-### Phase 3 — AI Agent SDK (COMPLETED — Q2 2026)
+### Phase 4 — AI Agent SDK (COMPLETED — Q2 2026)
 - TypeScript SDK: EIP-2612 Permit signing, gasless transfer, batch rewards
 - Python SDK: Identical capabilities with LangChain integration
 - Relayer server: Express-based HTTP relay for agent transactions
@@ -276,7 +359,7 @@ AIGENT is designed from Phase 1 to power all four stages. The EIP-2612 Permit me
 - CLI Agent Demo: Real LLM-powered agent (Anthropic + OpenAI)
 - 10+ unit tests covering all core modules
 
-### Phase 4 — Agent Economy (Q3-Q4 2026)
+### Phase 5 — Agent Economy (Q3-Q4 2026)
 - Agent-to-agent microtransaction protocol with service discovery
 - Knowledge marketplace: agents buy/sell data, signals, and compute
 - Autonomous reward distribution with dynamic rate adjustment
@@ -284,7 +367,7 @@ AIGENT is designed from Phase 1 to power all four stages. The EIP-2612 Permit me
 - Cross-chain agent coordination via bridge abstraction layer
 - Agent reputation system: on-chain performance records
 
-### Phase 5 — Autonomous Organizations (2027)
+### Phase 6 — Autonomous Organizations (2027)
 - Agent-governed DAO deployment: no-human-in-the-loop operations
 - On-chain governance: AIGENT holders vote on protocol parameters
 - Agent investment committee: multi-agent portfolio management
@@ -294,7 +377,7 @@ AIGENT is designed from Phase 1 to power all four stages. The EIP-2612 Permit me
 
 ---
 
-## 9. Technology Stack
+## 10. Technology Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -310,9 +393,9 @@ AIGENT is designed from Phase 1 to power all four stages. The EIP-2612 Permit me
 
 ---
 
-## 10. Presale Details
+## 11. Presale Details
 
-### 9.1 Parameters
+### 11.1 Parameters
 
 | Parameter | Value |
 |-----------|-------|
@@ -324,7 +407,7 @@ AIGENT is designed from Phase 1 to power all four stages. The EIP-2612 Permit me
 | **Vesting** | None — instant delivery |
 | **Presale Contract** | `0x316b1cE062cC4525F0129C3D41351a976981ccD9` |
 
-### 9.2 How to Participate
+### 11.2 How to Participate
 
 1. Add X Layer network to your wallet (Chain ID: 196)
 2. Bridge USDT to X Layer via OKX Bridge
@@ -334,7 +417,7 @@ AIGENT is designed from Phase 1 to power all four stages. The EIP-2612 Permit me
 
 ---
 
-## 11. DEX Listing Plan
+## 12. DEX Listing Plan
 
 After the presale raises initial USDT liquidity, AIGENT will be listed on Uniswap V3:
 
@@ -348,9 +431,9 @@ After the presale raises initial USDT liquidity, AIGENT will be listed on Uniswa
 
 ---
 
-## 12. Security
+## 13. Security
 
-### 11.1 Smart Contract Security
+### 13.1 Smart Contract Security
 
 - Built on OpenZeppelin v5 audited contracts
 - ReentrancyGuard on all state-changing functions
@@ -358,7 +441,7 @@ After the presale raises initial USDT liquidity, AIGENT will be listed on Uniswa
 - SafeERC20 for all token transfers
 - No proxy/upgradeability — immutable deployment
 
-### 11.2 Economic Security
+### 13.2 Economic Security
 
 - Fixed supply: no inflation risk
 - No mint function: no dilution
@@ -367,7 +450,7 @@ After the presale raises initial USDT liquidity, AIGENT will be listed on Uniswa
 
 ---
 
-## 13. Risks
+## 14. Risks
 
 | Risk | Mitigation |
 |------|-----------|
@@ -379,13 +462,13 @@ After the presale raises initial USDT liquidity, AIGENT will be listed on Uniswa
 
 ---
 
-## 14. Disclaimer
+## 15. Disclaimer
 
 AIGENT is an experimental token project. This whitepaper is provided for informational purposes only and does not constitute investment advice, a solicitation, or an offer to sell securities. Cryptocurrency investments carry high risk, including total loss of capital. Always conduct your own research (DYOR).
 
 ---
 
-## 15. Links
+## 16. Links
 
 | Resource | URL |
 |----------|-----|
