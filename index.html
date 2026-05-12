@@ -1087,9 +1087,42 @@
     .rise-msg.info { background: rgba(0,229,255,0.08); color: var(--cyan); border: 1px solid rgba(0,229,255,0.15); }
     .rise-msg.error { background: rgba(255,68,68,0.08); color: #ff4444; border: 1px solid rgba(255,68,68,0.15); }
     .rise-msg.success { background: rgba(0,230,118,0.08); color: var(--green); border: 1px solid rgba(0,230,118,0.15); }
+
+    /* Notification Toast */
+    .rise-toast-container {
+      position: fixed; top: 20px; right: 20px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+    }
+    .rise-toast {
+      padding: 14px 22px; border-radius: 12px; font-size: 13px; font-weight: 600;
+      font-family: inherit; pointer-events: auto;
+      animation: riseToastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                 riseToastOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      max-width: 420px;
+    }
+    .rise-toast.success {
+      background: linear-gradient(135deg, rgba(0,230,118,0.15), rgba(0,200,100,0.08));
+      border: 1px solid rgba(0,230,118,0.3); color: #00e676;
+    }
+    .rise-toast.info {
+      background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(0,180,255,0.08));
+      border: 1px solid rgba(0,229,255,0.3); color: #00e5ff;
+    }
+    @keyframes riseToastIn {
+      from { opacity: 0; transform: translateX(60px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes riseToastOut {
+      0%, 70% { opacity: 1; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(60px); }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Notification Toast Container -->
+  <div class="rise-toast-container" id="rise-toast-container"></div>
 
   <!-- Circuit Background Canvas -->
   <canvas id="circuit-bg"></canvas>
@@ -3068,8 +3101,18 @@
             '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Curve ID</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">#' + curveId + ' — 80% supply on bonding curve</td></tr>' +
             '<tr><td style="padding:6px 8px;">Explorer</td><td style="padding:6px 8px;"><a href="' + XLAYER_EXPLORER + '/address/' + tokenAddr + '" target="_blank" style="color:var(--cyan);">View on OKX Explorer &rarr;</a></td></tr>' +
             '</table><br>' +
-            '<span style="color:var(--dim);font-size:11px;">Token tradable instantly on <strong style="color:#ffd700;">AIgent Rise</strong> — switch to the Trade tab.</span>'
+            '<button onclick="riseGoToNewToken(' + curveId + ')" style="padding:10px 20px;background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-right:8px;">Trade $' + symbol + ' Now</button>' +
+            '<span style="color:var(--dim);font-size:11px;">or scroll down to AIgent Rise</span>'
           );
+
+          // Auto-switch: refresh list, select new curve, scroll to Rise panel
+          await riseLoadCurveList();
+          await riseSelectCurve(parseInt(curveId));
+          setTimeout(function() {
+            const riseSection = document.getElementById('rise');
+            if (riseSection) riseSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 300);
+          showNotification('$' + symbol + ' launched on AIgent Rise!', 'success');
 
         } catch (e) {
           agentStepError(4, e.shortMessage || e.message);
@@ -3708,27 +3751,41 @@
         }
 
         // Get symbols for all curves
-        const TOKEN_ABI = parseAbi(['function symbol() view returns (string)']);
+        const TOKEN_ABI = parseAbi(['function symbol() view returns (string)', 'function name() view returns (string)']);
         let html = '';
-        for (let i = 0; i < Math.min(n, 20); i++) {
+        for (let i = 0; i < Math.min(n, 50); i++) {
           const c = await publicClient.readContract({
             address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'curves', args: [i],
           });
           let symbol = '?';
+          let tName = '';
           try {
             symbol = await publicClient.readContract({
               address: c[0], abi: TOKEN_ABI, functionName: 'symbol',
             });
           } catch (e) { /* ignore */ }
-          const active = i === riseSelectedCurveId ? ' active' : '';
-          html += '<button class="rise-curve-chip' + active + '" data-id="' + i + '" onclick="riseSelectCurve(' + i + ')" style="' +
-            'padding:8px 16px;border-radius:20px;border:1px solid ' + (c[7] ? 'rgba(255,215,0,0.5)' : 'rgba(255,255,255,0.1)') + ';' +
-            'background:' + (c[7] ? 'rgba(255,215,0,0.08)' : 'rgba(255,255,255,0.02)') + ';' +
-            'color:' + (c[7] ? '#ffd700' : 'var(--text-bright)') + ';font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;' +
-            (i === riseSelectedCurveId ? 'border-color:rgba(0,229,255,0.5)!important;box-shadow:0 0 8px rgba(0,229,255,0.2);' : '') +
-          '">' + symbol + (c[7] ? ' ★' : '') + '</button>';
+          try {
+            tName = await publicClient.readContract({
+              address: c[0], abi: TOKEN_ABI, functionName: 'name',
+            });
+          } catch (e) { /* ignore */ }
+          const hasPool = !!c[8];
+          const active = i === riseSelectedCurveId;
+          const title = tName ? ' title="' + tName.replace(/"/g, '&quot;') + '"' : '';
+          const sold = c[3] ? Number(c[3]) / 1e18 : 0;
+          const total = c[2] ? Number(c[2]) / 1e18 : 0;
+          const progressPct = total > 0 ? Math.round(sold / total * 100) : 0;
+          html += '<button class="rise-curve-chip' + (active ? ' active' : '') + '" data-id="' + i + '" onclick="riseSelectCurve(' + i + ')"' +
+            ' style="' +
+            'display:inline-flex;flex-direction:column;align-items:center;gap:2px;' +
+            'padding:8px 14px;border-radius:20px;' +
+            'border:1px solid ' + (hasPool ? 'rgba(255,215,0,0.5)' : (active ? 'rgba(0,229,255,0.5)' : 'rgba(255,255,255,0.1)')) + ';' +
+            'background:' + (hasPool ? 'rgba(255,215,0,0.08)' : (active ? 'rgba(0,229,255,0.06)' : 'rgba(255,255,255,0.02)')) + ';' +
+            'color:' + (hasPool ? '#ffd700' : 'var(--text-bright)') + ';font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;' +
+            (active ? 'box-shadow:0 0 8px rgba(0,229,255,0.2);' : '') +
+            '"' + title + '><span>' + symbol + (hasPool ? ' ★' : '') + '</span><span style="font-size:9px;opacity:0.5;font-weight:400;">' + progressPct + '% sold</span></button>';
         }
-        if (n > 20) html += '<span style="font-size:11px;color:var(--dim);padding:8px;">+ ' + (n - 20) + ' more</span>';
+        if (n > 50) html += '<span style="font-size:11px;color:var(--dim);padding:8px;">+ ' + (n - 50) + ' more</span>';
         container.innerHTML = html;
 
         // Load first curve if none selected
@@ -3745,15 +3802,45 @@
       const chips = document.querySelectorAll('#rise-curve-list .rise-curve-chip');
       chips.forEach(function(chip) {
         const cid = parseInt(chip.getAttribute('data-id'));
+        const hasPool = chip.style.color === '#ffd700'; // ★ chip
         if (cid === id) {
           chip.style.borderColor = 'rgba(0,229,255,0.5)';
           chip.style.boxShadow = '0 0 8px rgba(0,229,255,0.2)';
+          chip.style.background = 'rgba(0,229,255,0.06)';
         } else {
-          chip.style.borderColor = 'rgba(255,255,255,0.1)';
+          chip.style.borderColor = hasPool ? 'rgba(255,215,0,0.3)' : 'rgba(255,255,255,0.1)';
           chip.style.boxShadow = 'none';
+          chip.style.background = hasPool ? 'rgba(255,215,0,0.08)' : 'rgba(255,255,255,0.02)';
         }
       });
       await riseRefreshCurve(id);
+    };
+
+    // ── Notification Toast ──
+
+    function showNotification(message, type) {
+      type = type || 'info';
+      const container = document.getElementById('rise-toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'rise-toast ' + type;
+      toast.textContent = message;
+      // Set animation duration via style so the toast auto-removes
+      toast.style.animationDuration = '0.4s, 0.3s';
+      toast.style.animationDelay = '0s, 3.5s';
+      container.appendChild(toast);
+      setTimeout(function() {
+        if (toast.parentNode) toast.remove();
+      }, 4200);
+    }
+
+    // ── Quick-jump to newly launched token ──
+
+    window.riseGoToNewToken = async function(curveId) {
+      const riseSection = document.getElementById('rise');
+      if (riseSection) riseSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      await riseLoadCurveList();
+      await riseSelectCurve(parseInt(curveId));
     };
 
     window.addEventListener('resize', () => { if (riseCurveData) riseRenderChart(); });
