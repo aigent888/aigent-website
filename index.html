@@ -1292,7 +1292,7 @@
     </div>
     <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
     <div class="lang-switch" id="lang-switch" title="Language / 语言">
-      <span data-lang="zh" class="active">中</span><span data-lang="en" data-i18n>EN</span>
+      <span data-lang="zh" class="active" onclick="_i18nSwitch('zh')">中</span><span data-lang="en" data-i18n onclick="_i18nSwitch('en')">EN</span>
     </div>
     <button class="pwa-install-btn" id="pwa-install-btn" title="Install App" data-i18n-title="install">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
