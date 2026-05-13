@@ -2440,6 +2440,116 @@
 
         </div>
       </div>
+
+      <!-- Section 9: AIgent Rise Trading Platform -->
+      <div class="card reveal" style="max-width: 900px; margin: 32px auto 0;">
+        <div style="font-size:16px; line-height: 1.9; color: var(--text);">
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;" data-i18n>9. AIgent Rise — The AI-Native Token Launch & Trading Layer</h3>
+
+          <p data-i18n>While EIP-2612 solves the gas-token problem for AI agents, the next question is: what do agents do on-chain? The answer is AIgent Rise — a bonding curve platform where anyone can launch a token with a single natural-language prompt, and trade it instantly on a transparent, math-driven curve.</p>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>9.1 Bonding Curve Mechanics</h3>
+
+          <p data-i18n>AIGENT uses a linear bonding curve for each launched token. The price increases linearly as more tokens are bought, and decreases as tokens are sold back:</p>
+          <br>
+
+          <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0;">
+            <p style="font-family:'SF Mono','Fira Code',monospace;font-size:16px;color:var(--cyan);text-align:center;">
+              <strong>price = p<sub>min</sub> + (p<sub>max</sub> − p<sub>min</sub>) × (tokens<sub>sold</sub> / total<sub>curve</sub>)</strong>
+            </p>
+          </div>
+
+          <p data-i18n>Each curve has four configurable parameters:</p>
+          <br>
+          <ul style="padding-left:20px;color:var(--dim);">
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>pMin</strong> — the starting price when no tokens have been sold (the ground floor)</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>pMax</strong> — the final price when the entire curve supply is sold</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>totalCurveSupply</strong> — the total number of tokens available on the curve</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>curveReserve</strong> — AIGENT tokens locked as the reserve backing on the curve</li>
+          </ul>
+          <br>
+
+          <p data-i18n>This linear model means early buyers get the lowest price, and the price discovery is fully transparent — no hidden liquidity, no secret allocations, no team pre-mines. Every token on AIgent Rise starts from zero with the same rules for everyone.</p>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>9.2 AI-Powered Token Launch</h3>
+
+          <p data-i18n>The AIgent Rise console lets you launch a token by simply describing it in natural language. The AI agent handles everything:</p>
+          <br>
+          <ul style="padding-left:20px;color:var(--dim);">
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>One-sentence launch</strong> — Type "Launch 'CatCoin' with 1M supply, 0.0001 start, 0.01 max" and the agent deploys the BondingCurve contract</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Auto-generated metadata</strong> — Name, symbol, description, and token image are set during deployment</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Creator reward</strong> — Launch a token and earn 0.3% of every trade on your curve, forever</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Instant trading</strong> — The curve is live immediately after deployment, no waiting, no lockups</li>
+          </ul>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>9.3 Trading & Fee Structure</h3>
+
+          <p data-i18n>Buying and selling on the curve is simple — the contract calculates the exact AIGENT required (for buys) or returned (for sells) based on the current curve price:</p>
+          <br>
+
+          <div class="code-block" style="margin: 16px 0;">
+<pre>
+<span class="c">// Buying tokens: spend AIGENT, receive curve tokens</span>
+<span class="k">function</span> <span class="f">buy</span>(uint256 curveId, uint256 tokenAmount) <span class="k">external</span>;
+
+<span class="c">// Selling tokens: return curve tokens, receive AIGENT back</span>
+<span class="k">function</span> <span class="f">sell</span>(uint256 curveId, uint256 tokenAmount) <span class="k">external</span>;
+
+<span class="c">// AIGENT is auto-deposited & withdrawn — no separate approve step</span>
+</pre>
+          </div>
+          <br>
+
+          <p data-i18n>Fee breakdown per trade:</p>
+          <br>
+          <ul style="padding-left:20px;color:var(--dim);">
+            <li style="margin-bottom:8px;"><strong style="color:var(--cyan);" data-i18n>1% protocol fee</strong> — collected in AIGENT, distributed to stakers and the ecosystem treasury</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--cyan);" data-i18n>0.3% creator fee</strong> — goes directly to the token creator as a perpetual reward for launching</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--cyan);" data-i18n>Launch fee</strong> — a one-time AIGENT fee to deploy a new curve, preventing spam and adding value to AIGENT</li>
+          </ul>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>9.4 Uniswap V3 Dual-Venue Trading</h3>
+
+          <p data-i18n>AIGENT itself trades on both the bonding curve platform and Uniswap V3. The AIgent Rise platform features a built-in Uniswap integration panel that:</p>
+          <br>
+          <ul style="padding-left:20px;color:var(--dim);">
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Displays real-time Uniswap V3 quotes</strong> — price, 24h volume, and liquidity depth for AIGENT/USDT</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>One-click swap widget</strong> — swap AIGENT ↔ USDT directly from the platform without leaving the page</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Arbitrage visibility</strong> — side-by-side pricing lets traders spot and act on price differences between the curve and Uniswap</li>
+          </ul>
+          <br>
+
+          <div style="background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0;">
+            <p><strong style="color:var(--cyan);" data-i18n>Why dual-venue matters:</strong> The bonding curve provides predictable, manipulation-resistant price discovery for new tokens. Uniswap V3 provides deep, capital-efficient liquidity for the mature AIGENT token. Together, they create a complete trading ecosystem — launch on the curve, graduate to Uniswap.</p>
+          </div>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>9.5 AI Agent Console Integration</h3>
+
+          <p data-i18n>The AIgent Rise trading platform is natively integrated with the AI Agent Console. The same agent that handles gasless transfers (via EIP-2612) can also:</p>
+          <br>
+          <ul style="padding-left:20px;color:var(--dim);">
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Voice/Natural Language Trading</strong> — "Buy 100 CAT on curve 3" or "Sell half my position at 2x" — the agent parses intent and executes</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Portfolio monitoring</strong> — "What's my total exposure across all curves?" — agent reads on-chain state and reports</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Automated strategies</strong> — "Alert me when curve 0 hits 0.001" or "Buy $10 of every new token launched" — programmable trading rules</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Cross-venue execution</strong> — The agent can route trades through either the bonding curve or Uniswap, whichever gives better execution</li>
+          </ul>
+          <br>
+
+          <div style="border-left: 2px solid var(--cyan); padding: 12px 20px; margin: 20px 0; background: rgba(0,229,255,0.03);">
+            <p style="color:var(--text-bright);font-style:italic;" data-i18n>"AIGENT's bonding curve platform is the logical extension of gasless AI agent transactions. EIP-2612 gives agents the ability to transact. AIgent Rise gives them somewhere to go. Together, they form the first end-to-end AI-native token economy — launch, trade, stake, and LP, all through natural language."</p>
+          </div>
+
+          <p style="color:var(--dim);font-size:13px;margin-top:28px;">Try it now: scroll up to the <a href="#rise" style="color:var(--cyan);" data-i18n>AIgent Rise</a> platform and launch your first token, or explore the <a href="#dapp" style="color:var(--cyan);" data-i18n>AI Agent Console</a> to trade with natural language commands.</p>
+
+        </div>
+      </div>
+
     </section>
   </div>
 
@@ -2942,6 +3052,64 @@
         priceUnavailable: '价格数据不可用，请稍后再试。',
         feeAdjusted: '发行费已更新！',
         feeAdjustFailed: '发行费调整失败:',
+        // Section 9 — AIgent Rise Trading Platform
+        '9.aigentrise—theai-nativetokenlaunch&tradinglayer': '9. AIgent Rise — AI原生的代币发行与交易层',
+        'whileeip-2612solvesthegas-tokenproblemforaiagents,thenextquestionis:whatdoagentsdoon-chain?theanswerisaigentrise—abondingcurveplatformwhereanyonecanlaunchatokenwithasinglenatural-languageprompt,andtradeitinstantlyonatransparent,math-drivencurve.': 'EIP-2612为AI智能体解决了Gas代币问题后，下一个问题是：智能体在链上做什么？答案是AIgent Rise — 一个绑定曲线平台，任何人都可以用一句自然语言发行代币，并在透明、数学驱动的曲线上即时交易。',
+        '9.1bondingcurvemechanics': '9.1 绑定曲线机制',
+        'aigentusesalinearbondingcurveforeachlaunchedtoken.thepriceincreaseslinearlyasmoretokensarebought,anddecreasesastokensaresoldback:': 'AIGENT为每个发行的代币使用线性绑定曲线。价格随着更多代币被购买而线性上升，随着代币被卖回而下降：',
+        'eachcurvehasfourconfigurableparameters:': '每条曲线有四个可配置参数：',
+        'pmin': 'pMin（最低价）',
+        'pmin—thestartingpricewhennotokenshavebeensold(thegroundfloor)': 'pMin — 零销售时的起始价格（地板价）',
+        'pmax': 'pMax（最高价）',
+        'pmax—thefinalpricewhentheentirecurvesupplyissold': 'pMax — 曲线供应量全部售出时的最终价格',
+        'totalcurvesupply': 'totalCurveSupply（曲线总供应量）',
+        'totalcurvesupply—thetotalnumberoftokensavailableonthecurve': 'totalCurveSupply — 曲线上可用的代币总数量',
+        'curvereserve': 'curveReserve（曲线储备）',
+        'curvereserve—aigenttokenslockedasthereservebackingonthecurve': 'curveReserve — 锁定在曲线上作为储备背书的AIGENT代币',
+        'thislinearmodelmeansearlybuyersgetthelowestprice,andthepricediscoveryisfullytransparent—nohiddenliquidity,nosecretallocations,noteampre-mines.everytokenonaigentrisestartsfromzerowiththesamerulesforeveryone.': '这种线性模型意味着早期买家获得最低价，价格发现完全透明 — 没有隐藏流动性，没有秘密分配，没有团队预挖。AIgent Rise上的每个代币都从零开始，规则对所有人相同。',
+        '9.2ai-poweredtokenlaunch': '9.2 AI驱动的代币发行',
+        'theaigentriseconsoleletsyoulaunchatokenbysimplydescribingitinnaturallanguage.theaiagenthandleseverything:': 'AIgent Rise控制台让你只需用自然语言描述即可发行代币。AI智能体处理一切：',
+        'one-sentencelaunch': '一句话发行',
+        'one-sentencelaunch—type"launch\'catcoin\'with1msupply,0.0001start,0.01max"andtheagentdeploysthebondingcurvecontract': '一句话发行 — 输入"发行 CatCoin，100万供应量，起始价0.0001，最高价0.01"，智能体即可部署绑定曲线合约',
+        'auto-generatedmetadata': '自动生成元数据',
+        'auto-generatedmetadata—name,symbol,description,andtokenimagearesetduringdeployment': '自动生成元数据 — 名称、符号、描述和代币图片在部署时设置',
+        'creatorreward': '创作者奖励',
+        'creatorreward—launchatokenandearn0.3%ofeverytradeonyourcurve,forever': '创作者奖励 — 发行代币，从你的曲线上每笔交易中永久赚取0.3%',
+        'instanttrading': '即时交易',
+        'instanttrading—thecurveisliveimmediatelyafterdeployment,nowaiting,nolockups': '即时交易 — 部署后曲线立即生效，无需等待，无锁定期',
+        '9.3trading&feestructure': '9.3 交易与费用结构',
+        'buyingandsellingonthecurveissimple—thecontractcalculatestheexactaigentrequired(forbuys)orreturned(forsells)basedonthecurrentcurveprice:': '在曲线上买卖很简单 — 合约根据当前曲线价格计算所需（买入）或返还（卖出）的AIGENT精确数量：',
+        'feebreakdownpertrade:': '每笔交易费用明细：',
+        '1%protocolfee': '1% 协议费',
+        '1%protocolfee—collectedinaigent,distributedtostakersandtheecosystemtreasury': '1% 协议费 — 以AIGENT收取，分配给质押者和生态系统金库',
+        '0.3%creatorfee': '0.3% 创作者费',
+        '0.3%creatorfee—goesdirectlytothetokencreatorasaperpetualrewardforlaunching': '0.3% 创作者费 — 直接归代币创作者，作为发行代币的永久奖励',
+        'launchfee': '发行费',
+        'launchfee—aone-timeaigentfeetodeployanewcurve,preventingspamandaddingvaluetoaigent': '发行费 — 部署新曲线的一次性AIGENT费用，防止垃圾代币并为AIGENT增值',
+        '9.4uniswapv3dual-venuetrading': '9.4 Uniswap V3 双场所交易',
+        'aigentitselftradesonboththebondingcurveplatformanduniswapv3.theaigentriseplatformfeaturesabuilt-inuniswapintegrationpanelthat:': 'AIGENT本身同时在绑定曲线平台和Uniswap V3上交易。AIgent Rise平台内置Uniswap集成面板，具有以下功能：',
+        'displaysreal-timeuniswapv3quotes': '显示实时Uniswap V3报价',
+        'displaysreal-timeuniswapv3quotes—price,24hvolume,andliquiditydepthforaigent/usdt': '显示实时Uniswap V3报价 — AIGENT/USDT的价格、24小时交易量和流动性深度',
+        'one-clickswapwidget': '一键兑换小部件',
+        'one-clickswapwidget—swapaigent↔usdtdirectlyfromtheplatformwithoutleavingthepage': '一键兑换小部件 — 无需离开页面即可直接从平台兑换AIGENT ↔ USDT',
+        'arbitragevisibility': '套利可见性',
+        'arbitragevisibility—side-by-sidepricingletstradersspotandactonpricedifferencesbetweenthecurveanduniswap': '套利可见性 — 并排定价让交易者能够发现并利用曲线与Uniswap之间的价差',
+        'whydual-venuematters:': '为什么双场所很重要：',
+        'whydual-venuematters:thebondingcurveprovidespredictable,manipulation-resistantpricediscoveryfornewtokens.uniswapv3providesdeep,capital-efficientliquidityforthematureaigenttoken.together,theycreateacompletetradingecosystem—launchonthecurve,graduatetouniswap.': '为什么双场所很重要：绑定曲线为新代币提供可预测、抗操纵的价格发现。Uniswap V3为成熟的AIGENT代币提供深度、资本高效的流动性。两者共同构成完整的交易生态系统 — 在曲线上发行，毕业进入Uniswap。',
+        '9.5aiagentconsoleintegration': '9.5 AI智能体控制台集成',
+        'theaigentrisetradingplatformisnativelyintegratedwiththeaiagentconsole.thesameagentthathandlesgaslesstransfers(viaeip-2612)canalso:': 'AIgent Rise交易平台与AI智能体控制台原生集成。处理免Gas转账的同一个智能体（通过EIP-2612）还可以：',
+        'voice/naturallanguagetrading': '语音/自然语言交易',
+        'voice/naturallanguagetrading—"buy100catoncurve3"or"sellhalfmypositionat2x"—theagentparsesintentandexecutes': '语音/自然语言交易 — "在曲线3上买100个CAT"或"在翻倍时卖出一半仓位" — 智能体解析意图并执行',
+        'portfoliomonitoring': '投资组合监控',
+        'portfoliomonitoring—"what\'smytotalexposureacrossallcurves?"—agentreadson-chainstateandreports': '投资组合监控 — "我在所有曲线上的总敞口是多少？" — 智能体读取链上状态并报告',
+        'automatedstrategies': '自动化策略',
+        'automatedstrategies—"alertmewhencurve0hits0.001"or"buy$10ofeverynewtokenlaunched"—programmabletradingrules': '自动化策略 — "当曲线0达到0.001时提醒我"或"每个新代币发行时买10美元" — 可编程交易规则',
+        'cross-venueexecution': '跨场所执行',
+        'cross-venueexecution—theagentcanroutetradesthrougheitherthebondingcurveoruniswap,whichevergivesbetterexecution': '跨场所执行 — 智能体可以在绑定曲线或Uniswap之间路由交易，选择最优执行',
+        '"aigent\'sbondingcurveplatformisthelogicalextensionofgaslessaiagenttransactions.eip-2612givesagentstheabilitytotransact.aigentrisegivesthemsomewheretogo.together,theyformthefirstend-to-endai-nativetokeneconomy—launch,trade,stake,andlp,allthroughnaturallanguage."': '"AIGENT的绑定曲线平台是免Gas AI智能体交易的逻辑延伸。EIP-2612赋予智能体交易的能力。AIgent Rise给了它们去处。两者共同构成首个端到端的AI原生代币经济 — 发行、交易、质押和LP，全部通过自然语言完成。"',
+        'tryitnow:scrolluptothe<aigentriseplatformandlaunchyourfirsttoken,orexploretheaiagentconsoletotradewithnaturallanguagecommands.': '立即尝试：向上滚动到 AIgent Rise 平台发行你的第一个代币，或探索 AI 智能体控制台，用自然语言指令进行交易。',
+        'aigentrise': 'AIgent Rise',
+        'aiagentconsole': 'AI 智能体控制台',
       }
     };
     let _i18nLang = localStorage.getItem('aigent_lang') || 'zh';
