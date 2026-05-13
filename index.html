@@ -938,6 +938,18 @@
     .agent-chat::-webkit-scrollbar { width: 4px; }
     .agent-chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
+    /* ── Language Switcher ── */
+    .lang-switch {
+      display: flex; align-items: center; gap: 4px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 20px; padding: 3px; cursor: pointer;
+    }
+    .lang-switch span {
+      padding: 4px 10px; border-radius: 16px; font-size: 11px; font-weight: 600;
+      color: var(--dim); transition: all 0.2s;
+    }
+    .lang-switch span.active { background: var(--cyan); color: #000; }
+
     /* ── PWA Install Button ── */
     .pwa-install-btn {
       display: none; align-items: center; gap: 6px;
@@ -1279,23 +1291,26 @@
       AIGENT
     </div>
     <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
-    <button class="pwa-install-btn" id="pwa-install-btn" title="Install App">
+    <div class="lang-switch" id="lang-switch" title="Language / 语言">
+      <span data-lang="zh" class="active">中</span><span data-lang="en">EN</span>
+    </div>
+    <button class="pwa-install-btn" id="pwa-install-btn" title="Install App" data-i18n-title="install">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Install
+      <span data-i18n>Install</span>
     </button>
     <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#token">Token</a></li>
-      <li><a href="#tokenomics">Tokenomics</a></li>
-      <li><a href="#presale">Presale</a></li>
-      <li><a href="#dapp">DApp</a></li>
-      <li><a href="#staking">Staking</a></li>
-      <li><a href="#lpfarm">LP Farm</a></li>
-      <li><a href="#roadmap">Roadmap</a></li>
-      <li><a href="https://github.com/Mrxu6995/aigent/blob/gh-pages/whitepaper.md" target="_blank">Whitepaper</a></li>
-      <li><a href="#ai">AI Agents</a></li>
-      <li><a href="#article">Article</a></li>
-      <li><a href="#presale" class="nav-btn">Buy $AIGENT</a></li>
+      <li><a href="#about" data-i18n>About</a></li>
+      <li><a href="#token" data-i18n>Token</a></li>
+      <li><a href="#tokenomics" data-i18n>Tokenomics</a></li>
+      <li><a href="#presale" data-i18n>Presale</a></li>
+      <li><a href="#dapp" data-i18n>DApp</a></li>
+      <li><a href="#staking" data-i18n>Staking</a></li>
+      <li><a href="#lpfarm" data-i18n>LP Farm</a></li>
+      <li><a href="#roadmap" data-i18n>Roadmap</a></li>
+      <li><a href="https://github.com/Mrxu6995/aigent/blob/gh-pages/whitepaper.md" target="_blank" data-i18n>Whitepaper</a></li>
+      <li><a href="#ai" data-i18n>AI Agents</a></li>
+      <li><a href="#article" data-i18n>Article</a></li>
+      <li><a href="#presale" class="nav-btn" data-i18n>Buy $AIGENT</a></li>
     </ul>
   </nav>
 
@@ -1389,7 +1404,7 @@
     <section id="token">
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 0;">
-          <div class="section-tag">// Token</div>
+          <div class="section-tag">// <span data-i18n>Token</span></div>
           <div class="section-title">$AIGENT</div>
           <p class="section-sub" style="margin-left: 0;">Autonomous Intelligence Agent Token on X Layer</p>
         </div>
@@ -1430,7 +1445,7 @@
     <section id="buy">
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 28px;">
-          <div class="section-tag">// Trade</div>
+          <div class="section-tag">// <span data-i18n>Trade</span></div>
           <div class="section-title">How to Buy $AIGENT</div>
           <p class="section-sub" style="margin-left: 0;">Trade AIGENT/USDT on Uniswap V3 — X Layer Mainnet</p>
         </div>
@@ -1475,7 +1490,7 @@
     <section id="presale">
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// Presale</div>
+          <div class="section-tag">// <span data-i18n>Presale</span></div>
           <div class="section-title">Private Sale — Buy $AIGENT</div>
           <p class="section-sub" style="margin-left: 0;">Send USDT to the presale contract, receive AIGENT instantly at a fixed price. No vesting, no lockup.</p>
         </div>
@@ -1607,30 +1622,30 @@
     <section id="dapp">
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// Wallet</div>
-          <div class="section-title">AIGENT Wallet</div>
-          <p class="section-sub" style="margin-left: 0;">Connect your wallet to check balance and transfer $AIGENT</p>
+          <div class="section-tag">// <span data-i18n>Wallet</span></div>
+          <div class="section-title" data-i18n>Wallet</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>Connect your wallet to check balance and transfer $AIGENT</p>
         </div>
 
         <!-- Status Bar -->
         <div class="dapp-status-bar" id="dapp-status">
           <div class="dapp-dot disconnected" id="dapp-dot"></div>
-          <span class="dapp-addr" id="dapp-addr">Not connected</span>
+          <span class="dapp-addr" id="dapp-addr" data-i18n>Not connected</span>
           <span class="dapp-chain-badge" id="dapp-chain">X Layer</span>
           <button id="dapp-switch-chain" onclick="dappSwitchChain()" style="display:none;margin-left:6px;padding:2px 8px;background:var(--magenta);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;font-family:inherit;">Switch to X Layer</button>
         </div>
 
         <!-- Action Buttons -->
         <div class="dapp-action-row" id="dapp-actions">
-          <button class="dapp-btn" id="btn-connect" onclick="dappConnect()">Connect Wallet</button>
-          <button class="dapp-btn magenta" onclick="dappOpenUniswap()">Buy on Uniswap</button>
+          <button class="dapp-btn" id="btn-connect" onclick="dappConnect()" data-i18n>Connect Wallet</button>
+          <button class="dapp-btn magenta" onclick="dappOpenUniswap()" data-i18n>Buy on Uniswap</button>
           <button class="dapp-btn" id="btn-qr" onclick="toggleQR()" style="background:linear-gradient(135deg,#667eea,#764ba2);" title="Scan QR to open on mobile">📱 QR</button>
         </div>
 
         <!-- QR Code -->
         <div class="qr-wrap" id="qr-wrap">
           <div id="qr-code"></div>
-          <div class="qr-label">Scan with your phone to open on mobile</div>
+          <div class="qr-label" data-i18n>Scan with your phone to open on mobile</div>
         </div>
 
         <!-- Message area -->
@@ -1649,11 +1664,11 @@
         <!-- Transfer Form -->
         <div id="dapp-transfer-section" style="display:none;">
           <div class="dapp-input-group" style="margin-bottom: 10px;">
-            <input class="dapp-input" id="dapp-recipient" type="text" placeholder="Recipient address (0x...)" autocomplete="off">
+            <input class="dapp-input" id="dapp-recipient" type="text" placeholder="Recipient address (0x...)" data-i18n-placeholder="recipientPlaceholder" autocomplete="off">
           </div>
           <div class="dapp-input-group">
             <input class="dapp-input" id="dapp-amount" type="text" placeholder="Amount (AIGENT)" autocomplete="off">
-            <button class="dapp-btn" id="btn-transfer" onclick="dappTransfer()">Send AIGENT</button>
+            <button class="dapp-btn" id="btn-transfer" onclick="dappTransfer()" data-i18n>Send AIGENT</button>
           </div>
         </div>
 
@@ -1663,8 +1678,8 @@
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="10" r="1.5" fill="var(--cyan)"/><circle cx="15.5" cy="10" r="1.5" fill="var(--cyan)"/><path d="M8.5 15c1.5 2 3.5 1.5 7 0"/></svg>
             <div>
-              <div style="font-size:14px;font-weight:700;color:var(--text-bright);">AI Agent Console <span class="agent-server-indicator" id="agent-server-ind"><span class="agent-server-dot" id="agent-server-dot"></span><span id="agent-server-label">local</span></span></div>
-              <div style="font-size:11px;color:var(--dim);">Chat with the AI agent — natural language commands</div>
+              <div style="font-size:14px;font-weight:700;color:var(--text-bright);"><span data-i18n>AI Agent Console</span> <span class="agent-server-indicator" id="agent-server-ind"><span class="agent-server-dot" id="agent-server-dot"></span><span id="agent-server-label" data-i18n>local</span></span></div>
+              <div style="font-size:11px;color:var(--dim);" data-i18n>Chat with the AI agent — natural language commands</div>
             </div>
           </div>
 
@@ -1698,7 +1713,7 @@
           </div>
 
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button class="btn" onclick="agentQuick('deploy a token called MyCoin symbol MYC supply 1000000')" style="font-size:10px;padding:4px 10px;background:linear-gradient(135deg,var(--magenta),var(--purple));color:#fff;border:none;">🚀 Launch Token</button>
+            <button class="btn" onclick="agentQuick('deploy a token called MyCoin symbol MYC supply 1000000')" style="font-size:10px;padding:4px 10px;background:linear-gradient(135deg,var(--magenta),var(--purple));color:#fff;border:none;">🚀 <span data-i18n>Launch Token</span></button>
             <button class="btn" onclick="agentQuick('Check my balance')" style="font-size:10px;padding:4px 10px;">Balance</button>
             <button class="btn" onclick="agentQuick('What is the total supply?')" style="font-size:10px;padding:4px 10px;">Supply</button>
             <button class="btn" onclick="agentQuick('send 10 to 0xAbC...')" style="font-size:10px;padding:4px 10px;">Send 10</button>
@@ -1711,7 +1726,7 @@
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10l4-4 4 4M8 14l4 4 4-4"/></svg>
               <div>
-                <div style="font-size:14px;font-weight:700;color:var(--text-bright);">Buy AIGENT Presale</div>
+                <div style="font-size:14px;font-weight:700;color:var(--text-bright);" data-i18n>Buy AIGENT Presale</div>
                 <div style="font-size:11px;color:var(--dim);">10,000 AIGENT per USDT — instant delivery</div>
               </div>
             </div>
@@ -1730,7 +1745,7 @@
     <section id="staking">
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// Earn</div>
+          <div class="section-tag">// <span data-i18n>Earn</span></div>
           <div class="section-title">Stake AIGENT</div>
           <p class="section-sub" style="margin-left: 0;">Stake AIGENT to earn rewards. 80M reward pool, 1-year duration.</p>
         </div>
@@ -1756,7 +1771,7 @@
     <section id="lpfarm">
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// Farm</div>
+          <div class="section-tag">// <span data-i18n>Farm</span></div>
           <div class="section-title">LP Farm</div>
           <p class="section-sub" style="margin-left: 0;">Stake LP tokens to earn AIGENT rewards. 60M reward pool, 1-year duration.</p>
         </div>
@@ -1782,7 +1797,7 @@
     <section id="rise">
       <div class="card reveal">
         <div class="section-header" style="text-align:left;margin-bottom:24px;">
-          <div class="section-tag">// Trade</div>
+          <div class="section-tag">// <span data-i18n>Trade</span></div>
           <div class="section-title" style="display:flex;align-items:center;gap:12px;">
             AIgent Rise
             <button id="rise-copy-link" onclick="riseCopyCurveLink()" style="
@@ -1791,7 +1806,7 @@
               font-family:inherit;transition:all 0.2s;font-weight:400;letter-spacing:0;
             " onmouseenter="this.style.borderColor='rgba(0,229,255,0.3)';this.style.color='var(--cyan)'"
                onmouseleave="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--dim)'"
-            title="Copy shareable link">🔗 Share</button>
+            title="Copy shareable link" data-i18n-title="riseCopyLink">🔗 <span data-i18n>Share</span></button>
           </div>
           <p class="section-sub" style="margin-left:0;">Permanent bonding curve — trade anytime. Creators can optionally add Uniswap V3 liquidity.</p>
         </div>
@@ -1800,7 +1815,7 @@
         <div class="rise-header" id="rise-header">
           <div class="rise-icon" id="rise-icon">🚀</div>
           <div>
-            <div class="rise-title" id="rise-token-title">Select a Token</div>
+            <div class="rise-title" id="rise-token-title" data-i18n>Select a Token</div>
             <div class="rise-tag" id="rise-token-tag">CURVE #--</div>
           </div>
         </div>
@@ -1808,7 +1823,7 @@
         <!-- Search + Curve Selector -->
         <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center;">
           <div style="flex:1;position:relative;">
-            <input id="rise-search" type="text" placeholder="Search by address, symbol, name, or Curve ID..." style="
+            <input id="rise-search" type="text" data-i18n-placeholder="riseSearch" placeholder="Search by address, symbol, name, or Curve ID..." style="
               width:100%;padding:10px 14px 10px 38px;border-radius:24px;
               border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);
               color:#fff;font-size:12px;font-family:inherit;outline:none;transition:border-color 0.2s;
@@ -1867,7 +1882,7 @@
                 <div class="rise-stat-val" id="rise-status" style="color:#ffd700;">Trading</div>
               </div>
               <div class="rise-stat">
-                <div class="rise-stat-label">Market Cap</div>
+                <div class="rise-stat-label" data-i18n>Market Cap</div>
                 <div class="rise-stat-val" id="rise-mcap">--</div>
               </div>
             </div>
@@ -1903,7 +1918,7 @@
 
         <!-- Trade History -->
         <div class="rise-trade-history" id="rise-trade-history" style="display:none;">
-          <h4>Recent Trades</h4>
+          <h4 data-i18n>Recent Trades</h4>
           <div style="overflow-x:auto;">
             <table class="rise-trade-table">
               <thead>
@@ -1912,7 +1927,7 @@
               <tbody id="rise-trade-tbody"></tbody>
             </table>
           </div>
-          <div id="rise-trade-empty" style="font-size:11px;color:var(--dim);text-align:center;padding:20px;">No trades yet</div>
+          <div id="rise-trade-empty" style="font-size:11px;color:var(--dim);text-align:center;padding:20px;" data-i18n>No trades yet</div>
         </div>
 
         <!-- Uniswap V3 Creator Panel -->
@@ -1997,7 +2012,7 @@
     <!-- ── ABOUT ── -->
     <section id="about">
       <div class="section-header reveal">
-        <div class="section-tag">// About</div>
+        <div class="section-tag">// <span data-i18n>About</span></div>
         <div class="section-title">What is AIGENT?</div>
         <p class="section-sub">The next-generation AI agent token — built for autonomous economies</p>
       </div>
@@ -2082,7 +2097,7 @@
     <section id="tokenomics">
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 32px;">
-          <div class="section-tag">// Tokenomics</div>
+          <div class="section-tag">// <span data-i18n>Tokenomics</span></div>
           <div class="section-title">Distribution</div>
         </div>
         <div class="tok-layout">
@@ -2149,7 +2164,7 @@
     <!-- ── ROADMAP ── -->
     <section id="roadmap">
       <div class="section-header reveal">
-        <div class="section-tag">// Roadmap</div>
+        <div class="section-tag">// <span data-i18n>Roadmap</span></div>
         <div class="section-title">The Path Forward</div>
         <p class="section-sub">Five phases to build the autonomous intelligence economy</p>
       </div>
@@ -2191,7 +2206,7 @@
     <section id="ai">
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// AI Agents</div>
+          <div class="section-tag">// <span data-i18n>AI Agents</span></div>
           <div class="section-title">Built for Autonomous Agents</div>
           <p class="section-sub" style="margin-left: 0;">AIGENT implements EIP-2612 — agents sign off-chain, execute on-chain, no OKB required</p>
         </div>
@@ -2217,7 +2232,7 @@
     <!-- ── TECHNICAL ARTICLE ── -->
     <section id="article">
       <div class="section-header reveal">
-        <div class="section-tag">// Deep Dive</div>
+        <div class="section-tag">// <span data-i18n>Deep Dive</span></div>
         <div class="section-title">Building Gasless AI Agent Transactions with EIP-2612</div>
         <p class="section-sub">How Permit signatures eliminate the gas token barrier for autonomous on-chain agents</p>
       </div>
@@ -2588,6 +2603,218 @@
     // ethers compatibility alias (codebase uses ethers.xxx convention)
     const ethers = { parseEther, formatEther, MaxUint256: maxUint256 };
 
+    // ── i18n Language System ──
+    const I18N = {
+      en: {
+        // Nav
+        about: 'About', 'About': 'About', token: 'Token', 'Token': 'Token',
+        tokenomics: 'Tokenomics', Tokenomics: 'Tokenomics',
+        presale: 'Presale', Presale: 'Presale',
+        dapp: 'DApp', 'DApp': 'DApp', staking: 'Staking', Staking: 'Staking',
+        'LP Farm': 'LP Farm', 'lp farm': 'LP Farm',
+        roadmap: 'Roadmap', Roadmap: 'Roadmap',
+        whitepaper: 'Whitepaper', 'Whitepaper': 'Whitepaper',
+        aiAgents: 'AI Agents', 'AI Agents': 'AI Agents', 'ai agents': 'AI Agents',
+        article: 'Article', 'Article': 'Article',
+        buyAigent: 'Buy $AIGENT', 'Buy $AIGENT': 'Buy $AIGENT',
+        install: 'Install', 'Install': 'Install',
+        // Wallet
+        wallet: 'AIGENT Wallet', walletSub: 'Connect your wallet to check balance and transfer $AIGENT',
+        connectWallet: 'Connect Wallet', disconnect: 'Disconnect',
+        buyOnUniswap: 'Buy on Uniswap', sendAigent: 'Send AIGENT',
+        notConnected: 'Not connected', xLayer: 'X Layer',
+        switchToXLayer: 'Switch to X Layer', recipientPlaceholder: 'Recipient address (0x...)',
+        amountPlaceholder: 'Amount (AIGENT)',
+        // AI Agent Console
+        agentTitle: 'AI Agent Console', agentSub: 'Chat with the AI agent — natural language commands',
+        agentServer: 'local', agentPlaceholder: 'Type: deploy a token called MyCoin symbol MYC...',
+        agentHelp: 'I\'m not sure what you mean. Try:',
+        agentLaunchToken: 'Launch Token',
+        agentBuyPresale: 'Buy AIGENT Presale',
+        agentTransferCmd: 'Send 100 AIGENT to 0xAbC...',
+        agentDeployCmd: 'Deploy a token called MyCoin symbol MYC supply 1000000',
+        agentBalanceCmd: 'Check my balance',
+        agentSupplyCmd: 'What\'s the total supply?',
+        agentHelpCmd: 'help',
+        agentBuyCmd: 'Buy 100 AIGENT of MYC',
+        agentSellCmd: 'Sell 1000 MYC',
+        agentDeploying: 'AIgent Mint — Deploying Token',
+        agentDeployBtn: 'Launch Token Now',
+        agentNoPending: 'No pending deploy. Type a deploy command first.',
+        agentConnectFirst: 'Please connect your wallet first, then click Launch again.',
+        agentTokenImage: 'Token Image URL (optional):',
+        agentInsufficient: 'Not enough AIGENT!',
+        agentGetAigent: 'Get AIGENT from the Presale panel or add liquidity.',
+        agentLaunched: 'Token Launched on AIgent Rise!',
+        agentTradeNow: 'Trade',
+        // Rise Trading
+        riseSelect: 'Select a Token', riseSearch: 'Search by name, symbol, address, or Curve ID...',
+        riseMarketCap: 'Market Cap', riseTradeHistory: 'Trade History',
+        riseNoTrades: 'No trades yet', riseShare: 'Share', riseCopyLink: 'Copy Link',
+        riseLinkCopied: 'Link copied! Share this token with anyone.',
+        riseBuy: 'Buy', riseSell: 'Sell',
+        riseYouPay: 'You Pay (AIGENT)', riseYouSell: 'You Sell (Tokens)',
+        riseProgress: 'Progress', riseStatus: 'Trading',
+        riseCurveLabel: 'AIGENT locked in curve',
+        riseRecentTrades: 'Recent Trades', riseViewTx: 'View tx',
+        // Presale
+        presaleTitle: 'AIGENT Presale (Live)',
+        presaleContract: 'Presale Contract', presalePayment: 'Payment Token',
+        presaleMin: 'Min: 1 USDT', presaleHowTo: 'How to Buy',
+        presaleNotice: 'Sending USDT directly to the presale contract address will result in PERMANENT LOSS of your funds.',
+        presaleVia: 'You must interact through the contract\'s buy() function via a DApp or wallet.',
+        presaleNever: 'Never use "Send" or "Transfer" in your wallet to buy presale tokens.',
+        presaleBuy: 'Buy AIGENT Presale',
+        // Staking & LP Farm
+        stake: 'Stake', unstake: 'Unstake', lpFarmTitle: 'LP Farm',
+        // About
+        aboutTag: 'About', aboutTitle: 'AIgent Rise — One-Click Token Launch',
+        aboutDesc: 'Launch your own token with a permanent bonding curve on X Layer. No coding. No liquidity pool setup. Just connect, name it, and deploy.',
+        // Token section
+        tokenTag: 'Token', tokenTitle: 'AIGENT Token',
+        tokenDesc: 'Autonomous Intelligence Agent Token on X Layer',
+        // Tokenomics
+        tokenomicsTag: 'Tokenomics', tokenomicsTitle: 'Token Distribution',
+        // Roadmap
+        roadmapTag: 'Roadmap', roadmapTitle: 'Development Roadmap',
+        // Article
+        articleTag: 'Article', articleTitle: 'Technical Article',
+        // Section tags
+        trade: 'Trade', earn: 'Earn', farm: 'Farm', deepDive: 'Deep Dive',
+        // Search
+        searchAll: 'All', searchCurve: 'Curve', searchToken: 'Token',
+        // Ticker
+        tickerAigent: 'AIGENT', tickerFee: 'FEE',
+        tickerFeeDesc: '1% trade fee + 0.3% creator cut',
+        tickerLaunch: 'LAUNCH', tickerLaunchDesc: 'to deploy',
+        tickerEip: 'EIP-2612', tickerEipDesc: 'Gasless approvals for AI agents',
+        tickerSlogan: 'AIgent Rise — Launch. Trade. Thrive.',
+        // QR
+        qrLabel: 'Scan with your phone to open on mobile',
+        // Notifications
+        connectFirst: 'Connect wallet first',
+        accountChanged: 'Account changed to',
+        connectionRejected: 'Connection rejected by user.',
+        connectionFailed: 'Connection failed:',
+        walletDisconnected: 'Wallet disconnected from DApp.',
+        noWallet: 'No wallet detected. Please install MetaMask or OKX Wallet.',
+        noAccounts: 'No accounts found. Please unlock your wallet.',
+        connecting: 'Connecting...',
+        onlyOwner: 'Only the contract owner can adjust the deploy fee.',
+        priceUnavailable: 'Price feed unavailable, try again later.',
+        feeAdjusted: 'Deploy fee updated!',
+        feeAdjustFailed: 'Fee adjustment failed:',
+      },
+      zh: {
+        about: '关于', token: '代币', tokenomics: '代币经济', presale: '预售',
+        dapp: '钱包', staking: '质押', lpFarm: 'LP农场', roadmap: '路线图',
+        whitepaper: '白皮书', aiAgents: 'AI智能体', article: '技术文章',
+        buyAigent: '购买$AIGENT', install: '安装应用',
+        wallet: 'AIGENT钱包', walletSub: '连接钱包查看余额并转账$AIGENT',
+        connectWallet: '连接钱包', disconnect: '断开连接',
+        buyOnUniswap: 'Uniswap购买', sendAigent: '发送AIGENT',
+        notConnected: '未连接', xLayer: 'X Layer',
+        switchToXLayer: '切换到X Layer', recipientPlaceholder: '收款地址 (0x...)',
+        amountPlaceholder: '数量 (AIGENT)',
+        agentTitle: 'AI智能体控制台', agentSub: '与AI智能体对话 — 自然语言指令',
+        agentServer: '本地', agentPlaceholder: '输入: 创建一个代币叫MyCoin符号MYC...',
+        agentHelp: '我不太理解您的意思。请尝试:',
+        agentLaunchToken: '发行代币',
+        agentBuyPresale: '购买AIGENT预售',
+        agentTransferCmd: '发送100 AIGENT到0xAbC...',
+        agentDeployCmd: '创建一个代币叫MyCoin符号MYC总量1000000',
+        agentBalanceCmd: '查询我的余额',
+        agentSupplyCmd: '总供应量是多少',
+        agentHelpCmd: '帮助',
+        agentBuyCmd: '买入100 AIGENT的MYC',
+        agentSellCmd: '卖出1000 MYC',
+        agentDeploying: 'AIgent铸造 — 部署代币',
+        agentDeployBtn: '立即发行代币',
+        agentNoPending: '没有待处理的部署。请先输入部署指令。',
+        agentConnectFirst: '请先连接钱包，再点击发行。',
+        agentTokenImage: '代币图片URL (可选):',
+        agentInsufficient: 'AIGENT余额不足！',
+        agentGetAigent: '请从预售面板获取AIGENT或添加流动性。',
+        agentLaunched: '代币已在AIgent Rise上线！',
+        agentTradeNow: '交易',
+        riseSelect: '选择代币', riseSearch: '搜索名称、符号、地址或曲线ID...',
+        riseMarketCap: '市值', riseTradeHistory: '交易历史',
+        riseNoTrades: '暂无交易', riseShare: '分享', riseCopyLink: '复制链接',
+        riseLinkCopied: '链接已复制！分享这个代币给任何人。',
+        riseBuy: '买入', riseSell: '卖出',
+        riseYouPay: '支付 (AIGENT)', riseYouSell: '出售 (代币)',
+        riseProgress: '进度', riseStatus: '交易中',
+        riseCurveLabel: 'AIGENT锁在曲线中',
+        riseRecentTrades: '最近交易', riseViewTx: '查看交易',
+        presaleTitle: 'AIGENT预售 (进行中)',
+        presaleContract: '预售合约', presalePayment: '支付代币',
+        presaleMin: '最低: 1 USDT', presaleHowTo: '购买教程',
+        presaleNotice: '直接向预售合约地址发送USDT将导致资金永久损失。',
+        presaleVia: '必须通过DApp或钱包调用合约的buy()函数进行购买。',
+        presaleNever: '切勿使用钱包中的"发送"或"转账"功能购买预售代币。',
+        presaleBuy: '购买AIGENT预售',
+        stake: '质押', unstake: '解除质押', lpFarmTitle: 'LP农场',
+        aboutTag: '关于', aboutTitle: 'AIgent Rise — 一键发行代币',
+        aboutDesc: '在X Layer上一键发行您自己的代币，附带永久绑定曲线。无需编程，无需设置流动性池。只需连接钱包，命名，即可部署。',
+        tokenTag: '代币', tokenTitle: 'AIGENT代币',
+        tokenDesc: 'X Layer上的自主智能体代币',
+        tokenomicsTag: '代币经济', tokenomicsTitle: '代币分配',
+        roadmapTag: '路线图', roadmapTitle: '开发路线图',
+        articleTag: '技术文章', articleTitle: '技术文章',
+        trade: '交易', earn: '收益', farm: '农场', deepDive: '深度解析',
+        searchAll: '全部', searchCurve: '曲线', searchToken: '代币',
+        tickerAigent: 'AIGENT', tickerFee: '手续费',
+        tickerFeeDesc: '1%交易费+0.3%创作者分成',
+        tickerLaunch: '发行费', tickerLaunchDesc: '发行一个代币',
+        tickerEip: 'EIP-2612', tickerEipDesc: 'AI智能体免Gas授权',
+        tickerSlogan: 'AIgent Rise — 发行 · 交易 · 繁荣',
+        qrLabel: '扫描二维码在手机上打开',
+        connectFirst: '请先连接钱包',
+        accountChanged: '账户已切换至',
+        connectionRejected: '连接被用户拒绝。',
+        connectionFailed: '连接失败:',
+        walletDisconnected: '钱包已断开连接。',
+        noWallet: '未检测到钱包。请安装MetaMask或OKX钱包。',
+        noAccounts: '未找到账户。请解锁您的钱包。',
+        connecting: '连接中...',
+        onlyOwner: '只有合约管理员可以调整发行费。',
+        priceUnavailable: '价格数据不可用，请稍后再试。',
+        feeAdjusted: '发行费已更新！',
+        feeAdjustFailed: '发行费调整失败:',
+      }
+    };
+    let _i18nLang = localStorage.getItem('aigent_lang') || 'zh';
+    function t(key) {
+      // Normalize: strip spaces, lowercase
+      var norm = key.replace(/\s+/g, '').toLowerCase();
+      // Try exact match, then normalized, then camelCase variants
+      var lang = I18N[_i18nLang] || {};
+      var en = I18N.en || {};
+      if (lang[key] !== undefined) return lang[key];
+      if (lang[norm] !== undefined) return lang[norm];
+      if (en[key] !== undefined) return en[key];
+      if (en[norm] !== undefined) return en[norm];
+      return key;
+    }
+    function _i18nUpdateDOM() {
+      document.documentElement.lang = _i18nLang === 'zh' ? 'zh-CN' : 'en';
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var k = el.getAttribute('data-i18n') || el.textContent.trim();
+        if (k) el.textContent = t(k);
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
+      document.querySelectorAll('[data-i18n-title]').forEach(function(el) { el.title = t(el.getAttribute('data-i18n-title')); });
+      document.querySelectorAll('.lang-switch span').forEach(function(s) { s.classList.toggle('active', s.getAttribute('data-lang') === _i18nLang); });
+    }
+    function _i18nSwitch(lang) { _i18nLang = lang; localStorage.setItem('aigent_lang', lang); _i18nUpdateDOM(); riseUpdateTicker(); }
+    document.addEventListener('DOMContentLoaded', function() {
+      _i18nUpdateDOM();
+      document.getElementById('lang-switch').addEventListener('click', function(e) {
+        var span = e.target.closest('span');
+        if (span) _i18nSwitch(span.getAttribute('data-lang'));
+      });
+    });
+
     const CHAIN_ID = 196;
     const AIGENT_ADDRESS = '0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';
     const AIGENT_ABI = parseAbi([
@@ -2724,7 +2951,7 @@
     function renderConnected() {
       el.dot.className = 'dapp-dot connected';
       el.addr.textContent = shorten(userAddress);
-      el.btnConnect.textContent = 'Disconnect';
+      el.btnConnect.textContent = t('disconnect');
       el.btnConnect.onclick = dappDisconnect;
       el.divider.style.display = 'block';
       el.balanceSection.style.display = 'flex';
@@ -2743,11 +2970,11 @@
     function renderDisconnected() {
       userAddress = null; publicClient = null; walletClient = null;
       el.dot.className = 'dapp-dot disconnected';
-      el.addr.textContent = 'Not connected';
-      el.chain.textContent = 'X Layer';
+      el.addr.textContent = t('notConnected');
+      el.chain.textContent = t('xLayer');
       el.chain.className = 'dapp-chain-badge';
       el.switchChainBtn.style.display = 'none';
-      el.btnConnect.textContent = 'Connect Wallet';
+      el.btnConnect.textContent = t('connectWallet');
       el.btnConnect.onclick = dappConnect;
       el.divider.style.display = 'none';
       el.balanceSection.style.display = 'none';
@@ -2765,28 +2992,28 @@
 
     window.dappConnect = async function() {
       if (!window.ethereum && !window.okxwallet) {
-        showMsg('No wallet detected. Please install <a href="https://metamask.io" target="_blank" style="color:var(--cyan);">MetaMask</a> or OKX Wallet.', 'error');
+        showMsg(t('noWallet'), 'error');
         return;
       }
       try {
-        showMsg('Connecting...', 'loading');
+        showMsg(t('connecting'), 'loading');
         const provider = window.okxwallet || window.ethereum;
         const accounts = await provider.request({ method: 'eth_requestAccounts' });
         if (!accounts || accounts.length === 0) {
-          showMsg('No accounts found. Please unlock your wallet.', 'error');
+          showMsg(t('noAccounts'), 'error');
           return;
         }
         userAddress = accounts[0];
         const chainIdHex = await provider.request({ method: 'eth_chainId' });
         const currentChainId = parseInt(chainIdHex, 16);
-        el.chain.textContent = currentChainId === CHAIN_ID ? 'X Layer' : 'Chain ' + currentChainId;
+        el.chain.textContent = currentChainId === CHAIN_ID ? t('xLayer') : 'Chain ' + currentChainId;
         el.chain.className = currentChainId === CHAIN_ID ? 'dapp-chain-badge' : 'dapp-chain-badge wrong';
         el.switchChainBtn.style.display = currentChainId === CHAIN_ID ? 'none' : 'inline-block';
 
         if (currentChainId !== CHAIN_ID) {
           try {
             await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xc4' }] });
-            el.chain.textContent = 'X Layer'; el.chain.className = 'dapp-chain-badge';
+            el.chain.textContent = t('xLayer'); el.chain.className = 'dapp-chain-badge';
             el.switchChainBtn.style.display = 'none';
           } catch (switchErr) {
             if (switchErr.code === 4902) {
@@ -2813,8 +3040,8 @@
       } catch (err) {
         console.error('Connect error:', err);
         renderDisconnected();
-        if (err.code === 4001) showMsg('Connection rejected by user.', 'error');
-        else showMsg('Connection failed: ' + (err.message || 'Unknown error'), 'error');
+        if (err.code === 4001) showMsg(t('connectionRejected'), 'error');
+        else showMsg(t('connectionFailed') + ' ' + (err.message || 'Unknown error'), 'error');
       }
     };
 
@@ -2842,7 +3069,7 @@
 
     window.dappDisconnect = function() {
       renderDisconnected();
-      showMsg('Wallet disconnected from DApp. Still connected in wallet.', 'success');
+      showMsg(t('walletDisconnected') + ' Still connected in wallet.', 'success');
     };
 
     window.dappRefreshBalance = async function() {
@@ -3500,7 +3727,7 @@
     }
 
     window.stakeTokens = async function() {
-      if (!walletClient) { stakeMsg('Connect wallet first.', 'error'); return; }
+      if (!walletClient) { stakeMsg(t('connectFirst'), 'error'); return; }
       const amt = $('stake-amount').value.trim();
       if (!amt || isNaN(amt) || Number(amt) <= 0) { stakeMsg('Enter valid amount.', 'error'); return; }
       const amtWei = BigInt(Math.floor(Number(amt) * 1e18));
@@ -3529,7 +3756,7 @@
     };
 
     window.unstakeTokens = async function() {
-      if (!walletClient) { stakeMsg('Connect wallet first.', 'error'); return; }
+      if (!walletClient) { stakeMsg(t('connectFirst'), 'error'); return; }
       const amt = $('stake-amount').value.trim();
       if (!amt || isNaN(amt) || Number(amt) <= 0) { stakeMsg('Enter valid amount.', 'error'); return; }
       try {
@@ -3551,7 +3778,7 @@
     };
 
     window.claimStakeReward = async function() {
-      if (!walletClient) { stakeMsg('Connect wallet first.', 'error'); return; }
+      if (!walletClient) { stakeMsg(t('connectFirst'), 'error'); return; }
       try {
         stakeMsg('Claiming rewards...', 'loading');
         $('btn-claim-stake').disabled = true;
@@ -3586,7 +3813,7 @@
     }
 
     window.stakeLP = async function() {
-      if (!walletClient) { lpMsg('Connect wallet first.', 'error'); return; }
+      if (!walletClient) { lpMsg(t('connectFirst'), 'error'); return; }
       const amt = $('lp-amount').value.trim();
       if (!amt || isNaN(amt) || Number(amt) <= 0) { lpMsg('Enter valid amount.', 'error'); return; }
       const amtWei = BigInt(Math.floor(Number(amt) * 1e18));
@@ -3614,7 +3841,7 @@
     };
 
     window.unstakeLP = async function() {
-      if (!walletClient) { lpMsg('Connect wallet first.', 'error'); return; }
+      if (!walletClient) { lpMsg(t('connectFirst'), 'error'); return; }
       const amt = $('lp-amount').value.trim();
       if (!amt || isNaN(amt) || Number(amt) <= 0) { lpMsg('Enter valid amount.', 'error'); return; }
       try {
@@ -3635,7 +3862,7 @@
     };
 
     window.claimLPReward = async function() {
-      if (!walletClient) { lpMsg('Connect wallet first.', 'error'); return; }
+      if (!walletClient) { lpMsg(t('connectFirst'), 'error'); return; }
       try {
         lpMsg('Claiming rewards...', 'loading');
         $('btn-claim-lp').disabled = true;
@@ -3713,18 +3940,18 @@
 
     // Admin: auto-adjust deploy fee to maintain ~$5 target
     window._riseAdjustDeployFee = async function() {
-      if (!walletClient || !userAddress) { showNotification('Connect wallet first', 'error'); return; }
+      if (!walletClient || !userAddress) { showNotification(t('connectFirst'), 'error'); return; }
       try {
         const ownerAddr = await publicClient.readContract({
           address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'owner',
         });
         if (ownerAddr.toLowerCase() !== userAddress.toLowerCase()) {
-          showNotification('Only the contract owner can adjust the deploy fee.', 'error');
+          showNotification(t('onlyOwner'), 'error');
           return;
         }
         const price = await _riseGetAigentPrice();
         const targetUsd = 5;
-        if (price <= 0) { showNotification('Price feed unavailable, try again later.', 'error'); return; }
+        if (price <= 0) { showNotification(t('priceUnavailable'), 'error'); return; }
         const newFeeWei = ethers.parseEther((targetUsd / price).toFixed(4));
         const newFeeDisplay = Number(ethers.formatEther(newFeeWei));
         showNotification('Adjusting deploy fee to ' + newFeeDisplay.toLocaleString() + ' AIGENT (~$' + (newFeeDisplay * price).toFixed(2) + ')...', 'info');
@@ -3732,15 +3959,14 @@
           address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'setDeployFee',
           args: [newFeeWei], chain: xLayer, account: userAddress,
         });
-        showNotification('Deploy fee updated! ' + newFeeDisplay.toLocaleString() + ' AIGENT (~$5)', 'success');
-        // Refresh after a short delay for chain propagation
+        showNotification(t('feeAdjusted') + ' ' + newFeeDisplay.toLocaleString() + ' AIGENT (~$5)', 'success');
         setTimeout(async () => {
           const info = await _riseGetDeployFeeInfo();
           showNotification('Deploy fee: ' + _riseFmtFee(info), 'success');
           riseUpdateTicker();
         }, 3000);
       } catch (e) {
-        showNotification('Fee adjustment failed: ' + (e.shortMessage || e.message), 'error');
+        showNotification(t('feeAdjustFailed') + ' ' + (e.shortMessage || e.message), 'error');
       }
     };
 
@@ -3757,7 +3983,7 @@
       $('rise-price').textContent = price.toFixed(8) + ' AIGENT';
       $('rise-reserve').textContent = reserve.toFixed(2) + ' AIGENT';
       $('rise-sold').textContent = sold.toFixed(0) + ' / ' + total.toFixed(0);
-      $('rise-status').textContent = 'Trading';
+      $('rise-status').textContent = t('riseStatus');
       $('rise-status').style.color = '#00e676';
       $('rise-progress-pct').textContent = pct.toFixed(1) + '%';
       $('rise-progress-fill').style.width = pct + '%';
@@ -3967,12 +4193,12 @@
       tabB.className = 'rise-tab' + (mode === 'buy' ? ' active-buy' : '');
       tabS.className = 'rise-tab' + (mode === 'sell' ? ' active-sell' : '');
       if (mode === 'buy') {
-        $('rise-input-label').innerHTML = 'You Pay (AIGENT)';
+        $('rise-input-label').innerHTML = t('riseYouPay');
         $('rise-currency-in').textContent = 'AIGENT';
         btn.textContent = 'BUY';
         btn.className = 'rise-btn rise-btn-buy';
       } else {
-        $('rise-input-label').innerHTML = 'You Sell (Tokens)';
+        $('rise-input-label').innerHTML = t('riseYouSell');
         $('rise-currency-in').textContent = 'TOKEN';
         btn.textContent = 'SELL';
         btn.className = 'rise-btn rise-btn-sell';
@@ -4015,7 +4241,7 @@
     }
 
     window.riseExecute = async function() {
-      if (!walletClient || !riseCurveData) { riseMsg('Connect wallet first.', 'error'); return; }
+      if (!walletClient || !riseCurveData) { riseMsg(t('connectFirst'), 'error'); return; }
       const amt = $('rise-amount').value.trim();
       if (!amt || parseFloat(amt) <= 0) { riseMsg('Enter an amount.', 'error'); return; }
 
@@ -4537,7 +4763,7 @@
 
     window.riseSetUniswapPool = async function() {
       if (!walletClient || !userAddress) {
-        showNotification('Connect wallet first', 'info');
+        showNotification(t('connectFirst'), 'info');
         return;
       }
       if (!riseCurveData) return;
@@ -4580,8 +4806,8 @@
 
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', (accounts) => {
-        if (accounts.length === 0) { renderDisconnected(); showMsg('Wallet disconnected.', 'error'); }
-        else if (userAddress && accounts[0] !== userAddress) { userAddress = accounts[0]; renderConnected(); dappRefreshBalance(); showMsg('Account changed to ' + shorten(userAddress), 'success'); }
+        if (accounts.length === 0) { renderDisconnected(); showMsg(t('walletDisconnected'), 'error'); }
+        else if (userAddress && accounts[0] !== userAddress) { userAddress = accounts[0]; renderConnected(); dappRefreshBalance(); showMsg(t('accountChanged') + ' ' + shorten(userAddress), 'success'); }
       });
       window.ethereum.on('chainChanged', () => { window.location.reload(); });
     }
@@ -4613,10 +4839,10 @@
       if (!content) return;
       const feeInfo = await _riseGetDeployFeeInfo();
       let items = [
-        '<div class="rise-ticker-item"><span class="ticker-tag price">AIGENT</span> $' + (await _riseGetAigentPrice()).toFixed(6) + ' · Uniswap V3 · X Layer</div>',
-        '<div class="rise-ticker-item"><span class="ticker-tag trade">FEE</span> 1% trade fee + 0.3% creator cut</div>',
-        '<div class="rise-ticker-item" style="cursor:pointer;" onclick="_riseAdjustDeployFee()" title="Click to rebalance deploy fee to ~$5"><span class="ticker-tag price">LAUNCH</span> ' + _riseFmtFee(feeInfo) + ' to deploy</div>',
-        '<div class="rise-ticker-item"><span class="ticker-tag trade">EIP-2612</span> Gasless approvals for AI agents</div>',
+        '<div class="rise-ticker-item"><span class="ticker-tag price">' + t('tickerAigent') + '</span> $' + (await _riseGetAigentPrice()).toFixed(6) + ' · Uniswap V3 · X Layer</div>',
+        '<div class="rise-ticker-item"><span class="ticker-tag trade">' + t('tickerFee') + '</span> ' + t('tickerFeeDesc') + '</div>',
+        '<div class="rise-ticker-item" style="cursor:pointer;" onclick="_riseAdjustDeployFee()" title="Click to rebalance deploy fee to ~$5"><span class="ticker-tag price">' + t('tickerLaunch') + '</span> ' + _riseFmtFee(feeInfo) + ' ' + t('tickerLaunchDesc') + '</div>',
+        '<div class="rise-ticker-item"><span class="ticker-tag trade">' + t('tickerEip') + '</span> ' + t('tickerEipDesc') + '</div>',
       ];
 
       // Add live curve data if connected
@@ -4649,7 +4875,7 @@
       }
 
       // Add platform stats
-      items.push('<div class="rise-ticker-item"><div class="rise-ticker-dot"></div> AIgent Rise — Launch. Trade. Thrive.</div>');
+      items.push('<div class="rise-ticker-item"><div class="rise-ticker-dot"></div> ' + t('tickerSlogan') + '</div>');
 
       // Duplicate content for seamless scroll
       const html = items.join('<div class="rise-ticker-dot" style="margin:0 2px;"></div>');
