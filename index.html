@@ -940,14 +940,19 @@
 
     /* ── Language Switcher ── */
     .lang-switch {
+      display: flex; align-items: center; gap: 2px;
       background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-      border-radius: 20px; padding: 6px 14px; cursor: pointer;
-      font-size: 11px; font-weight: 600; color: var(--dim);
-      transition: all 0.2s; font-family: inherit; min-width: 40px;
-      line-height: 1;
+      border-radius: 20px; padding: 3px; cursor: pointer;
+      user-select: none; -webkit-user-select: none;
     }
-    .lang-switch:hover { background: rgba(255,255,255,0.08); color: #fff; }
-    .lang-switch.zh-active { background: var(--cyan); color: #000; border-color: var(--cyan); }
+    .lang-switch span {
+      display: inline-block; padding: 5px 12px; border-radius: 16px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+      color: var(--dim); transition: all 0.2s; cursor: pointer;
+      pointer-events: auto; position: relative; z-index: 1;
+    }
+    .lang-switch span.active { background: var(--cyan); color: #000; box-shadow: 0 0 8px rgba(0,229,255,0.3); }
+    .lang-switch span:hover:not(.active) { color: #fff; }
 
     /* ── PWA Install Button ── */
     .pwa-install-btn {
@@ -1290,7 +1295,9 @@
       AIGENT
     </div>
     <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
-    <button class="lang-switch zh-active" id="lang-switch" title="Switch Language" data-i18n-title="Switch Language">中</button>
+    <div class="lang-switch" id="lang-switch" title="Switch Language" data-i18n-title="Switch Language">
+      <span data-lang="zh" class="active" data-i18n>中</span><span data-lang="en" data-i18n>EN</span>
+    </div>
     <button class="pwa-install-btn" id="pwa-install-btn" title="Install App" data-i18n-title="install">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       <span data-i18n>Install</span>
@@ -2959,18 +2966,28 @@
       });
       document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
       document.querySelectorAll('[data-i18n-title]').forEach(function(el) { el.title = t(el.getAttribute('data-i18n-title')); });
-      var btn = document.getElementById('lang-switch');
-      if (btn) {
-        btn.textContent = _i18nLang === 'zh' ? '中' : 'EN';
-        btn.classList.toggle('zh-active', _i18nLang === 'zh');
+      var sw = document.getElementById('lang-switch');
+      if (sw) {
+        sw.querySelectorAll('span').forEach(function(s) {
+          s.classList.toggle('active', s.getAttribute('data-lang') === _i18nLang);
+        });
       }
     }
-    function _i18nSwitch(lang) { _i18nLang = lang; localStorage.setItem('aigent_lang', lang); _i18nUpdateDOM(); if (typeof riseUpdateTicker === 'function') riseUpdateTicker(); }
+    function _i18nSwitch(lang) {
+      if (lang === _i18nLang) return;
+      _i18nLang = lang; localStorage.setItem('aigent_lang', lang);
+      _i18nUpdateDOM();
+      if (typeof riseUpdateTicker === 'function') riseUpdateTicker();
+      if (typeof riseMsg === 'function') riseMsg(lang === 'zh' ? '语言已切换为中文' : 'Language switched to English', 'success');
+    }
     window._i18nSwitch = _i18nSwitch;
     window.t = t;
     _i18nUpdateDOM();
-    document.getElementById('lang-switch').addEventListener('click', function() {
-      _i18nSwitch(_i18nLang === 'zh' ? 'en' : 'zh');
+    document.getElementById('lang-switch').addEventListener('click', function(e) {
+      var span = e.target.closest('span');
+      if (!span) return;
+      var lang = span.getAttribute('data-lang');
+      if (lang) _i18nSwitch(lang);
     });
 
   </script>
