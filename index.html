@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIgent Rise — Token Launch Platform</title>
+  <title data-i18n>AIgent Rise — Token Launch Platform</title>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#060b14">
   <meta name="description" content="One-click token launch and permanent bonding curve trading on X Layer">
@@ -1292,7 +1292,7 @@
     </div>
     <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
     <div class="lang-switch" id="lang-switch" title="Language / 语言">
-      <span data-lang="zh" class="active">中</span><span data-lang="en">EN</span>
+      <span data-lang="zh" class="active">中</span><span data-lang="en" data-i18n>EN</span>
     </div>
     <button class="pwa-install-btn" id="pwa-install-btn" title="Install App" data-i18n-title="install">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1368,8 +1368,8 @@
       </svg>
     </div>
 
-    <div class="hero-label">X Layer &middot; ERC-20 &middot; EIP-2612</div>
-    <h1 class="hero-title">AI<span class="accent">GENT</span></h1>
+    <div class="hero-label" data-i18n>X Layer &middot; ERC-20 &middot; EIP-2612</div>
+    <h1 class="hero-title">AI<span class="accent" data-i18n>GENT</span></h1>
     <div class="hero-sub">
       <span id="typed"></span><span class="cursor">&#9611;</span>
     </div>
@@ -1377,24 +1377,24 @@
     <div class="hero-stats">
       <div class="hero-stat">
         <div class="val">$0.0001</div>
-        <div class="lbl">Initial Price</div>
+        <div class="lbl" data-i18n>Initial Price</div>
       </div>
       <div class="hero-stat">
-        <div class="val">AIGENT/USDT</div>
-        <div class="lbl">Trading Pair</div>
+        <div class="val" data-i18n>AIGENT/USDT</div>
+        <div class="lbl" data-i18n>Trading Pair</div>
       </div>
       <div class="hero-stat">
         <div class="val">500M</div>
-        <div class="lbl">Total Supply</div>
+        <div class="lbl" data-i18n>Total Supply</div>
       </div>
       <div class="hero-stat">
-        <div class="val">X Layer</div>
-        <div class="lbl">Network</div>
+        <div class="val" data-i18n>X Layer</div>
+        <div class="lbl" data-i18n>Network</div>
       </div>
     </div>
 
     <div class="scroll-hint">
-      <span>EXPLORE</span>
+      <span data-i18n>EXPLORE</span>
       <div class="line"></div>
     </div>
   </section>
@@ -1405,38 +1405,38 @@
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 0;">
           <div class="section-tag">// <span data-i18n>Token</span></div>
-          <div class="section-title">$AIGENT</div>
-          <p class="section-sub" style="margin-left: 0;">Autonomous Intelligence Agent Token on X Layer</p>
+          <div class="section-title" data-i18n>$AIGENT</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>Autonomous Intelligence Agent Token on X Layer</p>
         </div>
         <div class="token-grid">
           <div class="token-item">
-            <div class="label">Name</div>
-            <div class="value cyan">AIGENT</div>
+            <div class="label" data-i18n>Name</div>
+            <div class="value cyan" data-i18n>AIGENT</div>
           </div>
           <div class="token-item">
-            <div class="label">Symbol</div>
-            <div class="value">$AIGENT</div>
+            <div class="label" data-i18n>Symbol</div>
+            <div class="value" data-i18n>$AIGENT</div>
           </div>
           <div class="token-item">
-            <div class="label">Supply</div>
+            <div class="label" data-i18n>Supply</div>
             <div class="value cyan">500,000,000</div>
           </div>
           <div class="token-item">
-            <div class="label">Decimals</div>
+            <div class="label" data-i18n>Decimals</div>
             <div class="value">18</div>
           </div>
           <div class="token-item">
-            <div class="label">Chain</div>
-            <div class="value cyan">X Layer</div>
+            <div class="label" data-i18n>Chain</div>
+            <div class="value cyan" data-i18n>X Layer</div>
           </div>
           <div class="token-item">
-            <div class="label">Standard</div>
-            <div class="value">ERC-20 + EIP-2612</div>
+            <div class="label" data-i18n>Standard</div>
+            <div class="value" data-i18n>ERC-20 + EIP-2612</div>
           </div>
         </div>
         <div class="contract-bar">
           <span class="addr" id="contract-addr">0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39</span>
-          <button class="btn" id="copy-btn" onclick="copyAddr()">Copy</button>
+          <button class="btn" id="copy-btn" onclick="copyAddr()" data-i18n>Copy</button>
         </div>
       </div>
     </section>
@@ -1446,38 +1446,38 @@
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 28px;">
           <div class="section-tag">// <span data-i18n>Trade</span></div>
-          <div class="section-title">How to Buy $AIGENT</div>
-          <p class="section-sub" style="margin-left: 0;">Trade AIGENT/USDT on Uniswap V3 — X Layer Mainnet</p>
+          <div class="section-title" data-i18n>How to Buy $AIGENT</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>Trade AIGENT/USDT on Uniswap V3 — X Layer Mainnet</p>
         </div>
         <div class="feature-grid">
           <div class="feature-card">
-            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;">STEP 1</div>
+            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;" data-i18n>STEP 1</div>
             <div class="fc-desc">
-              <span class="highlight-cyan">Add X Layer to Wallet</span><br>
+              <span class="highlight-cyan" data-i18n>Add X Layer to Wallet</span><br>
               Chain ID: 196 | RPC: rpc.xlayer.tech<br>
               Bridge USDT to X Layer via official bridge.
             </div>
           </div>
           <div class="feature-card">
-            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;">STEP 2</div>
+            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;" data-i18n>STEP 2</div>
             <div class="fc-desc">
-              <span class="highlight-cyan">Open Uniswap V3</span><br>
+              <span class="highlight-cyan" data-i18n>Open Uniswap V3</span><br>
               Go to app.uniswap.org → Pool → New Position.<br>
               Paste AIGENT contract + USDT.
             </div>
           </div>
           <div class="feature-card">
-            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;">STEP 3</div>
+            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;" data-i18n>STEP 3</div>
             <div class="fc-desc">
-              <span class="highlight-cyan">Set Parameters</span><br>
+              <span class="highlight-cyan" data-i18n>Set Parameters</span><br>
               Fee: 1.00% | Range: Full Range<br>
               Initial Price: $0.0001 per AIGENT
             </div>
           </div>
           <div class="feature-card">
-            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;">STEP 4</div>
+            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;" data-i18n>STEP 4</div>
             <div class="fc-desc">
-              <span class="highlight-cyan">Add Liquidity</span><br>
+              <span class="highlight-cyan" data-i18n>Add Liquidity</span><br>
               Approve AIGENT → Deposit tokens.<br>
               Verify listing on DexScreener.
             </div>
@@ -1491,38 +1491,38 @@
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 24px;">
           <div class="section-tag">// <span data-i18n>Presale</span></div>
-          <div class="section-title">Private Sale — Buy $AIGENT</div>
-          <p class="section-sub" style="margin-left: 0;">Send USDT to the presale contract, receive AIGENT instantly at a fixed price. No vesting, no lockup.</p>
+          <div class="section-title" data-i18n>Private Sale — Buy $AIGENT</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>Send USDT to the presale contract, receive AIGENT instantly at a fixed price. No vesting, no lockup.</p>
         </div>
 
         <div class="presale-price-row">
           <div class="presale-price-card">
-            <div class="pp-label">Price</div>
+            <div class="pp-label" data-i18n>Price</div>
             <div class="pp-val">$0.0001</div>
-            <div class="pp-sub">per AIGENT</div>
+            <div class="pp-sub" data-i18n>per AIGENT</div>
           </div>
           <div class="presale-price-card">
-            <div class="pp-label">Exchange Rate</div>
+            <div class="pp-label" data-i18n>Exchange Rate</div>
             <div class="pp-val">10,000</div>
-            <div class="pp-sub">AIGENT per 1 USDT</div>
+            <div class="pp-sub" data-i18n>AIGENT per 1 USDT</div>
           </div>
           <div class="presale-price-card">
-            <div class="pp-label">Hard Cap</div>
+            <div class="pp-label" data-i18n>Hard Cap</div>
             <div class="pp-val">50M</div>
-            <div class="pp-sub">AIGENT (10% supply)</div>
+            <div class="pp-sub" data-i18n>AIGENT (10% supply)</div>
           </div>
           <div class="presale-price-card">
-            <div class="pp-label">Status</div>
-            <div class="pp-val live-tag">LIVE</div>
-            <div class="pp-sub">No vesting period</div>
+            <div class="pp-label" data-i18n>Status</div>
+            <div class="pp-val live-tag" data-i18n>LIVE</div>
+            <div class="pp-sub" data-i18n>No vesting period</div>
           </div>
         </div>
 
         <!-- Progress Bar -->
         <div class="progress-wrap" id="presale-progress-wrap">
           <div class="progress-header">
-            <span class="progress-sold" id="progress-sold-text">0 AIGENT sold</span>
-            <span class="progress-cap" id="progress-cap-text">/ 50,000,000 cap</span>
+            <span class="progress-sold" id="progress-sold-text" data-i18n>0 AIGENT sold</span>
+            <span class="progress-cap" id="progress-cap-text" data-i18n>/ 50,000,000 cap</span>
           </div>
           <div class="progress-bar-outer">
             <div class="progress-bar-inner" id="progress-bar-fill" style="width:0%;"></div>
@@ -1533,57 +1533,57 @@
         <!-- Network Info -->
         <div class="presale-info-grid">
           <div class="presale-info-box">
-            <div class="pi-head">Network</div>
-            <div class="pi-body">X Layer Mainnet</div>
-            <div class="pi-sub">Chain ID: 196 | RPC: rpc.xlayer.tech</div>
+            <div class="pi-head" data-i18n>Network</div>
+            <div class="pi-body" data-i18n>X Layer Mainnet</div>
+            <div class="pi-sub" data-i18n>Chain ID: 196 | RPC: rpc.xlayer.tech</div>
           </div>
           <div class="presale-info-box">
-            <div class="pi-head">Token Contract</div>
-            <div class="pi-body mono" id="token-copy">0xE543...C3e39</div>
-            <div class="pi-sub">AIGENT ERC-20 + EIP-2612</div>
+            <div class="pi-head" data-i18n>Token Contract</div>
+            <div class="pi-body mono" id="token-copy" data-i18n>0xE543...C3e39</div>
+            <div class="pi-sub" data-i18n>AIGENT ERC-20 + EIP-2612</div>
           </div>
           <div class="presale-info-box">
-            <div class="pi-head">Presale Contract</div>
-            <div class="pi-body mono" id="presale-copy">0x316b...ccD9</div>
-            <div class="pi-sub">Verified on-chain</div>
+            <div class="pi-head" data-i18n>Presale Contract</div>
+            <div class="pi-body mono" id="presale-copy" data-i18n>0x316b...ccD9</div>
+            <div class="pi-sub" data-i18n>Verified on-chain</div>
           </div>
           <div class="presale-info-box">
-            <div class="pi-head">Payment Token</div>
-            <div class="pi-body mono">USDT0</div>
-            <div class="pi-sub">0x779D...3736 (LayerZero OFT)</div>
+            <div class="pi-head" data-i18n>Payment Token</div>
+            <div class="pi-body mono" data-i18n>USDT0</div>
+            <div class="pi-sub" data-i18n>0x779D...3736 (LayerZero OFT)</div>
           </div>
         </div>
 
         <!-- How to Participate -->
         <div class="presale-howto">
-          <h3>How to Participate</h3>
+          <h3 data-i18n>How to Participate</h3>
 
           <div class="presale-steps">
             <div class="pstep">
               <div class="pstep-num">01</div>
               <div class="pstep-text">
-                <strong>Add X Layer to Your Wallet</strong>
-                <p>Network: X Layer Mainnet | Chain ID: 196 | RPC: https://rpc.xlayer.tech | Currency: OKB</p>
+                <strong data-i18n>Add X Layer to Your Wallet</strong>
+                <p data-i18n>Network: X Layer Mainnet | Chain ID: 196 | RPC: https://rpc.xlayer.tech | Currency: OKB</p>
               </div>
             </div>
             <div class="pstep">
               <div class="pstep-num">02</div>
               <div class="pstep-text">
-                <strong>Get USDT on X Layer</strong>
-                <p>Bridge USDT from Ethereum/OKX to X Layer via the <a href="https://www.okx.com/web3/bridge" target="_blank" rel="noopener">OKX Bridge</a>. You need USDT0 on X Layer.</p>
+                <strong data-i18n>Get USDT on X Layer</strong>
+                <p>Bridge USDT from Ethereum/OKX to X Layer via the <a href="https://www.okx.com/web3/bridge" target="_blank" rel="noopener" data-i18n>OKX Bridge</a>. You need USDT0 on X Layer.</p>
               </div>
             </div>
             <div class="pstep">
               <div class="pstep-num">03</div>
               <div class="pstep-text">
-                <strong>Approve USDT Spending</strong>
+                <strong data-i18n>Approve USDT Spending</strong>
                 <p>Call <code>approve()</code> on USDT contract (0x779D...3736), spender = Presale (0x316b...ccD9), amount = your desired USDT amount.</p>
               </div>
             </div>
             <div class="pstep">
               <div class="pstep-num">04</div>
               <div class="pstep-text">
-                <strong>Call buy(amount)</strong>
+                <strong data-i18n>Call buy(amount)</strong>
                 <p>Send transaction to Presale contract (0x316b...ccD9) calling <code>buy(usdtAmount)</code>. AIGENT is transferred to your wallet instantly.</p>
               </div>
             </div>
@@ -1592,28 +1592,28 @@
 
         <!-- Full Contract Addresses -->
         <div style="margin-top: 28px;">
-          <h3 style="font-size:14px;color:var(--dim);letter-spacing:2px;margin-bottom:14px;">CONTRACT ADDRESSES</h3>
+          <h3 style="font-size:14px;color:var(--dim);letter-spacing:2px;margin-bottom:14px;" data-i18n>CONTRACT ADDRESSES</h3>
           <div class="contract-bar">
-            <span style="color:var(--dim);font-size:11px;margin-right:8px;">AIGENT</span>
+            <span style="color:var(--dim);font-size:11px;margin-right:8px;" data-i18n>AIGENT</span>
             <span class="addr" id="contract-addr2">0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39</span>
-            <button class="btn" onclick="copyEl('contract-addr2', this)">Copy</button>
+            <button class="btn" onclick="copyEl('contract-addr2', this)" data-i18n>Copy</button>
           </div>
           <div class="contract-bar">
-            <span style="color:var(--dim);font-size:11px;margin-right:8px;">PRESALE</span>
+            <span style="color:var(--dim);font-size:11px;margin-right:8px;" data-i18n>PRESALE</span>
             <span class="addr" id="presale-addr">0x316b1cE062cC4525F0129C3D41351a976981ccD9</span>
-            <button class="btn" onclick="copyEl('presale-addr', this)">Copy</button>
+            <button class="btn" onclick="copyEl('presale-addr', this)" data-i18n>Copy</button>
           </div>
           <div class="contract-bar">
-            <span style="color:var(--dim);font-size:11px;margin-right:8px;">USDT</span>
+            <span style="color:var(--dim);font-size:11px;margin-right:8px;" data-i18n>USDT</span>
             <span class="addr" id="usdt-addr">0x779Ded0c9e1022225f8E0630b35a9b54bE713736</span>
-            <button class="btn" onclick="copyEl('usdt-addr', this)">Copy</button>
+            <button class="btn" onclick="copyEl('usdt-addr', this)" data-i18n>Copy</button>
           </div>
         </div>
 
         <!-- Warning -->
         <div class="presale-notice" style="border-color: rgba(255,68,68,0.35); background: rgba(255,68,68,0.06);">
-          <strong style="color:#ff4444;">DO NOT TRANSFER USDT DIRECTLY</strong>
-          <p>Sending USDT directly to the presale contract address will result in <strong style="color:#ff4444;">PERMANENT LOSS</strong> of your funds. You must interact through the contract's <code style="background:rgba(255,68,68,0.1);padding:1px 4px;border-radius:3px;">buy()</code> function via a DApp or wallet that supports contract interaction. Never use "Send" or "Transfer" in your wallet to buy presale tokens. Minimum purchase: 1 USDT.</p>
+          <strong style="color:#ff4444;" data-i18n>DO NOT TRANSFER USDT DIRECTLY</strong>
+          <p>Sending USDT directly to the presale contract address will result in <strong style="color:#ff4444;" data-i18n>PERMANENT LOSS</strong> of your funds. You must interact through the contract's <code style="background:rgba(255,68,68,0.1);padding:1px 4px;border-radius:3px;">buy()</code> function via a DApp or wallet that supports contract interaction. Never use "Send" or "Transfer" in your wallet to buy presale tokens. Minimum purchase: 1 USDT.</p>
         </div>
       </div>
     </section>
@@ -1630,16 +1630,16 @@
         <!-- Status Bar -->
         <div class="dapp-status-bar" id="dapp-status">
           <div class="dapp-dot disconnected" id="dapp-dot"></div>
-          <span class="dapp-addr" id="dapp-addr" data-i18n>Not connected</span>
+          <span class="dapp-addr" id="dapp-addr">Not connected</span>
           <span class="dapp-chain-badge" id="dapp-chain">X Layer</span>
-          <button id="dapp-switch-chain" onclick="dappSwitchChain()" style="display:none;margin-left:6px;padding:2px 8px;background:var(--magenta);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;font-family:inherit;">Switch to X Layer</button>
+          <button id="dapp-switch-chain" onclick="dappSwitchChain()" style="display:none;margin-left:6px;padding:2px 8px;background:var(--magenta);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;font-family:inherit;" data-i18n>Switch to X Layer</button>
         </div>
 
         <!-- Action Buttons -->
         <div class="dapp-action-row" id="dapp-actions">
           <button class="dapp-btn" id="btn-connect" onclick="dappConnect()" data-i18n>Connect Wallet</button>
           <button class="dapp-btn magenta" onclick="dappOpenUniswap()" data-i18n>Buy on Uniswap</button>
-          <button class="dapp-btn" id="btn-qr" onclick="toggleQR()" style="background:linear-gradient(135deg,#667eea,#764ba2);" title="Scan QR to open on mobile">📱 QR</button>
+          <button class="dapp-btn" id="btn-qr" onclick="toggleQR()" style="background:linear-gradient(135deg,#667eea,#764ba2);" title="Scan QR to open on mobile" data-i18n>📱 QR</button>
         </div>
 
         <!-- QR Code -->
@@ -1656,7 +1656,7 @@
         <!-- Balance Display -->
         <div class="dapp-balance-row" id="dapp-balance-section" style="display:none;">
           <div class="dapp-balance-card">
-            <div class="db-label">AIGENT Balance</div>
+            <div class="db-label" data-i18n>AIGENT Balance</div>
             <div class="db-val" id="dapp-balance">--</div>
           </div>
         </div>
@@ -1678,7 +1678,7 @@
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="10" r="1.5" fill="var(--cyan)"/><circle cx="15.5" cy="10" r="1.5" fill="var(--cyan)"/><path d="M8.5 15c1.5 2 3.5 1.5 7 0"/></svg>
             <div>
-              <div style="font-size:14px;font-weight:700;color:var(--text-bright);"><span data-i18n>AI Agent Console</span> <span class="agent-server-indicator" id="agent-server-ind"><span class="agent-server-dot" id="agent-server-dot"></span><span id="agent-server-label" data-i18n>local</span></span></div>
+              <div style="font-size:14px;font-weight:700;color:var(--text-bright);"><span data-i18n>AI Agent Console</span> <span class="agent-server-indicator" id="agent-server-ind"><span class="agent-server-dot" id="agent-server-dot"></span><span id="agent-server-label">local</span></span></div>
               <div style="font-size:11px;color:var(--dim);" data-i18n>Chat with the AI agent — natural language commands</div>
             </div>
           </div>
@@ -1689,19 +1689,19 @@
           <!-- Step visualization (shared by transfer & deploy flows) -->
           <div id="agent-steps" style="display:none;margin-bottom:14px;">
             <div class="agent-step" id="step-1">
-              <div class="step-num">1</div><div class="step-content"><div class="step-title">Parse Command</div><div class="step-detail" id="step1-detail"></div></div><div class="step-status" id="step1-status"></div>
+              <div class="step-num">1</div><div class="step-content"><div class="step-title" data-i18n>Parse Command</div><div class="step-detail" id="step1-detail"></div></div><div class="step-status" id="step1-status"></div>
             </div>
             <div class="agent-step" id="step-2">
-              <div class="step-num">2</div><div class="step-content"><div class="step-title">Sign EIP-2612 Permit (off-chain)</div><div class="step-detail" id="step2-detail"></div></div><div class="step-status" id="step2-status"></div>
+              <div class="step-num">2</div><div class="step-content"><div class="step-title" data-i18n>Sign EIP-2612 Permit (off-chain)</div><div class="step-detail" id="step2-detail"></div></div><div class="step-status" id="step2-status"></div>
             </div>
             <div class="agent-step" id="step-3">
-              <div class="step-num">3</div><div class="step-content"><div class="step-title">Submit permit() Transaction</div><div class="step-detail" id="step3-detail"></div></div><div class="step-status" id="step3-status"></div>
+              <div class="step-num">3</div><div class="step-content"><div class="step-title" data-i18n>Submit permit() Transaction</div><div class="step-detail" id="step3-detail"></div></div><div class="step-status" id="step3-status"></div>
             </div>
             <div class="agent-step" id="step-4">
-              <div class="step-num">4</div><div class="step-content"><div class="step-title">Submit transferFrom() Transaction</div><div class="step-detail" id="step4-detail"></div></div><div class="step-status" id="step4-status"></div>
+              <div class="step-num">4</div><div class="step-content"><div class="step-title" data-i18n>Submit transferFrom() Transaction</div><div class="step-detail" id="step4-detail"></div></div><div class="step-status" id="step4-status"></div>
             </div>
             <div class="agent-step" id="step-5">
-              <div class="step-num">5</div><div class="step-content"><div class="step-title">Verify on Explorer</div><div class="step-detail" id="step5-detail"></div></div><div class="step-status" id="step5-status"></div>
+              <div class="step-num">5</div><div class="step-content"><div class="step-title" data-i18n>Verify on Explorer</div><div class="step-detail" id="step5-detail"></div></div><div class="step-status" id="step5-status"></div>
             </div>
           </div>
 
@@ -1709,15 +1709,15 @@
 
           <div class="dapp-input-group" style="margin-bottom:10px;">
             <input class="dapp-input" id="agent-cmd" type="text" placeholder='Chat: "deploy token DogKing symbol DKING supply 1M" | "check balance" | "send 10 to 0x..."' autocomplete="off" onkeydown="if(event.key==='Enter')agentExecute()">
-            <button class="dapp-btn" id="btn-agent" onclick="agentExecute()">Send</button>
+            <button class="dapp-btn" id="btn-agent" onclick="agentExecute()" data-i18n>Send</button>
           </div>
 
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
             <button class="btn" onclick="agentQuick('deploy a token called MyCoin symbol MYC supply 1000000')" style="font-size:10px;padding:4px 10px;background:linear-gradient(135deg,var(--magenta),var(--purple));color:#fff;border:none;">🚀 <span data-i18n>Launch Token</span></button>
-            <button class="btn" onclick="agentQuick('Check my balance')" style="font-size:10px;padding:4px 10px;">Balance</button>
-            <button class="btn" onclick="agentQuick('What is the total supply?')" style="font-size:10px;padding:4px 10px;">Supply</button>
-            <button class="btn" onclick="agentQuick('send 10 to 0xAbC...')" style="font-size:10px;padding:4px 10px;">Send 10</button>
-            <button class="btn" onclick="agentQuick('help')" style="font-size:10px;padding:4px 10px;">Help</button>
+            <button class="btn" onclick="agentQuick('Check my balance')" style="font-size:10px;padding:4px 10px;" data-i18n>Balance</button>
+            <button class="btn" onclick="agentQuick('What is the total supply?')" style="font-size:10px;padding:4px 10px;" data-i18n>Supply</button>
+            <button class="btn" onclick="agentQuick('send 10 to 0xAbC...')" style="font-size:10px;padding:4px 10px;" data-i18n>Send 10</button>
+            <button class="btn" onclick="agentQuick('help')" style="font-size:10px;padding:4px 10px;" data-i18n>Help</button>
           </div>
 
           <!-- Presale Buy -->
@@ -1727,13 +1727,13 @@
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10l4-4 4 4M8 14l4 4 4-4"/></svg>
               <div>
                 <div style="font-size:14px;font-weight:700;color:var(--text-bright);" data-i18n>Buy AIGENT Presale</div>
-                <div style="font-size:11px;color:var(--dim);">10,000 AIGENT per USDT — instant delivery</div>
+                <div style="font-size:11px;color:var(--dim);" data-i18n>10,000 AIGENT per USDT — instant delivery</div>
               </div>
             </div>
 
             <div class="dapp-input-group" style="margin-bottom:8px;">
               <input class="dapp-input" id="presale-usdt-amt" type="text" placeholder="USDT amount (min 1)" autocomplete="off">
-              <button class="dapp-btn magenta" id="btn-presale-buy" onclick="presaleBuy()">Buy AIGENT</button>
+              <button class="dapp-btn magenta" id="btn-presale-buy" onclick="presaleBuy()" data-i18n>Buy AIGENT</button>
             </div>
             <div class="dapp-msg" id="presale-msg"></div>
           </div>
@@ -1746,22 +1746,22 @@
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 24px;">
           <div class="section-tag">// <span data-i18n>Earn</span></div>
-          <div class="section-title">Stake AIGENT</div>
-          <p class="section-sub" style="margin-left: 0;">Stake AIGENT to earn rewards. 80M reward pool, 1-year duration.</p>
+          <div class="section-title" data-i18n>Stake AIGENT</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>Stake AIGENT to earn rewards. 80M reward pool, 1-year duration.</p>
         </div>
 
         <div class="farm-row" id="stake-stats">
-          <div class="farm-stat"><div class="fs-label">Total Staked</div><div class="fs-val" id="st-total">--</div></div>
-          <div class="farm-stat"><div class="fs-label">Reward Rate</div><div class="fs-val" id="st-rate">--</div></div>
-          <div class="farm-stat"><div class="fs-label">Your Staked</div><div class="fs-val" id="st-yours">--</div></div>
-          <div class="farm-stat"><div class="fs-label">Pending Rewards</div><div class="fs-val" id="st-pending">--</div></div>
+          <div class="farm-stat"><div class="fs-label" data-i18n>Total Staked</div><div class="fs-val" id="st-total">--</div></div>
+          <div class="farm-stat"><div class="fs-label" data-i18n>Reward Rate</div><div class="fs-val" id="st-rate">--</div></div>
+          <div class="farm-stat"><div class="fs-label" data-i18n>Your Staked</div><div class="fs-val" id="st-yours">--</div></div>
+          <div class="farm-stat"><div class="fs-label" data-i18n>Pending Rewards</div><div class="fs-val" id="st-pending">--</div></div>
         </div>
 
         <div class="farm-input-row" style="margin-bottom:8px;">
           <input class="farm-input" id="stake-amount" type="text" placeholder="AIGENT amount" autocomplete="off">
-          <button class="farm-btn" id="btn-stake" onclick="stakeTokens()">Stake</button>
-          <button class="farm-btn magenta" id="btn-unstake" onclick="unstakeTokens()">Unstake</button>
-          <button class="farm-btn red" id="btn-claim-stake" onclick="claimStakeReward()">Claim</button>
+          <button class="farm-btn" id="btn-stake" onclick="stakeTokens()" data-i18n>Stake</button>
+          <button class="farm-btn magenta" id="btn-unstake" onclick="unstakeTokens()" data-i18n>Unstake</button>
+          <button class="farm-btn red" id="btn-claim-stake" onclick="claimStakeReward()" data-i18n>Claim</button>
         </div>
         <div class="dapp-msg" id="stake-msg"></div>
       </div>
@@ -1772,22 +1772,22 @@
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 24px;">
           <div class="section-tag">// <span data-i18n>Farm</span></div>
-          <div class="section-title">LP Farm</div>
-          <p class="section-sub" style="margin-left: 0;">Stake LP tokens to earn AIGENT rewards. 60M reward pool, 1-year duration.</p>
+          <div class="section-title" data-i18n>LP Farm</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>Stake LP tokens to earn AIGENT rewards. 60M reward pool, 1-year duration.</p>
         </div>
 
         <div class="farm-row" id="lp-stats">
-          <div class="farm-stat"><div class="fs-label">Total LP Staked</div><div class="fs-val" id="lp-total">--</div></div>
-          <div class="farm-stat"><div class="fs-label">Reward Rate</div><div class="fs-val" id="lp-rate">--</div></div>
-          <div class="farm-stat"><div class="fs-label">Your LP Staked</div><div class="fs-val" id="lp-yours">--</div></div>
-          <div class="farm-stat"><div class="fs-label">Pending Rewards</div><div class="fs-val" id="lp-pending">--</div></div>
+          <div class="farm-stat"><div class="fs-label" data-i18n>Total LP Staked</div><div class="fs-val" id="lp-total">--</div></div>
+          <div class="farm-stat"><div class="fs-label" data-i18n>Reward Rate</div><div class="fs-val" id="lp-rate">--</div></div>
+          <div class="farm-stat"><div class="fs-label" data-i18n>Your LP Staked</div><div class="fs-val" id="lp-yours">--</div></div>
+          <div class="farm-stat"><div class="fs-label" data-i18n>Pending Rewards</div><div class="fs-val" id="lp-pending">--</div></div>
         </div>
 
         <div class="farm-input-row" style="margin-bottom:8px;">
           <input class="farm-input" id="lp-amount" type="text" placeholder="LP token amount" autocomplete="off">
-          <button class="farm-btn" id="btn-stake-lp" onclick="stakeLP()">Stake LP</button>
-          <button class="farm-btn magenta" id="btn-unstake-lp" onclick="unstakeLP()">Unstake LP</button>
-          <button class="farm-btn red" id="btn-claim-lp" onclick="claimLPReward()">Claim</button>
+          <button class="farm-btn" id="btn-stake-lp" onclick="stakeLP()" data-i18n>Stake LP</button>
+          <button class="farm-btn magenta" id="btn-unstake-lp" onclick="unstakeLP()" data-i18n>Unstake LP</button>
+          <button class="farm-btn red" id="btn-claim-lp" onclick="claimLPReward()" data-i18n>Claim</button>
         </div>
         <div class="dapp-msg" id="lp-msg"></div>
       </div>
@@ -1808,14 +1808,14 @@
                onmouseleave="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--dim)'"
             title="Copy shareable link" data-i18n-title="riseCopyLink">🔗 <span data-i18n>Share</span></button>
           </div>
-          <p class="section-sub" style="margin-left:0;">Permanent bonding curve — trade anytime. Creators can optionally add Uniswap V3 liquidity.</p>
+          <p class="section-sub" style="margin-left:0;" data-i18n>Permanent bonding curve — trade anytime. Creators can optionally add Uniswap V3 liquidity.</p>
         </div>
 
         <!-- Current Token Header (dynamic) -->
         <div class="rise-header" id="rise-header">
           <div class="rise-icon" id="rise-icon">🚀</div>
           <div>
-            <div class="rise-title" id="rise-token-title" data-i18n>Select a Token</div>
+            <div class="rise-title" id="rise-token-title">Select a Token</div>
             <div class="rise-tag" id="rise-token-tag">CURVE #--</div>
           </div>
         </div>
@@ -1834,7 +1834,7 @@
             padding:10px 18px;border-radius:24px;border:1px solid rgba(0,229,255,0.3);
             background:rgba(0,229,255,0.06);color:var(--cyan);font-size:12px;font-weight:600;
             cursor:pointer;font-family:inherit;transition:all 0.2s;
-          " onmouseenter="this.style.boxShadow='0 0 12px rgba(0,229,255,0.2)'" onmouseleave="this.style.boxShadow='none'">
+          " onmouseenter="this.style.boxShadow='0 0 12px rgba(0,229,255,0.2)'" onmouseleave="this.style.boxShadow='none'" data-i18n>
             Search
           </button>
         </div>
@@ -1842,7 +1842,7 @@
           <button class="rise-curve-chip active" data-id="0" onclick="riseSelectCurve(0)" style="
             padding:8px 16px;border-radius:20px;border:1px solid rgba(255,215,0,0.3);background:rgba(255,215,0,0.08);
             color:#ffd700;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;
-          ">Loading...</button>
+          " data-i18n>Loading...</button>
         </div>
 
         <!-- Main Grid: Chart + Trade -->
@@ -1854,32 +1854,32 @@
             </div>
             <div class="rise-progress-section">
               <div class="rise-progress-header">
-                <span>Curve Progress</span>
+                <span data-i18n>Curve Progress</span>
                 <span id="rise-progress-pct">0%</span>
               </div>
               <div class="rise-progress-bar">
                 <div class="rise-progress-fill" id="rise-progress-fill" style="width:0%"></div>
               </div>
-              <div class="rise-curve-label" id="rise-curve-label">
+              <div class="rise-curve-label" id="rise-curve-label" data-i18n>
                 AIGENT locked in curve reserve
               </div>
             </div>
             <div class="rise-stats" id="rise-stats">
               <div class="rise-stat">
-                <div class="rise-stat-label">Price</div>
+                <div class="rise-stat-label" data-i18n>Price</div>
                 <div class="rise-stat-val" id="rise-price">--</div>
               </div>
               <div class="rise-stat">
-                <div class="rise-stat-label">AIGENT Reserve</div>
+                <div class="rise-stat-label" data-i18n>AIGENT Reserve</div>
                 <div class="rise-stat-val" id="rise-reserve">--</div>
               </div>
               <div class="rise-stat">
-                <div class="rise-stat-label">Sold / Total</div>
+                <div class="rise-stat-label" data-i18n>Sold / Total</div>
                 <div class="rise-stat-val" id="rise-sold">--</div>
               </div>
               <div class="rise-stat">
-                <div class="rise-stat-label">Status</div>
-                <div class="rise-stat-val" id="rise-status" style="color:#ffd700;">Trading</div>
+                <div class="rise-stat-label" data-i18n>Status</div>
+                <div class="rise-stat-val" id="rise-status" style="color:#ffd700;" data-i18n>Trading</div>
               </div>
               <div class="rise-stat">
                 <div class="rise-stat-label" data-i18n>Market Cap</div>
@@ -1891,27 +1891,27 @@
           <!-- RIGHT: Buy/Sell -->
           <div class="rise-trade">
             <div class="rise-tabs">
-              <button class="rise-tab active-buy" id="rise-tab-buy" onclick="riseSetMode('buy')">BUY</button>
-              <button class="rise-tab" id="rise-tab-sell" onclick="riseSetMode('sell')">SELL</button>
+              <button class="rise-tab active-buy" id="rise-tab-buy" onclick="riseSetMode('buy')" data-i18n>BUY</button>
+              <button class="rise-tab" id="rise-tab-sell" onclick="riseSetMode('sell')" data-i18n>SELL</button>
             </div>
 
             <div class="rise-input-group">
               <div class="rise-input-label">
-                <span id="rise-input-label">You Pay (AIGENT)</span>
+                <span id="rise-input-label" data-i18n>You Pay (AIGENT)</span>
                 <span id="rise-balance-hint"></span>
               </div>
               <div class="rise-input-row">
                 <input class="rise-input" id="rise-amount" type="text" placeholder="0.0" autocomplete="off" oninput="riseUpdatePreview()">
-                <div class="rise-currency" id="rise-currency-in">AIGENT</div>
+                <div class="rise-currency" id="rise-currency-in" data-i18n>AIGENT</div>
               </div>
             </div>
 
             <div class="rise-preview" id="rise-preview">
-              <div>You Receive: <strong id="rise-preview-amount">0</strong> <span id="rise-preview-symbol">TOKEN</span></div>
+              <div>You Receive: <strong id="rise-preview-amount">0</strong> <span id="rise-preview-symbol" data-i18n>TOKEN</span></div>
               <div style="margin-top:4px;font-size:10px;">Fee: <span id="rise-preview-fee">1%</span> &nbsp;|&nbsp; Creator: <span id="rise-preview-cut">0.3%</span></div>
             </div>
 
-            <button class="rise-btn rise-btn-buy" id="rise-action-btn" onclick="riseExecute()">BUY</button>
+            <button class="rise-btn rise-btn-buy" id="rise-action-btn" onclick="riseExecute()" data-i18n>BUY</button>
             <div class="rise-msg" id="rise-msg"></div>
           </div>
         </div>
@@ -1922,7 +1922,7 @@
           <div style="overflow-x:auto;">
             <table class="rise-trade-table">
               <thead>
-                <tr><th>Type</th><th>Amount</th><th>AIGENT</th><th>Account</th><th>Tx</th></tr>
+                <tr><th data-i18n>Type</th><th data-i18n>Amount</th><th data-i18n>AIGENT</th><th data-i18n>Account</th><th data-i18n>Tx</th></tr>
               </thead>
               <tbody id="rise-trade-tbody"></tbody>
             </table>
@@ -1936,34 +1936,34 @@
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
               <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ff007a,#ff4da6);display:flex;align-items:center;justify-content:center;font-size:18px;">🦄</div>
               <div>
-                <div style="font-size:15px;font-weight:700;color:#fff;">Uniswap V3 Liquidity</div>
-                <div style="font-size:11px;color:var(--dim);">Add deeper liquidity — your token trades on both the bonding curve AND Uniswap</div>
+                <div style="font-size:15px;font-weight:700;color:#fff;" data-i18n>Uniswap V3 Liquidity</div>
+                <div style="font-size:11px;color:var(--dim);" data-i18n>Add deeper liquidity — your token trades on both the bonding curve AND Uniswap</div>
               </div>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
               <!-- Step 1 -->
               <div style="padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-                <div style="font-size:11px;font-weight:700;color:var(--magenta);margin-bottom:8px;">STEP 1</div>
-                <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;">Create Uniswap V3 Pool</div>
+                <div style="font-size:11px;font-weight:700;color:var(--magenta);margin-bottom:8px;" data-i18n>STEP 1</div>
+                <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;" data-i18n>Create Uniswap V3 Pool</div>
                 <div style="font-size:11px;color:var(--dim);margin-bottom:10px;">
-                  Pool: <strong style="color:var(--text-bright);" id="rise-uni-pair">$TOKEN / AIGENT</strong><br>
+                  Pool: <strong style="color:var(--text-bright);" id="rise-uni-pair" data-i18n>$TOKEN / AIGENT</strong><br>
                   Fee tier: <strong style="color:var(--cyan);">1%</strong> (recommended for new tokens)<br>
-                  Price range: <strong style="color:var(--cyan);">Full range</strong>
+                  Price range: <strong style="color:var(--cyan);" data-i18n>Full range</strong>
                 </div>
                 <button onclick="riseOpenUniswapCreate()" style="
                   width:100%;padding:10px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
                   background:linear-gradient(135deg,#ff007a,#ff4da6);color:#fff;font-family:inherit;transition:all 0.2s;
-                " onmouseenter="this.style.boxShadow='0 0 20px rgba(255,0,122,0.4)'" onmouseleave="this.style.boxShadow='none'">
+                " onmouseenter="this.style.boxShadow='0 0 20px rgba(255,0,122,0.4)'" onmouseleave="this.style.boxShadow='none'" data-i18n>
                   Open Uniswap Interface →
                 </button>
               </div>
 
               <!-- Step 2 -->
               <div style="padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-                <div style="font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:8px;">STEP 2</div>
-                <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;">Link Pool to Curve</div>
-                <div style="font-size:11px;color:var(--dim);margin-bottom:10px;">
+                <div style="font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:8px;" data-i18n>STEP 2</div>
+                <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;" data-i18n>Link Pool to Curve</div>
+                <div style="font-size:11px;color:var(--dim);margin-bottom:10px;" data-i18n>
                   Paste the Uniswap V3 pool address below and click "Link Pool". This adds the ★ badge to your token.
                 </div>
                 <div style="display:flex;gap:8px;">
@@ -1975,7 +1975,7 @@
                   <button onclick="riseSetUniswapPool()" style="
                     padding:8px 14px;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;
                     background:linear-gradient(135deg,#00c853,#00e676);color:#000;font-family:inherit;white-space:nowrap;transition:all 0.2s;
-                  " onmouseenter="this.style.boxShadow='0 0 16px rgba(0,230,118,0.4)'" onmouseleave="this.style.boxShadow='none'">
+                  " onmouseenter="this.style.boxShadow='0 0 16px rgba(0,230,118,0.4)'" onmouseleave="this.style.boxShadow='none'" data-i18n>
                     Link Pool
                   </button>
                 </div>
@@ -1984,20 +1984,20 @@
 
             <!-- Step 3: Add Liquidity -->
             <div style="padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-              <div style="font-size:11px;font-weight:700;color:#ffd700;margin-bottom:8px;">STEP 3</div>
-              <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;">Add Liquidity to the Pool</div>
+              <div style="font-size:11px;font-weight:700;color:#ffd700;margin-bottom:8px;" data-i18n>STEP 3</div>
+              <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;" data-i18n>Add Liquidity to the Pool</div>
               <div style="font-size:11px;color:var(--dim);margin-bottom:10px;">
                 After creating the pool, add both tokens as liquidity. The more liquidity you add, the better the trading experience.
                 <br><br>
-                <strong style="color:var(--text-bright);">Why 1% fee tier?</strong> New tokens benefit from wider spreads — LPs earn more, encouraging deeper liquidity.
+                <strong style="color:var(--text-bright);" data-i18n>Why 1% fee tier?</strong> New tokens benefit from wider spreads — LPs earn more, encouraging deeper liquidity.
                 <br>
-                <strong style="color:var(--text-bright);">Why Full Range?</strong> Allows trading at any price, maximizing accessibility for early buyers.
+                <strong style="color:var(--text-bright);" data-i18n>Why Full Range?</strong> Allows trading at any price, maximizing accessibility for early buyers.
               </div>
               <div style="display:flex;gap:8px;">
                 <button onclick="riseOpenUniswapAdd()" style="
                   padding:10px 18px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
                   background:linear-gradient(135deg,#ff007a,#ff4da6);color:#fff;font-family:inherit;transition:all 0.2s;
-                " onmouseenter="this.style.boxShadow='0 0 20px rgba(255,0,122,0.4)'" onmouseleave="this.style.boxShadow='none'">
+                " onmouseenter="this.style.boxShadow='0 0 20px rgba(255,0,122,0.4)'" onmouseleave="this.style.boxShadow='none'" data-i18n>
                   Add Liquidity on Uniswap →
                 </button>
               </div>
@@ -2013,8 +2013,8 @@
     <section id="about">
       <div class="section-header reveal">
         <div class="section-tag">// <span data-i18n>About</span></div>
-        <div class="section-title">What is AIGENT?</div>
-        <p class="section-sub">The next-generation AI agent token — built for autonomous economies</p>
+        <div class="section-title" data-i18n>What is AIGENT?</div>
+        <p class="section-sub" data-i18n>The next-generation AI agent token — built for autonomous economies</p>
       </div>
 
       <div class="feature-grid reveal">
@@ -2031,8 +2031,8 @@
               <rect x="40" y="22" width="6" height="4" rx="1" fill="#00e5ff" opacity="0.5"/>
             </svg>
           </div>
-          <div class="fc-title">AI-Optimized Token</div>
-          <div class="fc-desc">Purpose-built for the agent economy. AIGENT implements EIP-2612 Permit, enabling gasless approvals — AI agents can authorize spending without holding OKB.</div>
+          <div class="fc-title" data-i18n>AI-Optimized Token</div>
+          <div class="fc-desc" data-i18n>Purpose-built for the agent economy. AIGENT implements EIP-2612 Permit, enabling gasless approvals — AI agents can authorize spending without holding OKB.</div>
         </div>
 
         <div class="feature-card">
@@ -2051,8 +2051,8 @@
               <rect x="37" y="22" width="3" height="4" rx="1" fill="#d500f9" opacity="0.4"/>
             </svg>
           </div>
-          <div class="fc-title">Autonomous Agent Ready</div>
-          <div class="fc-desc">Agents execute transactions independently with pre-signed permission envelopes. Compatible with gas sponsorship networks and relayer infrastructure.</div>
+          <div class="fc-title" data-i18n>Autonomous Agent Ready</div>
+          <div class="fc-desc" data-i18n>Agents execute transactions independently with pre-signed permission envelopes. Compatible with gas sponsorship networks and relayer infrastructure.</div>
         </div>
 
         <div class="feature-card">
@@ -2070,8 +2070,8 @@
               <line x1="33" y1="36" x2="28" y2="24" stroke="#00e5ff" stroke-width="1.2" opacity="0.6"/>
             </svg>
           </div>
-          <div class="fc-title">5-Contract Ecosystem</div>
-          <div class="fc-desc">Token, Staking, LP Farm, Vault, and Timelock — all deployed and verified on X Layer mainnet. A complete DeFi primitive suite.</div>
+          <div class="fc-title" data-i18n>5-Contract Ecosystem</div>
+          <div class="fc-desc" data-i18n>Token, Staking, LP Farm, Vault, and Timelock — all deployed and verified on X Layer mainnet. A complete DeFi primitive suite.</div>
         </div>
 
         <div class="feature-card">
@@ -2087,8 +2087,8 @@
               <line x1="22" y1="26" x2="22" y2="30" stroke="#00e5ff" stroke-width="1"/>
             </svg>
           </div>
-          <div class="fc-title">Fixed Supply & Burnable</div>
-          <div class="fc-desc">500,000,000 total supply — no mint, no inflation. Built-in burn mechanism enables deflationary tokenomics for agent economy models.</div>
+          <div class="fc-title" data-i18n>Fixed Supply & Burnable</div>
+          <div class="fc-desc" data-i18n>500,000,000 total supply — no mint, no inflation. Built-in burn mechanism enables deflationary tokenomics for agent economy models.</div>
         </div>
       </div>
     </section>
@@ -2098,7 +2098,7 @@
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 32px;">
           <div class="section-tag">// <span data-i18n>Tokenomics</span></div>
-          <div class="section-title">Distribution</div>
+          <div class="section-title" data-i18n>Distribution</div>
         </div>
         <div class="tok-layout">
           <div class="donut-wrap">
@@ -2122,37 +2122,37 @@
             </svg>
             <div class="donut-center">
               <div class="big">500M</div>
-              <div class="small">$AIGENT</div>
+              <div class="small" data-i18n>$AIGENT</div>
             </div>
           </div>
           <div class="alloc-list">
             <div class="alloc-row">
               <span class="alloc-dot" style="background:#00e5ff;"></span>
-              <span class="alloc-label">Ecosystem &amp; Agent Incentives</span>
+              <span class="alloc-label" data-i18n>Ecosystem &amp; Agent Incentives</span>
               <span class="alloc-pct">40%</span>
               <span class="alloc-amt">200M</span>
             </div>
             <div class="alloc-row">
               <span class="alloc-dot" style="background:#d500f9;"></span>
-              <span class="alloc-label">Liquidity &amp; DEX Listing</span>
+              <span class="alloc-label" data-i18n>Liquidity &amp; DEX Listing</span>
               <span class="alloc-pct">25%</span>
               <span class="alloc-amt">125M</span>
             </div>
             <div class="alloc-row">
               <span class="alloc-dot" style="background:#304ffe;"></span>
-              <span class="alloc-label">Development Fund</span>
+              <span class="alloc-label" data-i18n>Development Fund</span>
               <span class="alloc-pct">20%</span>
               <span class="alloc-amt">100M</span>
             </div>
             <div class="alloc-row">
               <span class="alloc-dot" style="background:#00e676;"></span>
-              <span class="alloc-label">Marketing &amp; Partnerships</span>
+              <span class="alloc-label" data-i18n>Marketing &amp; Partnerships</span>
               <span class="alloc-pct">10%</span>
               <span class="alloc-amt">50M</span>
             </div>
             <div class="alloc-row">
               <span class="alloc-dot" style="background:#ff9100;"></span>
-              <span class="alloc-label">Community Airdrop</span>
+              <span class="alloc-label" data-i18n>Community Airdrop</span>
               <span class="alloc-pct">5%</span>
               <span class="alloc-amt">25M</span>
             </div>
@@ -2165,39 +2165,39 @@
     <section id="roadmap">
       <div class="section-header reveal">
         <div class="section-tag">// <span data-i18n>Roadmap</span></div>
-        <div class="section-title">The Path Forward</div>
-        <p class="section-sub">Five phases to build the autonomous intelligence economy</p>
+        <div class="section-title" data-i18n>The Path Forward</div>
+        <p class="section-sub" data-i18n>Five phases to build the autonomous intelligence economy</p>
       </div>
       <div class="roadmap reveal">
         <div class="phase">
-          <div class="ph-num">PHASE 01</div>
-          <div class="ph-title">Token Launch</div>
-          <div class="ph-desc">Deploy AIGENT on X Layer. Smart contract audit. Community building. Initial marketing push and brand establishment.</div>
-          <span class="ph-badge live">LIVE</span>
+          <div class="ph-num" data-i18n>PHASE 01</div>
+          <div class="ph-title" data-i18n>Token Launch</div>
+          <div class="ph-desc" data-i18n>Deploy AIGENT on X Layer. Smart contract audit. Community building. Initial marketing push and brand establishment.</div>
+          <span class="ph-badge live" data-i18n>LIVE</span>
         </div>
         <div class="phase">
-          <div class="ph-num">PHASE 02</div>
-          <div class="ph-title">DEX Listing</div>
-          <div class="ph-desc">List on Uniswap V3. Establish AIGENT/USDT liquidity pools. DEX tools verification. Price tracking on DexScreener.</div>
-          <span class="ph-badge upcoming">NEXT</span>
+          <div class="ph-num" data-i18n>PHASE 02</div>
+          <div class="ph-title" data-i18n>DEX Listing</div>
+          <div class="ph-desc" data-i18n>List on Uniswap V3. Establish AIGENT/USDT liquidity pools. DEX tools verification. Price tracking on DexScreener.</div>
+          <span class="ph-badge upcoming" data-i18n>NEXT</span>
         </div>
         <div class="phase">
-          <div class="ph-num">PHASE 03</div>
-          <div class="ph-title">AI Agent SDK</div>
-          <div class="ph-desc">Release developer toolkit for AI agent integration. Documentation, examples, and templates for Permit-based transactions.</div>
-          <span class="ph-badge upcoming">UPCOMING</span>
+          <div class="ph-num" data-i18n>PHASE 03</div>
+          <div class="ph-title" data-i18n>AI Agent SDK</div>
+          <div class="ph-desc" data-i18n>Release developer toolkit for AI agent integration. Documentation, examples, and templates for Permit-based transactions.</div>
+          <span class="ph-badge upcoming" data-i18n>UPCOMING</span>
         </div>
         <div class="phase">
-          <div class="ph-num">PHASE 04</div>
-          <div class="ph-title">Agent Economy</div>
-          <div class="ph-desc">Enable agent-to-agent microtransactions. Deploy autonomous trading and reward distribution using AIGENT primitives.</div>
-          <span class="ph-badge upcoming">UPCOMING</span>
+          <div class="ph-num" data-i18n>PHASE 04</div>
+          <div class="ph-title" data-i18n>Agent Economy</div>
+          <div class="ph-desc" data-i18n>Enable agent-to-agent microtransactions. Deploy autonomous trading and reward distribution using AIGENT primitives.</div>
+          <span class="ph-badge upcoming" data-i18n>UPCOMING</span>
         </div>
         <div class="phase">
-          <div class="ph-num">PHASE 05</div>
-          <div class="ph-title">DAO Governance</div>
-          <div class="ph-desc">Community-driven protocol. Token holders vote on upgrades, fund allocation, and ecosystem direction via on-chain governance.</div>
-          <span class="ph-badge upcoming">UPCOMING</span>
+          <div class="ph-num" data-i18n>PHASE 05</div>
+          <div class="ph-title" data-i18n>DAO Governance</div>
+          <div class="ph-desc" data-i18n>Community-driven protocol. Token holders vote on upgrades, fund allocation, and ecosystem direction via on-chain governance.</div>
+          <span class="ph-badge upcoming" data-i18n>UPCOMING</span>
         </div>
       </div>
     </section>
@@ -2207,8 +2207,8 @@
       <div class="card reveal">
         <div class="section-header" style="text-align: left; margin-bottom: 24px;">
           <div class="section-tag">// <span data-i18n>AI Agents</span></div>
-          <div class="section-title">Built for Autonomous Agents</div>
-          <p class="section-sub" style="margin-left: 0;">AIGENT implements EIP-2612 — agents sign off-chain, execute on-chain, no OKB required</p>
+          <div class="section-title" data-i18n>Built for Autonomous Agents</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>AIGENT implements EIP-2612 — agents sign off-chain, execute on-chain, no OKB required</p>
         </div>
         <div class="code-block">
 <pre>
@@ -2233,33 +2233,33 @@
     <section id="article">
       <div class="section-header reveal">
         <div class="section-tag">// <span data-i18n>Deep Dive</span></div>
-        <div class="section-title">Building Gasless AI Agent Transactions with EIP-2612</div>
-        <p class="section-sub">How Permit signatures eliminate the gas token barrier for autonomous on-chain agents</p>
+        <div class="section-title" data-i18n>Building Gasless AI Agent Transactions with EIP-2612</div>
+        <p class="section-sub" data-i18n>How Permit signatures eliminate the gas token barrier for autonomous on-chain agents</p>
       </div>
 
       <div class="card reveal" style="max-width: 900px; margin: 0 auto;">
         <div style="font-size:16px; line-height: 1.9; color: var(--text);">
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;">1. The Problem: AI Agents Can't Hold Gas Tokens</h3>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;" data-i18n>1. The Problem: AI Agents Can't Hold Gas Tokens</h3>
 
-          <p>Autonomous AI agents are increasingly performing on-chain actions — trading, arbitrage, data marketplace payments, and service orchestration. Industry projections estimate that by 2027, over 60% of on-chain transaction volume will involve non-human initiators.</p>
+          <p data-i18n>Autonomous AI agents are increasingly performing on-chain actions — trading, arbitrage, data marketplace payments, and service orchestration. Industry projections estimate that by 2027, over 60% of on-chain transaction volume will involve non-human initiators.</p>
           <br>
-          <p>But there's a fundamental problem. Traditional ERC-20 tokens require a two-step pattern:</p>
+          <p data-i18n>But there's a fundamental problem. Traditional ERC-20 tokens require a two-step pattern:</p>
           <br>
           <p><code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">approve(spender, amount)</code> → <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">transferFrom(owner, to, amount)</code></p>
           <br>
-          <p>The <code>approve()</code> call is a separate on-chain transaction that <strong style="color:var(--cyan);">requires the chain's native gas token</strong> (OKB on X Layer, ETH on Ethereum). For an AI agent, this means:</p>
+          <p>The <code>approve()</code> call is a separate on-chain transaction that <strong style="color:var(--cyan);" data-i18n>requires the chain's native gas token</strong> (OKB on X Layer, ETH on Ethereum). For an AI agent, this means:</p>
           <br>
           <ul style="padding-left:20px;color:var(--dim);">
-            <li style="margin-bottom:8px;"><strong style="color:#ff4444;">Capital inefficiency</strong> — Agents must maintain gas token balances across multiple chains</li>
-            <li style="margin-bottom:8px;"><strong style="color:#ff4444;">Operational fragility</strong> — Gas price spikes cause approval transactions to fail</li>
-            <li style="margin-bottom:8px;"><strong style="color:#ff4444;">Centralization pressure</strong> — Agents must rely on trusted relayers or gas stations</li>
+            <li style="margin-bottom:8px;"><strong style="color:#ff4444;" data-i18n>Capital inefficiency</strong> — Agents must maintain gas token balances across multiple chains</li>
+            <li style="margin-bottom:8px;"><strong style="color:#ff4444;" data-i18n>Operational fragility</strong> — Gas price spikes cause approval transactions to fail</li>
+            <li style="margin-bottom:8px;"><strong style="color:#ff4444;" data-i18n>Centralization pressure</strong> — Agents must rely on trusted relayers or gas stations</li>
           </ul>
           <br>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">2. The Solution: EIP-2612 Permit</h3>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>2. The Solution: EIP-2612 Permit</h3>
 
-          <p>EIP-2612 introduces <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">permit()</code> — a function that allows token holders to approve spending via an <strong style="color:var(--cyan);">off-chain signature</strong> rather than an on-chain transaction. The signature is bundled with the transfer in a single transaction.</p>
+          <p>EIP-2612 introduces <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">permit()</code> — a function that allows token holders to approve spending via an <strong style="color:var(--cyan);" data-i18n>off-chain signature</strong> rather than an on-chain transaction. The signature is bundled with the transfer in a single transaction.</p>
           <br>
 
           <div class="code-block" style="margin: 16px 0;">
@@ -2294,28 +2294,28 @@
 </pre>
           </div>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">3. Why This Matters for AI Agents</h3>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>3. Why This Matters for AI Agents</h3>
 
           <div class="feature-grid" style="margin: 16px 0;">
             <div class="feature-card" style="padding: 24px;">
-              <div class="fc-title" style="font-size:15px;">ZERO Gas Token Requirement</div>
-              <div class="fc-desc" style="font-size:12px;">AI agents approve spending without holding OKB, ETH, or any other native gas token. A single relayer can sponsor gas for thousands of agents.</div>
+              <div class="fc-title" style="font-size:15px;" data-i18n>ZERO Gas Token Requirement</div>
+              <div class="fc-desc" style="font-size:12px;" data-i18n>AI agents approve spending without holding OKB, ETH, or any other native gas token. A single relayer can sponsor gas for thousands of agents.</div>
             </div>
             <div class="feature-card" style="padding: 24px;">
-              <div class="fc-title" style="font-size:15px;">Atomic Execution</div>
+              <div class="fc-title" style="font-size:15px;" data-i18n>Atomic Execution</div>
               <div class="fc-desc" style="font-size:12px;">The <code>permit()</code> and <code>transferFrom()</code> can be bundled in a single transaction. No two-step approval dance that can fail halfway.</div>
             </div>
             <div class="feature-card" style="padding: 24px;">
-              <div class="fc-title" style="font-size:15px;">Relayer Marketplace</div>
-              <div class="fc-desc" style="font-size:12px;">Third-party relayers compete to submit agent transactions for the lowest fee. Agents choose the cheapest or fastest submitter — a free market for gas sponsorship.</div>
+              <div class="fc-title" style="font-size:15px;" data-i18n>Relayer Marketplace</div>
+              <div class="fc-desc" style="font-size:12px;" data-i18n>Third-party relayers compete to submit agent transactions for the lowest fee. Agents choose the cheapest or fastest submitter — a free market for gas sponsorship.</div>
             </div>
             <div class="feature-card" style="padding: 24px;">
-              <div class="fc-title" style="font-size:15px;">Full Self-Custody</div>
-              <div class="fc-desc" style="font-size:12px;">Agents retain complete control of their keys and tokens. No trusted third party, no multi-sig complexity, no delegation of asset custody.</div>
+              <div class="fc-title" style="font-size:15px;" data-i18n>Full Self-Custody</div>
+              <div class="fc-desc" style="font-size:12px;" data-i18n>Agents retain complete control of their keys and tokens. No trusted third party, no multi-sig complexity, no delegation of asset custody.</div>
             </div>
           </div>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">4. Architecture: How It All Fits Together</h3>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>4. Architecture: How It All Fits Together</h3>
 
           <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:24px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:12px;line-height:1.8;overflow-x:auto;">
 <pre style="color:var(--text);">
@@ -2338,9 +2338,9 @@
 </pre>
           </div>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">5. Real Implementation: AIGENT on X Layer</h3>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>5. Real Implementation: AIGENT on X Layer</h3>
 
-          <p>AIGENT implements the full EIP-2612 specification with the following interface:</p>
+          <p data-i18n>AIGENT implements the full EIP-2612 specification with the following interface:</p>
           <br>
 
           <div class="code-block" style="margin: 16px 0;">
@@ -2367,12 +2367,12 @@
 </pre>
           </div>
 
-          <p><strong style="color:var(--cyan);">Contract address:</strong> <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39</code> on X Layer mainnet (Chain ID 196).</p>
+          <p><strong style="color:var(--cyan);" data-i18n>Contract address:</strong> <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39</code> on X Layer mainnet (Chain ID 196).</p>
           <br>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">6. Integration Example: TypeScript SDK</h3>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>6. Integration Example: TypeScript SDK</h3>
 
-          <p>The AIGENT SDK provides a one-line API for AI agents to execute gasless transfers:</p>
+          <p data-i18n>The AIGENT SDK provides a one-line API for AI agents to execute gasless transfers:</p>
           <br>
 
           <div class="code-block" style="margin: 16px 0;">
@@ -2398,37 +2398,37 @@
 </pre>
           </div>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">7. Security Considerations</h3>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>7. Security Considerations</h3>
 
           <div style="background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0;">
-            <p><strong style="color:var(--green);">Nonce replay protection</strong> — Each Permit uses an incrementing nonce, preventing signature replay attacks.</p>
+            <p><strong style="color:var(--green);" data-i18n>Nonce replay protection</strong> — Each Permit uses an incrementing nonce, preventing signature replay attacks.</p>
             <br>
-            <p><strong style="color:var(--green);">Deadline enforcement</strong> — Every Permit has a configurable deadline. After expiration, the signature is invalid. Agents should set reasonable time windows (e.g., 30 minutes) rather than MaxUint256 in production.</p>
+            <p><strong style="color:var(--green);" data-i18n>Deadline enforcement</strong> — Every Permit has a configurable deadline. After expiration, the signature is invalid. Agents should set reasonable time windows (e.g., 30 minutes) rather than MaxUint256 in production.</p>
             <br>
-            <p><strong style="color:var(--green);">No proxy/upgradeability</strong> — AIGENT is an immutable deployment. The contract code cannot be changed, eliminating upgrade-based attack vectors.</p>
+            <p><strong style="color:var(--green);" data-i18n>No proxy/upgradeability</strong> — AIGENT is an immutable deployment. The contract code cannot be changed, eliminating upgrade-based attack vectors.</p>
             <br>
-            <p><strong style="color:var(--green);">OpenZeppelin v5 foundation</strong> — Built on audited, battle-tested contracts with ReentrancyGuard, Pausable, and SafeERC20.</p>
+            <p><strong style="color:var(--green);" data-i18n>OpenZeppelin v5 foundation</strong> — Built on audited, battle-tested contracts with ReentrancyGuard, Pausable, and SafeERC20.</p>
             <br>
-            <p><strong style="color:#ff9100;">Signature front-running</strong> — A signed Permit could theoretically be front-run if broadcast publicly. In practice, relayers submit directly to miners/validators. For high-value transactions, use EIP-712 domain binding to a specific relayer address.</p>
+            <p><strong style="color:#ff9100;" data-i18n>Signature front-running</strong> — A signed Permit could theoretically be front-run if broadcast publicly. In practice, relayers submit directly to miners/validators. For high-value transactions, use EIP-712 domain binding to a specific relayer address.</p>
           </div>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">8. The Bigger Picture</h3>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>8. The Bigger Picture</h3>
 
-          <p>EIP-2612 isn't just a gas optimization — it's a <strong style="color:var(--cyan);">fundamental enabler for the agent economy</strong>. When AI agents can transact without managing gas tokens, the design space opens up dramatically:</p>
+          <p>EIP-2612 isn't just a gas optimization — it's a <strong style="color:var(--cyan);" data-i18n>fundamental enabler for the agent economy</strong>. When AI agents can transact without managing gas tokens, the design space opens up dramatically:</p>
           <br>
           <ul style="padding-left:20px;color:var(--dim);">
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">Agent-to-agent micropayments</strong> — sub-cent transactions between autonomous services</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">Programmatic reward distribution</strong> — agents earn and spend rewards automatically</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">Cross-chain agent coordination</strong> — one agent can operate across multiple chains without holding native gas on each</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">Autonomous organizations</strong> — DAOs operated entirely by AI agents with zero human gas management overhead</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Agent-to-agent micropayments</strong> — sub-cent transactions between autonomous services</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Programmatic reward distribution</strong> — agents earn and spend rewards automatically</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Cross-chain agent coordination</strong> — one agent can operate across multiple chains without holding native gas on each</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Autonomous organizations</strong> — DAOs operated entirely by AI agents with zero human gas management overhead</li>
           </ul>
           <br>
 
           <div style="border-left: 2px solid var(--cyan); padding: 12px 20px; margin: 20px 0; background: rgba(0,229,255,0.03);">
-            <p style="color:var(--text-bright);font-style:italic;">"The combination of EIP-2612 gasless approvals and AI agent autonomy is the missing piece for on-chain agent economies. Applications that were previously impossible due to the gas-token constraint are now feasible — we're at the beginning of a new paradigm in decentralized automation."</p>
+            <p style="color:var(--text-bright);font-style:italic;" data-i18n>"The combination of EIP-2612 gasless approvals and AI agent autonomy is the missing piece for on-chain agent economies. Applications that were previously impossible due to the gas-token constraint are now feasible — we're at the beginning of a new paradigm in decentralized automation."</p>
           </div>
 
-          <p style="color:var(--dim);font-size:13px;margin-top:28px;">Try the <a href="#dapp" style="color:var(--cyan);">AI Agent Console</a> above to see EIP-2612 in action — or run the CLI demo: <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">cd demo && npx tsx agent.ts --repl</code></p>
+          <p style="color:var(--dim);font-size:13px;margin-top:28px;">Try the <a href="#dapp" style="color:var(--cyan);" data-i18n>AI Agent Console</a> above to see EIP-2612 in action — or run the CLI demo: <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">cd demo && npx tsx agent.ts --repl</code></p>
 
         </div>
       </div>
@@ -2439,17 +2439,17 @@
   <footer>
     <div class="container">
       <div class="footer-links">
-        <a href="#about">About</a>
-        <a href="#">Contract</a>
-        <a href="#">Explorer</a>
-        <a href="#">GitHub</a>
-        <a href="https://github.com/Mrxu6995/aigent/blob/gh-pages/whitepaper.md">Whitepaper</a>
+        <a href="#about" data-i18n>About</a>
+        <a href="#" data-i18n>Contract</a>
+        <a href="#" data-i18n>Explorer</a>
+        <a href="#" data-i18n>GitHub</a>
+        <a href="https://github.com/Mrxu6995/aigent/blob/gh-pages/whitepaper.md" data-i18n>Whitepaper</a>
       </div>
-      <div class="disclaimer">
+      <div class="disclaimer" data-i18n>
         AIGENT is an experimental token. This website and associated smart contracts are for informational purposes only.
         Cryptocurrency investments carry high risk. Always DYOR.
       </div>
-      <div class="copy">AIGENT &copy; 2026 &mdash; Built for the Agent Economy</div>
+      <div class="copy" data-i18n>AIGENT &copy; 2026 &mdash; Built for the Agent Economy</div>
     </div>
   </footer>
 
@@ -2768,6 +2768,165 @@
         tickerLaunch: '发行费', tickerLaunchDesc: '发行一个代币',
         tickerEip: 'EIP-2612', tickerEipDesc: 'AI智能体免Gas授权',
         tickerSlogan: 'AIgent Rise — 发行 · 交易 · 繁荣',
+        $aigent: '$AIGENT',
+        '$token/aigent': '$TOKEN / AIGENT',
+        '/50,000,000cap': '/ 50,000,000 硬顶',
+        '0aigentsold': '已售 0 AIGENT',
+        '0x316b...ccd9': '0x316b...ccD9',
+        '0x779d...3736(layerzerooft)': '0x779D...3736 (LayerZero OFT)',
+        '0xe543...c3e39': '0xE543...C3e39',
+        '10,000aigentperusdt—instantdelivery': '10,000 AIGENT/USDT — 即时到账',
+        '5-contractecosystem': '5合约生态系统',
+        account: '账户',
+        'adddeeperliquidity—yourtokentradesonboththebondingcurveanduniswap': '添加更深流动性 — 你的代币同时在绑定曲线和Uniswap上交易',
+        addliquidity: '添加流动性',
+        'addliquidityonuniswap→': '在Uniswap添加流动性 →',
+        addliquiditytothepool: '向池中添加流动性',
+        addxlayertowallet: '添加X Layer到钱包',
+        agenteconomy: '智能体经济',
+        'ai-optimizedtoken': 'AI优化代币',
+        aiagentconsole: 'AI 智能体控制台',
+        aiagentsdk: 'AI智能体SDK',
+        aigent: 'AIGENT',
+        'aigent&copy;2026&mdash;builtfortheagenteconomy': 'AIGENT © 2026 — 为智能体经济而生',
+        'aigent(10%supply)': 'AIGENT（10%供应量）',
+        'aigent/usdt': 'AIGENT/USDT',
+        aigentbalance: 'AIGENT 余额',
+        'aigenterc-20+eip-2612': 'AIGENT ERC-20 + EIP-2612',
+        'aigentimplementseip-2612—agentssignoff-chain,executeon-chain,nookbrequired': 'AIGENT实现EIP-2612 — 智能体链下签名，链上执行，无需OKB',
+        aigentlockedincurvereserve: '曲线储备中锁定的AIGENT',
+        aigentper1usdt: '1 USDT = 10,000 AIGENT',
+        aigentreserve: 'AIGENT储备',
+        'aigentrise—tokenlaunchplatform': 'AIgent Rise — 代币发行平台',
+        autonomousagentready: '自主智能体就绪',
+        autonomousintelligenceagenttokenonxlayer: 'X Layer上的自主智能体代币',
+        balance: '余额',
+        'buildinggaslessaiagenttransactionswitheip-2612': '使用EIP-2612构建免Gas的AI智能体交易',
+        builtforautonomousagents: '为自主智能体构建',
+        buyaigentpresale: '购买AIGENT预售',
+        buyonuniswap: 'Uniswap购买',
+        chain: '链',
+        chainid:196|rpc:rpc.xlayer.tech: '链ID: 196 | RPC: rpc.xlayer.tech',
+        'chatwiththeaiagent—naturallanguagecommands': '与AI智能体对话 — 自然语言指令',
+        claim: '领取',
+        communityairdrop: '社区空投',
+        connectwallet: '连接钱包',
+        connectyourwallettocheckbalanceandtransfer$aigent: '连接钱包查看余额并转账 $AIGENT',
+        contract: '合约',
+        contractaddress:: '合约地址：',
+        contractaddresses: '合约地址',
+        copy: '复制',
+        createuniswapv3pool: '创建 Uniswap V3 池',
+        'curve#--': '曲线 #--',
+        curveprogress: '曲线进度',
+        daogovernance: 'DAO治理',
+        decimals: '精度',
+        deepdive: '深度解析',
+        developmentfund: '开发基金',
+        dexlisting: 'DEX上市',
+        distribution: '分配',
+        donottransferusdtdirectly: '切勿直接转账USDT',
+        'ecosystem&agentincentives': '生态系统 & 智能体激励',
+        'erc-20+eip-2612': 'ERC-20 + EIP-2612',
+        exchangerate: '兑换率',
+        explore: '探索',
+        explorer: '浏览器',
+        fivephasestobuildtheautonomousintelligenceeconomy: '五个阶段构建自主智能体经济',
+        'fixedsupply&burnable': '固定供应量 & 可销毁',
+        fullrange: '全范围',
+        github: 'GitHub',
+        hardcap: '硬顶',
+        help: '帮助',
+        'howpermitsignatureseliminatethegastokenbarrierforautonomouson-chainagents': 'Permit签名如何消除自主链上智能体的Gas代币障碍',
+        howtobuy$aigent: '如何购买 $AIGENT',
+        howtoparticipate: '如何参与',
+        initialprice: '初始价格',
+        launchtoken: '发行代币',
+        linkpool: '链接池',
+        linkpooltocurve: '链接池到曲线',
+        'liquidity&dexlisting': '流动性 & DEX上市',
+        live: '进行中',
+        'loading...': '加载中...',
+        local: '本地',
+        lpfarm: 'LP农场',
+        marketcap: '市值',
+        'marketing&partnerships': '市场营销 & 合作伙伴',
+        name: '名称',
+        network: '网络',
+        next: '下一个',
+        notradesyet: '暂无交易',
+        novestingperiod: '无锁定期',
+        'openuniswapinterface→': '打开Uniswap界面 →',
+        openuniswapv3: '打开Uniswap V3',
+        parsecommand: '解析指令',
+        paymenttoken: '支付代币',
+        pendingrewards: '待领取奖励',
+        peraigent: '每个 AIGENT',
+        'permanentbondingcurve—tradeanytime.creatorscanoptionallyadduniswapv3liquidity.': '永久绑定曲线 — 随时交易。创建者可以选择添加Uniswap V3流动性。',
+        permanentloss: '永久损失',
+        phase01: '阶段 01',
+        phase02: '阶段 02',
+        phase03: '阶段 03',
+        phase04: '阶段 04',
+        phase05: '阶段 05',
+        presalecontract: '预售合约',
+        price: '价格',
+        'privatesale—buy$aigent': '私募 — 购买 $AIGENT',
+        recenttrades: '最近交易',
+        rewardrate: '奖励速率',
+        scanwithyourphonetoopenonmobile: '扫描二维码在手机上打开',
+        selectatoken: '选择代币',
+        sell: '卖出',
+        send10: '发送 10',
+        sendaigent: '发送 AIGENT',
+        setparameters: '设置参数',
+        share: '分享',
+        'signeip-2612permit(off-chain)': '签署EIP-2612许可（链下）',
+        'sold/total': '已售/总量',
+        stakeaigent: '质押 AIGENT',
+        'stakeaigenttoearnrewards.80mrewardpool,1-yearduration.': '质押AIGENT赚取收益。8000万奖励池，为期1年。',
+        stakelp: '质押LP',
+        'stakelptokenstoearnaigentrewards.60mrewardpool,1-yearduration.': '质押LP代币赚取AIGENT收益。6000万奖励池，为期1年。',
+        standard: '标准',
+        status: '状态',
+        step1: '步骤 1',
+        step2: '步骤 2',
+        step3: '步骤 3',
+        step4: '步骤 4',
+        'submitpermit()transaction': '提交 permit() 交易',
+        'submittransferfrom()transaction': '提交 transferFrom() 交易',
+        supply: '供应量',
+        switchtoxlayer: '切换到X Layer',
+        symbol: '符号',
+        'thenext-generationaiagenttoken—builtforautonomouseconomies': '下一代AI智能体代币 — 为自主经济体而建',
+        thepathforward: '前进之路',
+        tokencontract: '代币合约',
+        tokenlaunch: '代币发行',
+        totallpstaked: 'LP总质押量',
+        totalstaked: '总质押量',
+        totalsupply: '总供应量',
+        'tradeaigent/usdtonuniswapv3—xlayermainnet': '在Uniswap V3上交易AIGENT/USDT — X Layer主网',
+        trading: '交易',
+        tradingpair: '交易对',
+        tx: '交易',
+        type: '类型',
+        uniswapv3liquidity: 'Uniswap V3 流动性',
+        unstakelp: '解除LP',
+        upcoming: '即将到来',
+        usdt: 'USDT',
+        usdt0: 'USDT0',
+        'verifiedon-chain': '链上已验证',
+        verifyonexplorer: '在浏览器验证',
+        'whatisaigent?': '什么是 AIGENT？',
+        'why1%feetier?': '为什么选择1%费率？',
+        'whyfullrange?': '为什么选择全范围？',
+        xlayer: 'X Layer',
+        xlayermainnet: 'X Layer 主网',
+        'xlayer·erc-20·eip-2612': 'X Layer · ERC-20 · EIP-2612',
+        'youpay(aigent)': '支付 (AIGENT)',
+        yourlpstaked: '你的LP质押量',
+        yourstaked: '你的质押量',
+        '📱qr': '📱 扫码',
         qrLabel: '扫描二维码在手机上打开',
         connectFirst: '请先连接钱包',
         accountChanged: '账户已切换至',
