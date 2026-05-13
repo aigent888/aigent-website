@@ -2799,7 +2799,12 @@
     function _i18nUpdateDOM() {
       document.documentElement.lang = _i18nLang === 'zh' ? 'zh-CN' : 'en';
       document.querySelectorAll('[data-i18n]').forEach(function(el) {
-        var k = el.getAttribute('data-i18n') || el.textContent.trim();
+        var k = el.getAttribute('data-i18n');
+        if (!k) {
+          // Preserve original key so re-translation works after textContent changes
+          k = el.getAttribute('data-i18n-key');
+          if (!k) { k = el.textContent.trim(); el.setAttribute('data-i18n-key', k); }
+        }
         if (k) el.textContent = t(k);
       });
       document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
@@ -2807,12 +2812,10 @@
       document.querySelectorAll('.lang-switch span').forEach(function(s) { s.classList.toggle('active', s.getAttribute('data-lang') === _i18nLang); });
     }
     function _i18nSwitch(lang) { _i18nLang = lang; localStorage.setItem('aigent_lang', lang); _i18nUpdateDOM(); riseUpdateTicker(); }
-    document.addEventListener('DOMContentLoaded', function() {
-      _i18nUpdateDOM();
-      document.getElementById('lang-switch').addEventListener('click', function(e) {
-        var span = e.target.closest('span');
-        if (span) _i18nSwitch(span.getAttribute('data-lang'));
-      });
+    _i18nUpdateDOM();
+    document.getElementById('lang-switch').addEventListener('click', function(e) {
+      var span = e.target.closest('span');
+      if (span) _i18nSwitch(span.getAttribute('data-lang'));
     });
 
     const CHAIN_ID = 196;
