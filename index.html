@@ -2596,13 +2596,7 @@
   </script>
 
   <!-- ── AIGENT DApp — Wallet interaction via viem CDN ── -->
-  <script type="module">
-    import { createPublicClient, createWalletClient, http, custom, formatEther, parseEther, parseAbi, maxUint256, keccak256, toHex } from 'https://esm.sh/viem@2';
-    import { xLayer } from 'https://esm.sh/viem@2/chains';
-
-    // ethers compatibility alias (codebase uses ethers.xxx convention)
-    const ethers = { parseEther, formatEther, MaxUint256: maxUint256 };
-
+  <script>
     // ── i18n Language System ──
     const I18N = {
       en: {
@@ -2970,12 +2964,22 @@
       document.querySelectorAll('[data-i18n-title]').forEach(function(el) { el.title = t(el.getAttribute('data-i18n-title')); });
       document.querySelectorAll('.lang-switch span').forEach(function(s) { s.classList.toggle('active', s.getAttribute('data-lang') === _i18nLang); });
     }
-    function _i18nSwitch(lang) { _i18nLang = lang; localStorage.setItem('aigent_lang', lang); _i18nUpdateDOM(); riseUpdateTicker(); }
+    function _i18nSwitch(lang) { _i18nLang = lang; localStorage.setItem('aigent_lang', lang); _i18nUpdateDOM(); if (typeof riseUpdateTicker === 'function') riseUpdateTicker(); }
     _i18nUpdateDOM();
     document.getElementById('lang-switch').addEventListener('click', function(e) {
       var span = e.target.closest('span');
       if (span) _i18nSwitch(span.getAttribute('data-lang'));
     });
+
+  </script>
+
+  <script type="module">
+    import { createPublicClient, createWalletClient, http, custom, formatEther, parseEther, parseAbi, maxUint256, keccak256, toHex } from 'https://esm.sh/viem@2';
+    import { xLayer } from 'https://esm.sh/viem@2/chains';
+
+    // ethers compatibility alias (codebase uses ethers.xxx convention)
+    const ethers = { parseEther, formatEther, MaxUint256: maxUint256 };
+
 
     const CHAIN_ID = 196;
     const AIGENT_ADDRESS = '0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';
