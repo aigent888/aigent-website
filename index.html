@@ -2671,6 +2671,8 @@
       'function setUniswapPool(uint256 curveId, address pool) external',
       'function launch(string name, string symbol, uint256 totalSupply, uint256 curvePercentBps, uint256 pMin, uint256 pMax, address recipient) external returns (uint256)',
       'function deployFee() external view returns (uint256)',
+      'function setDeployFee(uint256 newFee) external',
+      'function owner() external view returns (address)',
       'function TRADE_FEE_BPS() external view returns (uint256)',
     ]);
 
@@ -3310,9 +3312,13 @@
         const aigentBal = await publicClient.readContract({
           address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'balanceOf', args: [userAddress],
         });
+        const deployFeeNum = Number(ethers.formatEther(deployFee));
+        const deployFeeUsd = deployFeeNum * (await _riseGetAigentPrice());
+        const deployFeeDisplay = _riseFmtFee({ fee: deployFeeNum, usd: deployFeeUsd });
+
         if (aigentBal < deployFee) {
-          agentStepError(2, 'Insufficient AIGENT: need ' + formatEther(deployFee) + ', have ' + formatEther(aigentBal));
-          agentChatAdd('agent', '❌ <strong>Not enough AIGENT!</strong><br><br>Deploy fee: <strong>' + formatEther(deployFee) + ' AIGENT</strong><br>Your balance: <strong>' + formatEther(aigentBal) + ' AIGENT</strong><br><br>Get AIGENT from the Presale panel or add liquidity.');
+          agentStepError(2, 'Insufficient AIGENT: need ' + deployFeeDisplay + ', have ' + formatEther(aigentBal) + ' AIGENT');
+          agentChatAdd('agent', '❌ <strong>Not enough AIGENT!</strong><br><br>Deploy fee: <strong>' + deployFeeDisplay + '</strong><br>Your balance: <strong>' + formatEther(aigentBal) + ' AIGENT</strong><br><br>Get AIGENT from the Presale panel or add liquidity.');
           return;
         }
 
@@ -3321,7 +3327,7 @@
           args: [userAddress, bcAddr],
         });
 
-        agentStepDone(2, 'Fee: ' + formatEther(deployFee) + ' AIGENT | Balance: ' + formatEther(aigentBal) + ' | Allowance: ' + formatEther(allowance));
+        agentStepDone(2, 'Fee: ' + deployFeeDisplay + ' | Balance: ' + formatEther(aigentBal) + ' | Allowance: ' + formatEther(allowance));
 
         // Step 3: Approve if needed
         if (allowance < deployFee) {
@@ -3683,6 +3689,60 @@
       _cachedAigentPriceTs = now;
       return _cachedAigentPrice;
     }
+
+    // Read deploy fee from contract + show live USD
+    async function _riseGetDeployFeeInfo() {
+      try {
+        if (!publicClient) return { fee: 50000, usd: 5 };
+        const feeRaw = await publicClient.readContract({
+          address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'deployFee',
+        });
+        const fee = Number(ethers.formatEther(feeRaw));
+        const price = await _riseGetAigentPrice();
+        const usd = fee * price;
+        return { fee, usd };
+      } catch (_) { return { fee: 50000, usd: 5 }; }
+    }
+
+    // Format deploy fee for display: "50,000 AIGENT (~$5.00)"
+    function _riseFmtFee(info) {
+      const feeFmt = info.fee.toLocaleString(undefined, { maximumFractionDigits: 0 });
+      const usdFmt = info.usd >= 0.01 ? '$' + info.usd.toFixed(2) : '$' + info.usd.toFixed(4);
+      return feeFmt + ' AIGENT (' + usdFmt + ')';
+    }
+
+    // Admin: auto-adjust deploy fee to maintain ~$5 target
+    window._riseAdjustDeployFee = async function() {
+      if (!walletClient || !userAddress) { showNotification('Connect wallet first', 'error'); return; }
+      try {
+        const ownerAddr = await publicClient.readContract({
+          address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'owner',
+        });
+        if (ownerAddr.toLowerCase() !== userAddress.toLowerCase()) {
+          showNotification('Only the contract owner can adjust the deploy fee.', 'error');
+          return;
+        }
+        const price = await _riseGetAigentPrice();
+        const targetUsd = 5;
+        if (price <= 0) { showNotification('Price feed unavailable, try again later.', 'error'); return; }
+        const newFeeWei = ethers.parseEther((targetUsd / price).toFixed(4));
+        const newFeeDisplay = Number(ethers.formatEther(newFeeWei));
+        showNotification('Adjusting deploy fee to ' + newFeeDisplay.toLocaleString() + ' AIGENT (~$' + (newFeeDisplay * price).toFixed(2) + ')...', 'info');
+        const txHash = await walletClient.writeContract({
+          address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'setDeployFee',
+          args: [newFeeWei], chain: xLayer, account: userAddress,
+        });
+        showNotification('Deploy fee updated! ' + newFeeDisplay.toLocaleString() + ' AIGENT (~$5)', 'success');
+        // Refresh after a short delay for chain propagation
+        setTimeout(async () => {
+          const info = await _riseGetDeployFeeInfo();
+          showNotification('Deploy fee: ' + _riseFmtFee(info), 'success');
+          riseUpdateTicker();
+        }, 3000);
+      } catch (e) {
+        showNotification('Fee adjustment failed: ' + (e.shortMessage || e.message), 'error');
+      }
+    };
 
     async function riseUpdateUI() {
       if (!riseCurveData) return;
@@ -4551,10 +4611,11 @@
     async function riseUpdateTicker() {
       const content = document.getElementById('rise-ticker-content');
       if (!content) return;
+      const feeInfo = await _riseGetDeployFeeInfo();
       let items = [
-        '<div class="rise-ticker-item"><span class="ticker-tag price">AIGENT</span> $0.0001 · Uniswap V3 · X Layer</div>',
+        '<div class="rise-ticker-item"><span class="ticker-tag price">AIGENT</span> $' + (await _riseGetAigentPrice()).toFixed(6) + ' · Uniswap V3 · X Layer</div>',
         '<div class="rise-ticker-item"><span class="ticker-tag trade">FEE</span> 1% trade fee + 0.3% creator cut</div>',
-        '<div class="rise-ticker-item"><span class="ticker-tag price">LAUNCH</span> 50,000 AIGENT (~$5) to launch a token</div>',
+        '<div class="rise-ticker-item" style="cursor:pointer;" onclick="_riseAdjustDeployFee()" title="Click to rebalance deploy fee to ~$5"><span class="ticker-tag price">LAUNCH</span> ' + _riseFmtFee(feeInfo) + ' to deploy</div>',
         '<div class="rise-ticker-item"><span class="ticker-tag trade">EIP-2612</span> Gasless approvals for AI agents</div>',
       ];
 
