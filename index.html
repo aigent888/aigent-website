@@ -83,8 +83,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(6, 11, 20, 0.82);
-      backdrop-filter: blur(16px);
+      background: rgba(6, 11, 20, 0.95);
       border-bottom: 1px solid var(--border);
     }
 
@@ -198,9 +197,8 @@
       text-align: center;
       padding: 18px 28px;
       border-radius: var(--radius);
-      background: rgba(10, 20, 44, 0.6);
+      background: rgba(10, 20, 44, 0.85);
       border: 1px solid var(--border);
-      backdrop-filter: blur(8px);
       min-width: 140px;
     }
 
@@ -280,8 +278,6 @@
     /* ── Cards ── */
     .card {
       background: var(--surface);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 44px 40px;
@@ -390,8 +386,7 @@
       padding: 28px;
       border-radius: var(--radius);
       border: 1px solid var(--border);
-      background: rgba(10, 20, 44, 0.55);
-      backdrop-filter: blur(8px);
+      background: rgba(10, 20, 44, 0.85);
       transition: border-color 0.3s, transform 0.3s;
       position: relative;
     }
@@ -940,7 +935,7 @@
 
     /* ── Floating Language Switcher ── */
     .float-lang {
-      position: fixed; bottom: 20px; right: 20px; z-index: 99999;
+      position: fixed; bottom: 48px; right: 20px; z-index: 99999;
       display: flex; gap: 6px;
     }
     .float-lang button {
@@ -948,7 +943,7 @@
       border: 2px solid var(--border); background: rgba(6,11,20,0.92);
       color: var(--dim); font-size: 13px; font-weight: 700;
       cursor: pointer; font-family: inherit; letter-spacing: 0.5px;
-      backdrop-filter: blur(8px); transition: all 0.2s;
+      transition: all 0.2s;
       display: flex; align-items: center; justify-content: center;
       -webkit-tap-highlight-color: transparent;
     }
@@ -1180,7 +1175,7 @@
       font-family: inherit; pointer-events: auto;
       animation: riseToastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1),
                  riseToastOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
       max-width: 420px;
     }
     .rise-toast.success {
@@ -1231,7 +1226,6 @@
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 9998;
       height: 32px; background: rgba(0,0,0,0.85);
       border-top: 1px solid rgba(255,215,0,0.15);
-      backdrop-filter: blur(12px);
       display: flex; align-items: center; overflow: hidden;
     }
     .rise-ticker-label {
