@@ -243,6 +243,36 @@
       50% { opacity: 1; height: 48px; }
     }
 
+    /* ── Ecosystem Stats Dashboard ── */
+    #ecosystem { padding: 0 0 40px; }
+    .eco-dash {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      justify-content: center;
+    }
+    .eco-stat {
+      flex: 1 1 160px; min-width: 140px; max-width: 200px;
+      padding: 16px 18px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      background: rgba(6,11,20,0.8);
+      text-align: center;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .eco-stat:hover { border-color: rgba(0,229,255,0.2); background: rgba(0,229,255,0.03); }
+    .eco-stat-val { font-size: 20px; font-weight: 700; color: var(--text-bright); font-family: 'SF Mono','Fira Code',monospace; }
+    .eco-stat-lbl { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+    @media (max-width: 768px) {
+      .eco-dash { gap: 8px; }
+      .eco-stat { flex: 1 1 100px; min-width: 90px; padding: 12px 10px; }
+      .eco-stat-val { font-size: 16px; }
+      .eco-stat-lbl { font-size: 9px; }
+    }
+    @media (max-width: 480px) {
+      .eco-stat { flex: 1 1 80px; min-width: 70px; }
+      .eco-stat-val { font-size: 14px; }
+    }
+
     /* ── Sections ── */
     section { padding: 100px 0; }
 
@@ -1053,6 +1083,51 @@
     .farm-btn.red:hover { box-shadow: 0 0 10px rgba(255,68,68,0.3); }
     .farm-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
 
+    /* ── Portfolio Checker ── */
+    #portfolio { padding: 30px 0; }
+    .pf-input-row { display: flex; gap: 10px; margin-bottom: 16px; }
+    .pf-input {
+      flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); color: var(--text-bright); font-size: 14px; font-family: 'SF Mono','Fira Code',monospace;
+      outline: none; transition: border-color 0.2s;
+    }
+    .pf-input:focus { border-color: var(--cyan); }
+    .pf-input::placeholder { color: var(--dim); font-family: inherit; }
+    .pf-btn {
+      padding: 12px 20px; border: none; border-radius: 8px; background: var(--cyan); color: var(--bg);
+      font-weight: 600; font-size: 13px; cursor: pointer; font-family: inherit; transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .pf-btn:hover { box-shadow: var(--glow-cyan); }
+    .pf-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+    .pf-results {
+      margin-top: 16px; padding: 20px; border: 1px solid rgba(0,229,255,0.15);
+      border-radius: 12px; background: rgba(0,229,255,0.02);
+    }
+    .pf-row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .pf-item {
+      flex: 1; padding: 12px 16px; border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px; background: rgba(255,255,255,0.01); text-align: center;
+    }
+    .pf-label { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .pf-val { font-size: 16px; font-weight: 700; color: var(--text-bright); font-family: 'SF Mono','Fira Code',monospace; }
+    .pf-sub { font-size: 11px; color: var(--dim); margin-top: 2px; }
+    .pf-total-item { border-color: rgba(0,229,255,0.15); background: rgba(0,229,255,0.03); }
+    .pf-close-row { text-align: center; margin-top: 8px; }
+    .pf-close-btn {
+      padding: 6px 20px; border: 1px solid var(--border); border-radius: 6px;
+      background: transparent; color: var(--dim); font-size: 12px; cursor: pointer;
+      font-family: inherit; transition: all 0.2s;
+    }
+    .pf-close-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+    .pf-msg { font-size: 12px; margin-top: 8px; min-height: 20px; }
+    .pf-msg.error { color: #ff4444; }
+    .pf-msg.info { color: var(--cyan); }
+
+    @media (max-width: 768px) {
+      .pf-row { flex-direction: column; }
+    }
+
     /* ── AIgent Rise — Trading Panel ── */
     .rise-card {
       position: relative; overflow: hidden;
@@ -1406,6 +1481,34 @@
       <div class="line"></div>
     </div>
   </section>
+
+  <!-- ── ECOSYSTEM STATS DASHBOARD ── -->
+  <div class="container">
+    <section id="ecosystem">
+      <div class="eco-dash reveal">
+        <div class="eco-stat" id="eco-price">
+          <div class="eco-stat-val">$--</div>
+          <div class="eco-stat-lbl" data-i18n>AIGENT Price</div>
+        </div>
+        <div class="eco-stat" id="eco-mcap">
+          <div class="eco-stat-val">$--</div>
+          <div class="eco-stat-lbl" data-i18n>Market Cap</div>
+        </div>
+        <div class="eco-stat" id="eco-vol">
+          <div class="eco-stat-val">$--</div>
+          <div class="eco-stat-lbl" data-i18n>24h Volume</div>
+        </div>
+        <div class="eco-stat" id="eco-tvl">
+          <div class="eco-stat-val">$--</div>
+          <div class="eco-stat-lbl" data-i18n>Curve TVL</div>
+        </div>
+        <div class="eco-stat" id="eco-staked">
+          <div class="eco-stat-val">$--</div>
+          <div class="eco-stat-lbl" data-i18n>Total Staked</div>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <!-- ── TOKEN ── -->
   <div class="container">
@@ -1798,6 +1901,53 @@
           <button class="farm-btn red" id="btn-claim-lp" onclick="claimLPReward()" data-i18n>Claim</button>
         </div>
         <div class="dapp-msg" id="lp-msg"></div>
+      </div>
+    </section>
+
+    <!-- ── HOLDER PORTFOLIO CHECKER ── -->
+    <section id="portfolio">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+          <div class="section-tag">// <span data-i18n>Tool</span></div>
+          <div class="section-title" data-i18n>Holder Portfolio Checker</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>Enter any address to check portfolio</p>
+        </div>
+
+        <div class="pf-input-row">
+          <input class="pf-input" id="pf-address" type="text" placeholder="0x..." autocomplete="off" data-i18n-placeholder="enterAnAddress">
+          <button class="pf-btn" id="btn-pf-check" onclick="checkPortfolio()" data-i18n>Check Address</button>
+        </div>
+
+        <div class="pf-results" id="pf-results" style="display:none;">
+          <div class="pf-row">
+            <div class="pf-item">
+              <div class="pf-label" data-i18n>AIGENT Balance</div>
+              <div class="pf-val" id="pf-balance">--</div>
+              <div class="pf-sub" id="pf-balance-usd">--</div>
+            </div>
+            <div class="pf-item">
+              <div class="pf-label" data-i18n>Staked AIGENT</div>
+              <div class="pf-val" id="pf-staked">--</div>
+              <div class="pf-sub" id="pf-staked-usd">--</div>
+            </div>
+          </div>
+          <div class="pf-row">
+            <div class="pf-item">
+              <div class="pf-label" data-i18n>LP Staked</div>
+              <div class="pf-val" id="pf-lp">--</div>
+              <div class="pf-sub" id="pf-lp-usd">--</div>
+            </div>
+            <div class="pf-item pf-total-item">
+              <div class="pf-label" data-i18n>Total Value</div>
+              <div class="pf-val" id="pf-total" style="color:var(--cyan);font-size:22px;">--</div>
+            </div>
+          </div>
+          <div class="pf-close-row">
+            <button class="pf-close-btn" onclick="closePortfolio()" data-i18n>Close</button>
+          </div>
+        </div>
+
+        <div class="pf-msg" id="pf-msg"></div>
       </div>
     </section>
 
@@ -3110,6 +3260,24 @@
         'tryitnow:scrolluptothe<aigentriseplatformandlaunchyourfirsttoken,orexploretheaiagentconsoletotradewithnaturallanguagecommands.': '立即尝试：向上滚动到 AIgent Rise 平台发行你的第一个代币，或探索 AI 智能体控制台，用自然语言指令进行交易。',
         'aigentrise': 'AIgent Rise',
         'aiagentconsole': 'AI 智能体控制台',
+        // Ecosystem Dashboard
+        'aigentprice': 'AIGENT价格',
+        '24hvolume': '24H交易量',
+        'curvetvl': '曲线锁仓',
+        // Portfolio Checker
+        'holderportfoliochecker': '持币者组合查询',
+        'enteranyaddresstocheckportfolio': '输入任意地址查询其投资组合',
+        'checkaddress': '查询地址',
+        'checking...': '查询中...',
+        'enteranaddress': '输入地址',
+        'stakedaigent': '已质押 AIGENT',
+        'lpstaked': 'LP 已质押',
+        'lpbalance': 'LP 余额',
+        'totalvalue': '总价值',
+        'notdeployed': '未部署',
+        'pleasenteranaddress': '请输入地址',
+        'invalidaddress': '无效地址',
+        'close': '关闭',
       }
     };
     let _i18nLang = localStorage.getItem('aigent_lang') || 'zh';
@@ -3312,6 +3480,10 @@
       updatePresaleProgress();
       agentCheckServer();
       riseLoadCurveList();
+      refreshEcosystem();
+      // Auto-fill portfolio checker with connected wallet
+      var pfInput = document.getElementById('pf-address');
+      if (pfInput && !pfInput.value) pfInput.value = userAddress;
     }
 
     function renderDisconnected() {
@@ -4228,6 +4400,56 @@
     };
 
     // ═══════════════════════════════════════════════════════
+    //  PORTFOLIO CHECKER
+    // ═══════════════════════════════════════════════════════
+
+    window.checkPortfolio = async function(addr) {
+      var address = addr || ($('pf-address') ? $('pf-address').value.trim() : '');
+      if (!address) {
+        var m = $('pf-msg'); if (m) { m.textContent = t('pleasenteranaddress'); m.className = 'pf-msg error'; }
+        return;
+      }
+      if (!address.startsWith('0x') || address.length !== 42) {
+        var m = $('pf-msg'); if (m) { m.textContent = t('invalidaddress'); m.className = 'pf-msg error'; }
+        return;
+      }
+      var btn = $('btn-pf-check'); if (btn) { btn.disabled = true; btn.textContent = t('checking...'); }
+      try {
+        var [bal, staked, lpStaked, price] = await Promise.all([
+          publicClient.readContract({ address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'balanceOf', args: [address] }).catch(function() { return 0n; }),
+          publicClient.readContract({ address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'userInfo', args: [address] }).catch(function() { return [0n,0n,0n]; }),
+          publicClient.readContract({ address: LPFARM_ADDR, abi: LPFARM_ABI, functionName: 'userInfo', args: [address] }).catch(function() { return [0n,0n,0n]; }),
+          _riseGetAigentPrice(),
+        ]);
+        var balN = Number(bal) / 1e18;
+        var stakedN = Number(staked[0]) / 1e18;
+        var lpN = Number(lpStaked[0]) / 1e18;
+        var total = balN + stakedN + lpN;
+        var totalUsd = total * price;
+
+        $('pf-balance').textContent = balN.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' AIGENT';
+        $('pf-balance-usd').textContent = '$' + (balN * price).toFixed(2);
+        $('pf-staked').textContent = stakedN.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' AIGENT';
+        $('pf-staked-usd').textContent = '$' + (stakedN * price).toFixed(2);
+        $('pf-lp').textContent = lpN.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' LP';
+        $('pf-lp-usd').textContent = '$' + (lpN * price).toFixed(2);
+        $('pf-total').textContent = '$' + totalUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var r = $('pf-results'); if (r) r.style.display = 'block';
+        var m = $('pf-msg'); if (m) { m.textContent = ''; m.className = 'pf-msg'; }
+      } catch (e) {
+        var m = $('pf-msg'); if (m) { m.textContent = 'Error: ' + (e.shortMessage || e.message); m.className = 'pf-msg error'; }
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = t('checkAddress'); }
+      }
+    };
+
+    window.closePortfolio = function() {
+      var r = $('pf-results'); if (r) r.style.display = 'none';
+      var inp = $('pf-address'); if (inp) inp.value = '';
+      var m = $('pf-msg'); if (m) { m.textContent = ''; m.className = 'pf-msg'; }
+    };
+
+    // ═══════════════════════════════════════════════════════
     //  AIGENT RISE — Bonding Curve Trading
     // ═══════════════════════════════════════════════════════
 
@@ -4242,6 +4464,8 @@
 
     let _cachedAigentPrice = 0.0001;
     let _cachedAigentPriceTs = 0;
+    let _cachedDexData = null; // Full DexScreener pair data cache
+    let _ecoCurveTvlAigent = 0; // Total AIGENT in all curve reserves
 
     async function _riseGetAigentPrice() {
       const now = Date.now();
@@ -4251,6 +4475,7 @@
         if (resp.ok) {
           const data = await resp.json();
           if (data.pairs && data.pairs.length > 0) {
+            _cachedDexData = data.pairs[0];
             const price = parseFloat(data.pairs[0].priceUsd);
             if (!isNaN(price) && price > 0) {
               _cachedAigentPrice = price;
@@ -4262,6 +4487,35 @@
       } catch (e) { /* fallback */ }
       _cachedAigentPriceTs = now;
       return _cachedAigentPrice;
+    }
+
+    function _fmtCompactUsd(v) {
+      if (v >= 1e9) return '$' + (v / 1e9).toFixed(2) + 'B';
+      if (v >= 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
+      if (v >= 1e3) return '$' + (v / 1e3).toFixed(2) + 'K';
+      if (v >= 0.01) return '$' + v.toFixed(2);
+      return '$' + v.toFixed(6);
+    }
+
+    async function refreshEcosystem() {
+      try {
+        const [price, stakedRaw, lpStakedRaw] = await Promise.all([
+          _riseGetAigentPrice(),
+          publicClient ? publicClient.readContract({ address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'totalStaked' }).catch(() => 0n) : Promise.resolve(0n),
+          publicClient ? publicClient.readContract({ address: LPFARM_ADDR, abi: LPFARM_ABI, functionName: 'totalStakedLP' }).catch(() => 0n) : Promise.resolve(0n),
+        ]);
+        const mcap = price * 500000000;
+        const vol24h = _cachedDexData && _cachedDexData.volume ? parseFloat(_cachedDexData.volume.h24 || 0) : 0;
+        const curveTvlUsd = _ecoCurveTvlAigent * price;
+        const stakedUsd = (Number(stakedRaw) / 1e18 + Number(lpStakedRaw) / 1e18) * price;
+
+        var el;
+        el = document.getElementById('eco-price'); if (el) el.querySelector('.eco-stat-val').textContent = price < 0.001 ? '$' + price.toFixed(8) : '$' + price.toFixed(6);
+        el = document.getElementById('eco-mcap'); if (el) el.querySelector('.eco-stat-val').textContent = _fmtCompactUsd(mcap);
+        el = document.getElementById('eco-vol'); if (el) el.querySelector('.eco-stat-val').textContent = vol24h > 0 ? _fmtCompactUsd(vol24h) : '--';
+        el = document.getElementById('eco-tvl'); if (el) el.querySelector('.eco-stat-val').textContent = curveTvlUsd > 0 ? _fmtCompactUsd(curveTvlUsd) : '--';
+        el = document.getElementById('eco-staked'); if (el) el.querySelector('.eco-stat-val').textContent = stakedUsd > 0 ? _fmtCompactUsd(stakedUsd) : '--';
+      } catch (e) { /* silent */ }
     }
 
     // Read deploy fee from contract + show live USD
@@ -4835,10 +5089,12 @@
         // Get symbols for all curves
         const TOKEN_ABI = parseAbi(['function symbol() view returns (string)', 'function name() view returns (string)']);
         let html = '';
+        let tvlTotal = 0n;
         for (let i = 0; i < Math.min(n, 50); i++) {
           const c = await publicClient.readContract({
             address: BONDING_CURVE_ADDR, abi: BONDING_CURVE_ABI, functionName: 'curves', args: [i],
           });
+          tvlTotal += c[4]; // aigentReserve
           let symbol = '?';
           let tName = '';
           try {
@@ -4872,11 +5128,14 @@
             '"' + title + '>' + avatarPart + '<span style="display:flex;flex-direction:column;align-items:flex-start;gap:1px;line-height:1.2;"><span>' + symbol + (hasPool ? ' ★' : '') + '</span><span style="font-size:9px;opacity:0.5;font-weight:400;">' + progressPct + '% sold</span></span></button>';
         }
         if (n > 50) html += '<span style="font-size:11px;color:var(--dim);padding:8px;">+ ' + (n - 50) + ' more</span>';
+        _ecoCurveTvlAigent = Number(tvlTotal) / 1e18;
         container.innerHTML = html;
 
         // Load first curve if none selected
         if (riseSelectedCurveId >= n) riseSelectedCurveId = 0;
         await riseRefreshCurve(riseSelectedCurveId);
+        // Refresh ecosystem TVL after curve data is loaded
+        refreshEcosystem();
       } catch (e) {
         console.error('riseLoadCurveList:', e);
       }
