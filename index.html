@@ -940,15 +940,14 @@
 
     /* ── Language Switcher ── */
     .lang-switch {
-      display: flex; align-items: center; gap: 4px;
       background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-      border-radius: 20px; padding: 3px; cursor: pointer;
+      border-radius: 20px; padding: 6px 14px; cursor: pointer;
+      font-size: 11px; font-weight: 600; color: var(--dim);
+      transition: all 0.2s; font-family: inherit; min-width: 40px;
+      line-height: 1;
     }
-    .lang-switch span {
-      padding: 4px 10px; border-radius: 16px; font-size: 11px; font-weight: 600;
-      color: var(--dim); transition: all 0.2s;
-    }
-    .lang-switch span.active { background: var(--cyan); color: #000; }
+    .lang-switch:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .lang-switch.zh-active { background: var(--cyan); color: #000; border-color: var(--cyan); }
 
     /* ── PWA Install Button ── */
     .pwa-install-btn {
@@ -1291,9 +1290,7 @@
       AIGENT
     </div>
     <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
-    <div class="lang-switch" id="lang-switch" title="Language / 语言">
-      <span data-lang="zh" class="active" onclick="alert('zh clicked');_i18nSwitch('zh')">中</span><span data-lang="en" data-i18n onclick="alert('en clicked');_i18nSwitch('en')">EN</span>
-    </div>
+    <button class="lang-switch zh-active" id="lang-switch" title="Switch Language" data-i18n-title="Switch Language">中</button>
     <button class="pwa-install-btn" id="pwa-install-btn" title="Install App" data-i18n-title="install">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       <span data-i18n>Install</span>
@@ -2611,7 +2608,7 @@
         aiAgents: 'AI Agents', 'AI Agents': 'AI Agents', 'ai agents': 'AI Agents',
         article: 'Article', 'Article': 'Article',
         buyAigent: 'Buy $AIGENT', 'Buy $AIGENT': 'Buy $AIGENT',
-        install: 'Install', 'Install': 'Install',
+        install: 'Install', 'Install': 'Install', 'Switch Language': 'Switch Language',
         // Wallet
         wallet: 'AIGENT Wallet', walletSub: 'Connect your wallet to check balance and transfer $AIGENT',
         connectWallet: 'Connect Wallet', disconnect: 'Disconnect',
@@ -2703,7 +2700,7 @@
         about: '关于', token: '代币', tokenomics: '代币经济', presale: '预售',
         dapp: '钱包', staking: '质押', lpFarm: 'LP农场', roadmap: '路线图',
         whitepaper: '白皮书', aiAgents: 'AI智能体', article: '技术文章',
-        buyAigent: '购买$AIGENT', install: '安装应用',
+        buyAigent: '购买$AIGENT', install: '安装应用', 'Switch Language': '切换语言',
         wallet: 'AIGENT钱包', walletSub: '连接钱包查看余额并转账$AIGENT',
         connectWallet: '连接钱包', disconnect: '断开连接',
         buyOnUniswap: 'Uniswap购买', sendAigent: '发送AIGENT',
@@ -2962,15 +2959,18 @@
       });
       document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
       document.querySelectorAll('[data-i18n-title]').forEach(function(el) { el.title = t(el.getAttribute('data-i18n-title')); });
-      document.querySelectorAll('.lang-switch span').forEach(function(s) { s.classList.toggle('active', s.getAttribute('data-lang') === _i18nLang); });
+      var btn = document.getElementById('lang-switch');
+      if (btn) {
+        btn.textContent = _i18nLang === 'zh' ? '中' : 'EN';
+        btn.classList.toggle('zh-active', _i18nLang === 'zh');
+      }
     }
     function _i18nSwitch(lang) { _i18nLang = lang; localStorage.setItem('aigent_lang', lang); _i18nUpdateDOM(); if (typeof riseUpdateTicker === 'function') riseUpdateTicker(); }
     window._i18nSwitch = _i18nSwitch;
     window.t = t;
     _i18nUpdateDOM();
-    document.getElementById('lang-switch').addEventListener('click', function(e) {
-      var span = e.target.closest('span');
-      if (span) _i18nSwitch(span.getAttribute('data-lang'));
+    document.getElementById('lang-switch').addEventListener('click', function() {
+      _i18nSwitch(_i18nLang === 'zh' ? 'en' : 'zh');
     });
 
   </script>
