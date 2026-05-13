@@ -1317,7 +1317,7 @@
   </nav>
 
   <!-- Floating Language Switch -->
-  <select class="float-lang" id="float-lang" onchange="(function(){var v=this.value;var before=window._i18nLang;var testKey='About';var zhResult='?';try{zhResult=window.t?window.t(testKey):'t not defined';}catch(e){zhResult='ERROR: '+e.message;}var count=document.querySelectorAll('[data-i18n]').length;window._i18nSwitch(v);var after=window._i18nLang;var firstEl=document.querySelector('[data-i18n]');var firstText=firstEl?firstEl.textContent:'none';alert('Before:'+before+'\nAfter:'+after+'\nt(About)='+zhResult+'\n[data-i18n] count:'+count+'\nFirst el text:'+firstText);}).call(this)">
+  <select class="float-lang" id="float-lang" onchange="window._i18nSwitch(this.value)">
     <option value="zh">中文</option>
     <option value="en">English</option>
   </select>
@@ -2808,14 +2808,14 @@
         buyaigentpresale: '购买AIGENT预售',
         buyonuniswap: 'Uniswap购买',
         chain: '链',
-        chainid:196|rpc:rpc.xlayer.tech: '链ID: 196 | RPC: rpc.xlayer.tech',
+        'chainid:196|rpc:rpc.xlayer.tech': '链ID: 196 | RPC: rpc.xlayer.tech',
         'chatwiththeaiagent—naturallanguagecommands': '与AI智能体对话 — 自然语言指令',
         claim: '领取',
         communityairdrop: '社区空投',
         connectwallet: '连接钱包',
         connectyourwallettocheckbalanceandtransfer$aigent: '连接钱包查看余额并转账 $AIGENT',
         contract: '合约',
-        contractaddress:: '合约地址：',
+        'contractaddress:': '合约地址：',
         contractaddresses: '合约地址',
         copy: '复制',
         createuniswapv3pool: '创建 Uniswap V3 池',
