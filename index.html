@@ -1802,6 +1802,7 @@
         <div class="dapp-action-row" id="dapp-actions">
           <button class="dapp-btn" id="btn-connect" onclick="dappConnect()" data-i18n>Connect Wallet</button>
           <button class="dapp-btn magenta" onclick="dappOpenUniswap()" data-i18n>Buy on Uniswap</button>
+          <button class="dapp-btn" onclick="openAddLiquidity()" style="background:linear-gradient(135deg,#00c853,#00e676);" data-i18n>Add Liquidity</button>
           <button class="dapp-btn" id="btn-qr" onclick="toggleQR()" style="background:linear-gradient(135deg,#667eea,#764ba2);" title="Scan QR to open on mobile" data-i18n>📱 QR</button>
         </div>
 
@@ -3794,6 +3795,15 @@
 
     window.dappOpenUniswap = function() {
       window.open('https://app.uniswap.org/swap?chain=xlayer&outputCurrency=' + AIGENT_ADDRESS, '_blank');
+    };
+
+    // Open Uniswap V3 add liquidity: AIGENT + USDT, full range, 1% fee
+    window.openAddLiquidity = function() {
+      var usdt = '0x779Ded0c9e1022225f8E0630b35a9b54bE713736';
+      var aigent = AIGENT_ADDRESS;
+      var t0 = usdt.toLowerCase() < aigent.toLowerCase() ? usdt : aigent;
+      var t1 = usdt.toLowerCase() < aigent.toLowerCase() ? aigent : usdt;
+      window.open('https://app.uniswap.org/pool/add?chain=xlayer&token0=' + t0 + '&token1=' + t1 + '&fee=10000&minPrice=0&maxPrice=Infinity', '_blank');
     };
 
     // ── AI Agent Console ──

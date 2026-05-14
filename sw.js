@@ -1,5 +1,5 @@
 // AIgent Rise Service Worker — offline caching
-const CACHE = 'aigent-rise-v18';
+const CACHE = 'aigent-rise-v19';
 const FILES = [
   '/',
   '/index.html',
