@@ -1128,6 +1128,58 @@
       .pf-row { flex-direction: column; }
     }
 
+    /* ── Yield Calculator ── */
+    #yieldcalc { padding: 30px 0; }
+    .yc-grid { display: flex; gap: 24px; align-items: stretch; }
+    .yc-input-area { flex: 1; min-width: 240px; }
+    .yc-input-label { font-size: 12px; color: var(--dim); margin-bottom: 8px; }
+    .yc-input-row { display: flex; gap: 8px; }
+    .yc-input {
+      flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); color: var(--text-bright); font-size: 18px; font-family: 'SF Mono','Fira Code',monospace;
+      outline: none; transition: border-color 0.2s;
+    }
+    .yc-input:focus { border-color: var(--cyan); }
+    .yc-info { font-size: 11px; color: var(--dim); margin-top: 8px; }
+    .yc-info strong { color: var(--text-bright); }
+    .yc-results { flex: 2; }
+    .yc-row { display: flex; gap: 10px; }
+    .yc-item {
+      flex: 1; padding: 14px 12px; border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px; background: rgba(255,255,255,0.01); text-align: center;
+    }
+    .yc-label { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .yc-val { font-size: 15px; font-weight: 700; color: var(--green); font-family: 'SF Mono','Fira Code',monospace; }
+    .yc-apy-item { border-color: rgba(0,229,255,0.15); background: rgba(0,229,255,0.03); }
+    .yc-apy-item .yc-val { color: var(--cyan); font-size: 22px; }
+    @media (max-width: 768px) {
+      .yc-grid { flex-direction: column; }
+    }
+
+    /* ── Leaderboard ── */
+    #leaderboard { padding: 30px 0; }
+    .lb-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .lb-tab {
+      padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
+      background: transparent; color: var(--dim); font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
+    }
+    .lb-tab:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+    .lb-tab.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.06); }
+    .lb-table-wrap { overflow-x: auto; }
+    .lb-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .lb-table th { text-align: left; padding: 8px 12px; color: var(--dim); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .lb-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text); }
+    .lb-table tbody tr:hover td { background: rgba(0,229,255,0.02); }
+    .lb-table .lb-rank { font-weight: 700; color: var(--dim); width: 50px; }
+    .lb-table .lb-rank.top1 { color: #ffd700; }
+    .lb-table .lb-rank.top2 { color: #c0c0c0; }
+    .lb-table .lb-rank.top3 { color: #cd7f32; }
+    .lb-table .lb-addr { font-family: 'SF Mono','Fira Code',monospace; font-size: 11px; }
+    .lb-table .lb-amount { text-align: right; font-family: 'SF Mono','Fira Code',monospace; color: var(--text-bright); }
+    .lb-table .lb-share { text-align: right; color: var(--dim); }
+    .lb-loading { text-align: center; color: var(--dim); padding: 32px; }
+
     /* ── AIgent Rise — Trading Panel ── */
     .rise-card {
       position: relative; overflow: hidden;
@@ -1948,6 +2000,83 @@
         </div>
 
         <div class="pf-msg" id="pf-msg"></div>
+      </div>
+    </section>
+
+    <!-- ── YIELD CALCULATOR ── -->
+    <section id="yieldcalc">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+          <div class="section-tag">// <span data-i18n>Tool</span></div>
+          <div class="section-title" data-i18n>Yield Calculator</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>Estimate your staking rewards</p>
+        </div>
+
+        <div class="yc-grid">
+          <div class="yc-input-area">
+            <div class="yc-input-label" data-i18n>Stake Amount (AIGENT)</div>
+            <div class="yc-input-row">
+              <input class="yc-input" id="yc-amount" type="text" placeholder="10000" autocomplete="off" oninput="updateYieldCalc()">
+            </div>
+            <div class="yc-info" id="yc-info">
+              <span data-i18n>Total Staked</span>: <strong id="yc-total-staked">--</strong>
+              &nbsp;|&nbsp; <span data-i18n>Reward Rate</span>: <strong id="yc-rate">--</strong>
+            </div>
+          </div>
+          <div class="yc-results">
+            <div class="yc-row">
+              <div class="yc-item">
+                <div class="yc-label" data-i18n>Daily</div>
+                <div class="yc-val" id="yc-daily">--</div>
+              </div>
+              <div class="yc-item">
+                <div class="yc-label" data-i18n>Monthly</div>
+                <div class="yc-val" id="yc-monthly">--</div>
+              </div>
+              <div class="yc-item">
+                <div class="yc-label" data-i18n>Yearly</div>
+                <div class="yc-val" id="yc-yearly">--</div>
+              </div>
+              <div class="yc-item yc-apy-item">
+                <div class="yc-label" data-i18n>APY</div>
+                <div class="yc-val" id="yc-apy">--</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── STAKING LEADERBOARD ── -->
+    <section id="leaderboard">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+          <div class="section-tag">// <span data-i18n>Leaderboard</span></div>
+          <div class="section-title" data-i18n>Top Stakers</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>Biggest stakers and LP providers on AIGENT</p>
+        </div>
+
+        <div class="lb-tabs">
+          <button class="lb-tab active" id="lb-tab-stakers" onclick="switchLeaderboardTab('stakers')" data-i18n>Top Stakers</button>
+          <button class="lb-tab" id="lb-tab-lp" onclick="switchLeaderboardTab('lp')" data-i18n>Top LP</button>
+          <button class="lb-tab" id="lb-tab-holders" onclick="switchLeaderboardTab('holders')" data-i18n>Top Holders</button>
+        </div>
+
+        <div class="lb-table-wrap" id="lb-table-wrap">
+          <table class="lb-table" id="lb-table">
+            <thead>
+              <tr>
+                <th style="width:50px;">#</th>
+                <th data-i18n>Address</th>
+                <th style="text-align:right;" data-i18n>Amount</th>
+                <th style="text-align:right;" data-i18n>Share</th>
+              </tr>
+            </thead>
+            <tbody id="lb-tbody">
+              <tr><td colspan="4" style="text-align:center;color:var(--dim);padding:24px;" data-i18n>Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -3278,6 +3407,24 @@
         'pleasenteranaddress': '请输入地址',
         'invalidaddress': '无效地址',
         'close': '关闭',
+        // Yield Calculator
+        'yieldcalculator': '收益计算器',
+        'estimateyourstakingrewards': '预估你的质押收益',
+        'stakeamount(aigent)': '质押数量 (AIGENT)',
+        'daily': '每日',
+        'monthly': '每月',
+        'yearly': '每年',
+        'apy': '年化',
+        // Leaderboard
+        'leaderboard': '排行榜',
+        'topstakers': '质押排行',
+        'biggeststakersandlpprovidersonaigent': 'AIGENT最大质押者和LP提供者',
+        'toplp': 'LP排行',
+        'topholders': '持币排行',
+        'address': '地址',
+        'amount': '数量',
+        'share': '占比',
+        'nodata': '暂无数据，连接钱包后刷新',
       }
     };
     let _i18nLang = localStorage.getItem('aigent_lang') || 'zh';
@@ -3484,6 +3631,8 @@
       // Auto-fill portfolio checker with connected wallet
       var pfInput = document.getElementById('pf-address');
       if (pfInput && !pfInput.value) pfInput.value = userAddress;
+      // Init leaderboard and yield calc
+      if (typeof _initLeaderboard === 'function') _initLeaderboard();
     }
 
     function renderDisconnected() {
@@ -4447,6 +4596,249 @@
       var r = $('pf-results'); if (r) r.style.display = 'none';
       var inp = $('pf-address'); if (inp) inp.value = '';
       var m = $('pf-msg'); if (m) { m.textContent = ''; m.className = 'pf-msg'; }
+    };
+
+    // ═══════════════════════════════════════════════════════
+    //  YIELD CALCULATOR
+    // ═══════════════════════════════════════════════════════
+
+    let _ycStakingData = null; // { rewardPerSecond, totalStaked, rewardEndTime }
+
+    async function refreshYieldCalcData() {
+      if (!publicClient) return;
+      try {
+        var [rate, totalStaked, endTime] = await Promise.all([
+          publicClient.readContract({ address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'rewardPerSecond' }),
+          publicClient.readContract({ address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'totalStaked' }),
+          publicClient.readContract({ address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'rewardEndTime' }),
+        ]);
+        _ycStakingData = {
+          rewardPerSecond: Number(rate) / 1e18,
+          totalStaked: Number(totalStaked) / 1e18,
+          rewardEndTime: Number(endTime),
+        };
+        document.getElementById('yc-total-staked').textContent = _ycStakingData.totalStaked.toLocaleString() + ' AIGENT';
+        document.getElementById('yc-rate').textContent = _ycStakingData.rewardPerSecond.toFixed(4) + ' AIGENT/sec';
+        updateYieldCalc();
+      } catch (e) { /* silent */ }
+    }
+
+    window.updateYieldCalc = function() {
+      if (!_ycStakingData) return;
+      var input = document.getElementById('yc-amount');
+      var amt = parseFloat(input.value);
+      if (isNaN(amt) || amt <= 0) {
+        ['yc-daily','yc-monthly','yc-yearly','yc-apy'].forEach(function(id) {
+          document.getElementById(id).textContent = '--';
+        });
+        return;
+      }
+      var d = _ycStakingData;
+      if (d.totalStaked <= 0) return;
+      var share = amt / d.totalStaked;
+      var daily = d.rewardPerSecond * 86400 * share;
+      var monthly = daily * 30;
+      var yearly = daily * 365;
+      var apy = amt > 0 ? (yearly / amt * 100) : 0;
+
+      document.getElementById('yc-daily').textContent = daily.toFixed(2) + ' AIGENT';
+      document.getElementById('yc-monthly').textContent = monthly.toFixed(0) + ' AIGENT';
+      document.getElementById('yc-yearly').textContent = yearly.toFixed(0) + ' AIGENT';
+      document.getElementById('yc-apy').textContent = apy.toFixed(2) + '%';
+    };
+
+    // ═══════════════════════════════════════════════════════
+    //  LEADERBOARD
+    // ═══════════════════════════════════════════════════════
+
+    const STAKE_TOPIC = keccak256(toHex('Staked(address,uint256)'));
+    const UNSTAKE_TOPIC = keccak256(toHex('Unstaked(address,uint256)'));
+
+    let _lbCurrentTab = 'stakers';
+    let _lbStakersData = null;
+    let _lbLPData = null;
+
+    function _lbRankClass(rank) {
+      if (rank === 1) return 'top1';
+      if (rank === 2) return 'top2';
+      if (rank === 3) return 'top3';
+      return '';
+    }
+
+    function _lbRenderRows(entries, totalSupply) {
+      if (!entries || entries.length === 0) {
+        return '<tr><td colspan="4" style="text-align:center;color:var(--dim);padding:32px;">' + t('noData') + '</td></tr>';
+      }
+      var html = '';
+      for (var i = 0; i < entries.length; i++) {
+        var e = entries[i];
+        var rank = i + 1;
+        var share = totalSupply > 0 ? (e.amount / totalSupply * 100).toFixed(2) : '0.00';
+        html += '<tr>' +
+          '<td class="lb-rank ' + _lbRankClass(rank) + '">' + rank + '</td>' +
+          '<td class="lb-addr" title="' + e.address + '">' + shorten(e.address) + '</td>' +
+          '<td class="lb-amount">' + e.amount.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' AIGENT</td>' +
+          '<td class="lb-share">' + share + '%</td>' +
+          '</tr>';
+      }
+      return html;
+    }
+
+    async function loadStakersLeaderboard() {
+      var tbody = document.getElementById('lb-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="4" class="lb-loading">' + t('loading...') + '</td></tr>';
+      if (!publicClient) { tbody.innerHTML = '<tr><td colspan="4" class="lb-loading">' + t('connectFirst') + '</td></tr>'; return; }
+
+      if (_lbStakersData) {
+        tbody.innerHTML = _lbRenderRows(_lbStakersData.entries, _lbStakersData.totalSupply);
+        return;
+      }
+
+      try {
+        // Query Staked events
+        var stakeLogs = await publicClient.getLogs({
+          address: STAKING_ADDR,
+          topics: [STAKE_TOPIC],
+          fromBlock: 0n, toBlock: 'latest',
+        });
+        var unstakeLogs = await publicClient.getLogs({
+          address: STAKING_ADDR,
+          topics: [UNSTAKE_TOPIC],
+          fromBlock: 0n, toBlock: 'latest',
+        });
+
+        // Aggregate: address → net staked
+        var map = {};
+        for (var i = 0; i < stakeLogs.length; i++) {
+          var addr = '0x' + stakeLogs[i].topics[1].slice(26);
+          var amt = BigInt(stakeLogs[i].data);
+          map[addr] = (map[addr] || 0n) + amt;
+        }
+        for (var j = 0; j < unstakeLogs.length; j++) {
+          var addr2 = '0x' + unstakeLogs[j].topics[1].slice(26);
+          var amt2 = BigInt(unstakeLogs[j].data);
+          map[addr2] = (map[addr2] || 0n) - amt2;
+        }
+
+        var entries = [];
+        var total = 0n;
+        for (var a in map) {
+          if (map[a] > 0n) {
+            entries.push({ address: a, amount: Number(map[a]) / 1e18 });
+            total += map[a];
+          }
+        }
+        entries.sort(function(a, b) { return b.amount - a.amount; });
+        var top20 = entries.slice(0, 20);
+
+        _lbStakersData = { entries: top20, totalSupply: Number(total) / 1e18 };
+        tbody.innerHTML = _lbRenderRows(top20, Number(total) / 1e18);
+      } catch (e) {
+        console.error('loadStakersLeaderboard:', e);
+        tbody.innerHTML = '<tr><td colspan="4" class="lb-loading" style="color:#ff4444;">' + (e.shortMessage || e.message || 'Failed to load') + '</td></tr>';
+      }
+    }
+
+    async function loadLPLeaderboard() {
+      var tbody = document.getElementById('lb-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="4" class="lb-loading">' + t('loading...') + '</td></tr>';
+      if (!publicClient) { tbody.innerHTML = '<tr><td colspan="4" class="lb-loading">' + t('connectFirst') + '</td></tr>'; return; }
+
+      if (_lbLPData) {
+        tbody.innerHTML = _lbRenderRows(_lbLPData.entries, _lbLPData.totalSupply);
+        return;
+      }
+
+      try {
+        var stakeLogs = await publicClient.getLogs({
+          address: LPFARM_ADDR,
+          topics: [STAKE_TOPIC],
+          fromBlock: 0n, toBlock: 'latest',
+        });
+        var unstakeLogs = await publicClient.getLogs({
+          address: LPFARM_ADDR,
+          topics: [UNSTAKE_TOPIC],
+          fromBlock: 0n, toBlock: 'latest',
+        });
+
+        var map = {};
+        for (var i = 0; i < stakeLogs.length; i++) {
+          var addr = '0x' + stakeLogs[i].topics[1].slice(26);
+          var amt = BigInt(stakeLogs[i].data);
+          map[addr] = (map[addr] || 0n) + amt;
+        }
+        for (var j = 0; j < unstakeLogs.length; j++) {
+          var addr2 = '0x' + unstakeLogs[j].topics[1].slice(26);
+          var amt2 = BigInt(unstakeLogs[j].data);
+          map[addr2] = (map[addr2] || 0n) - amt2;
+        }
+
+        var entries = [];
+        var total = 0n;
+        for (var a in map) {
+          if (map[a] > 0n) {
+            entries.push({ address: a, amount: Number(map[a]) / 1e18 });
+            total += map[a];
+          }
+        }
+        entries.sort(function(a, b) { return b.amount - a.amount; });
+        var top20 = entries.slice(0, 20);
+
+        _lbLPData = { entries: top20, totalSupply: Number(total) / 1e18 };
+        tbody.innerHTML = _lbRenderRows(top20, Number(total) / 1e18);
+      } catch (e) {
+        console.error('loadLPLeaderboard:', e);
+        tbody.innerHTML = '<tr><td colspan="4" class="lb-loading" style="color:#ff4444;">' + (e.shortMessage || e.message || 'Failed to load') + '</td></tr>';
+      }
+    }
+
+    async function loadHoldersLeaderboard() {
+      var tbody = document.getElementById('lb-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="4" class="lb-loading">' + t('loading...') + '</td></tr>';
+
+      try {
+        // Try OKLink API for top holders
+        var resp = await fetch('https://www.oklink.com/api/v5/explorer/token/token-holders-list?chainShortName=xlayer&tokenContractAddress=0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39&limit=20&page=1');
+        if (resp.ok) {
+          var data = await resp.json();
+          if (data.code === 0 && data.data && data.data.length > 0) {
+            var entries = data.data.map(function(h) {
+              return { address: h.address, amount: Number(h.balance) / 1e18 };
+            });
+            var total = entries.reduce(function(s, e) { return s + e.amount; }, 0);
+            tbody.innerHTML = _lbRenderRows(entries, total);
+            return;
+          }
+        }
+        // Fallback: show combined stakers + LP
+        tbody.innerHTML = '<tr><td colspan="4" class="lb-loading" style="color:var(--dim);">' + t('noData') + '</td></tr>';
+      } catch (e) {
+        console.error('loadHoldersLeaderboard:', e);
+        tbody.innerHTML = '<tr><td colspan="4" class="lb-loading" style="color:#ff4444;">' + (e.shortMessage || e.message || 'Failed to load') + '</td></tr>';
+      }
+    }
+
+    window.switchLeaderboardTab = function(tab) {
+      _lbCurrentTab = tab;
+      var tabs = document.querySelectorAll('.lb-tab');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      var activeTab = document.getElementById('lb-tab-' + tab);
+      if (activeTab) activeTab.classList.add('active');
+
+      if (tab === 'stakers') loadStakersLeaderboard();
+      else if (tab === 'lp') loadLPLeaderboard();
+      else if (tab === 'holders') loadHoldersLeaderboard();
+    };
+
+    // Initialize leaderboard on load
+    window._initLeaderboard = function() {
+      if (publicClient && document.getElementById('lb-tbody')) {
+        loadStakersLeaderboard();
+        refreshYieldCalcData();
+      }
     };
 
     // ═══════════════════════════════════════════════════════
