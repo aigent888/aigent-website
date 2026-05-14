@@ -4634,17 +4634,34 @@
         return;
       }
       var d = _ycStakingData;
-      if (d.totalStaked <= 0) return;
-      var share = amt / d.totalStaked;
+      // Share of the pool AFTER depositing (handle 0 staked — user gets 100%)
+      var newTotal = d.totalStaked + amt;
+      var share = newTotal > 0 ? amt / newTotal : 1;
       var daily = d.rewardPerSecond * 86400 * share;
       var monthly = daily * 30;
       var yearly = daily * 365;
+      // Cap yearly at remaining rewards
+      var now = Math.floor(Date.now() / 1000);
+      if (d.rewardEndTime > 0 && now < d.rewardEndTime) {
+        var secondsLeft = d.rewardEndTime - now;
+        var maxYearly = d.rewardPerSecond * secondsLeft * share;
+        if (yearly > maxYearly) yearly = maxYearly;
+      }
       var apy = amt > 0 ? (yearly / amt * 100) : 0;
 
       document.getElementById('yc-daily').textContent = daily.toFixed(2) + ' AIGENT';
       document.getElementById('yc-monthly').textContent = monthly.toFixed(0) + ' AIGENT';
       document.getElementById('yc-yearly').textContent = yearly.toFixed(0) + ' AIGENT';
       document.getElementById('yc-apy').textContent = apy.toFixed(2) + '%';
+
+      // Warn if APY > 1000% (very low staking participation)
+      if (apy > 1000) {
+        document.getElementById('yc-apy').style.color = '#ff9100';
+        document.getElementById('yc-apy').title = 'APY will decrease as more users stake';
+      } else {
+        document.getElementById('yc-apy').style.color = 'var(--cyan)';
+        document.getElementById('yc-apy').removeAttribute('title');
+      }
     };
 
     // ═══════════════════════════════════════════════════════
