@@ -2044,6 +2044,18 @@
             </div>
           </div>
         </div>
+        <!-- Admin: adjust reward rate (owner only) -->
+        <div class="yc-admin" id="yc-admin" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.05);">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:11px;color:var(--dim);" data-i18n>Admin: Set Reward Rate</span>
+            <input class="yc-admin-input" id="yc-new-rate" type="text" placeholder="AIGENT/sec" autocomplete="off" style="width:140px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text-bright);font-size:12px;font-family:'SF Mono','Fira Code',monospace;">
+            <button class="yc-admin-btn" id="btn-yc-set-rate" onclick="setRewardRate()" style="padding:6px 14px;border:1px solid var(--cyan);border-radius:6px;background:rgba(0,229,255,0.06);color:var(--cyan);font-size:11px;cursor:pointer;font-family:inherit;font-weight:600;transition:all 0.2s;" onmouseenter="this.style.background='rgba(0,229,255,0.15)'" onmouseleave="this.style.background='rgba(0,229,255,0.06)'" data-i18n>Apply</button>
+            <span id="yc-admin-msg" style="font-size:11px;"></span>
+          </div>
+          <div style="font-size:10px;color:var(--dim);margin-top:4px;">
+            <span data-i18n>Current</span>: 2.5368 AIGENT/sec ≈ 80M/yr. <span data-i18n>Lowering reduces APY for stakers.</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -3425,6 +3437,14 @@
         'amount': '数量',
         'share': '占比',
         'nodata': '暂无数据，连接钱包后刷新',
+        // Admin reward rate
+        'admin:setrewardrate': '管理：设置奖励速率',
+        'apply': '应用',
+        'current': '当前',
+        'loweringreducesapyforstakers.': '降低会减少质押者APY。',
+        'rateupdatedto': '速率已更新为',
+        'failed:': '失败:',
+        'entervalidrate.': '请输入有效速率。',
       }
     };
     let _i18nLang = localStorage.getItem('aigent_lang') || 'zh';
@@ -3525,6 +3545,8 @@
       'function totalStaked() external view returns (uint256)',
       'function rewardPerSecond() external view returns (uint256)',
       'function rewardEndTime() external view returns (uint256)',
+      'function setRewardPerSecond(uint256 _rewardPerSecond) external',
+      'function owner() external view returns (address)',
     ]);
 
     const LPFARM_ADDR = '0xB02728bf2D11C43Faf86bfDd1429b10bF41E571a';
@@ -3633,6 +3655,8 @@
       if (pfInput && !pfInput.value) pfInput.value = userAddress;
       // Init leaderboard and yield calc
       if (typeof _initLeaderboard === 'function') _initLeaderboard();
+      // Check staking owner for admin controls
+      if (typeof _checkStakingOwner === 'function') _checkStakingOwner();
     }
 
     function renderDisconnected() {
@@ -4857,6 +4881,57 @@
         refreshYieldCalcData();
       }
     };
+
+    // Admin: set reward rate (owner only)
+    window.setRewardRate = async function() {
+      if (!walletClient || !userAddress) { showNotification(t('connectFirst'), 'error'); return; }
+      var rateInput = document.getElementById('yc-new-rate');
+      var amt = parseFloat(rateInput.value);
+      if (isNaN(amt) || amt <= 0) {
+        document.getElementById('yc-admin-msg').textContent = 'Enter valid rate.';
+        document.getElementById('yc-admin-msg').style.color = '#ff4444';
+        return;
+      }
+      var btn = document.getElementById('btn-yc-set-rate');
+      btn.disabled = true;
+      btn.textContent = '...';
+      try {
+        var amtWei = BigInt(Math.floor(amt * 1e18));
+        var hash = await walletClient.writeContract({
+          address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'setRewardPerSecond',
+          args: [amtWei], chain: xLayer, account: userAddress,
+        });
+        await publicClient.waitForTransactionReceipt({ hash });
+        document.getElementById('yc-admin-msg').textContent = 'Rate updated to ' + amt + ' AIGENT/sec';
+        document.getElementById('yc-admin-msg').style.color = '#00e676';
+        await refreshYieldCalcData();
+        await refreshStaking();
+      } catch (e) {
+        document.getElementById('yc-admin-msg').textContent = 'Failed: ' + (e.shortMessage || e.message);
+        document.getElementById('yc-admin-msg').style.color = '#ff4444';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = t('apply');
+      }
+    };
+
+    // Show admin controls if wallet is staking contract owner
+    async function _checkStakingOwner() {
+      if (!publicClient || !userAddress) return;
+      try {
+        var owner = await publicClient.readContract({
+          address: STAKING_ADDR, abi: STAKING_ABI, functionName: 'owner',
+        });
+        if (owner.toLowerCase() === userAddress.toLowerCase()) {
+          var el = document.getElementById('yc-admin');
+          if (el) el.style.display = 'block';
+          // Pre-fill with current rate
+          if (_ycStakingData) {
+            document.getElementById('yc-new-rate').value = _ycStakingData.rewardPerSecond.toFixed(4);
+          }
+        }
+      } catch (e) { /* not owner or function doesn't exist */ }
+    }
 
     // ═══════════════════════════════════════════════════════
     //  AIGENT RISE — Bonding Curve Trading
