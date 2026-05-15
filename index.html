@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n>AIgent Rise — Token Launch Platform</title>
+  <title data-i18n>AIGENT — Autonomous Intelligence Agent Token</title>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#060b14">
   <meta name="description" content="One-click token launch and permanent bonding curve trading on X Layer">
@@ -753,6 +753,38 @@
       color: var(--cyan);
     }
 
+    /* ── Airdrop ── */
+    .airdrop-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 8px; }
+    .airdrop-stat {
+      background: rgba(0, 229, 255, 0.04);
+      border: 1px solid rgba(0, 229, 255, 0.08);
+      border-radius: 10px;
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .ads-label { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .ads-val { font-size: 18px; font-weight: 700; color: var(--cyan); }
+    .airdrop-btn {
+      padding: 16px 48px;
+      font-size: 18px;
+      font-weight: 700;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--cyan), #00b8d4);
+      color: #000;
+      letter-spacing: 1px;
+      transition: all 0.25s;
+      font-family: inherit;
+    }
+    .airdrop-btn:hover { box-shadow: var(--glow-cyan); transform: translateY(-1px); }
+    .airdrop-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    @media (max-width: 768px) {
+      .airdrop-stats { grid-template-columns: repeat(2, 1fr); }
+      .airdrop-btn { width: 100%; }
+    }
+
     /* ── Footer ── */
     footer {
       padding: 60px 0 40px;
@@ -1431,7 +1463,6 @@
       <li><a href="#about" data-i18n>About</a></li>
       <li><a href="#token" data-i18n>Token</a></li>
       <li><a href="#tokenomics" data-i18n>Tokenomics</a></li>
-      <li><a href="#presale" data-i18n>Presale</a></li>
       <li><a href="#dapp" data-i18n>DApp</a></li>
       <li><a href="#staking" data-i18n>Staking</a></li>
       <li><a href="#lpfarm" data-i18n>LP Farm</a></li>
@@ -1439,7 +1470,6 @@
       <li><a href="https://github.com/Mrxu6995/aigent/blob/gh-pages/whitepaper.md" target="_blank" data-i18n>Whitepaper</a></li>
       <li><a href="#ai" data-i18n>AI Agents</a></li>
       <li><a href="#article" data-i18n>Article</a></li>
-      <li><a href="#presale" class="nav-btn" data-i18n>Buy $AIGENT</a></li>
     </ul>
   </nav>
 
@@ -1503,7 +1533,7 @@
       </svg>
     </div>
 
-    <div class="hero-label" data-i18n>X Layer &middot; ERC-20 &middot; EIP-2612</div>
+    <div class="hero-label" data-i18n>Experiment &middot; Free Airdrop &middot; No Fundraising</div>
     <h1 class="hero-title">AI<span class="accent" data-i18n>GENT</span></h1>
     <div class="hero-sub">
       <span id="typed"></span><span class="cursor">&#9611;</span>
@@ -1562,6 +1592,55 @@
     </section>
   </div>
 
+  <!-- ── AIRDROP ── -->
+  <div class="container">
+    <section id="airdrop">
+      <div class="card reveal">
+        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+          <div class="section-tag">// <span data-i18n>Free</span></div>
+          <div class="section-title" data-i18n>Airdrop Claim</div>
+          <p class="section-sub" style="margin-left: 0;" data-i18n>Claim 10,000 AIGENT daily — first 100 wallets only. 80% of total supply (400M) distributed free.</p>
+        </div>
+
+        <div class="airdrop-stats" id="airdrop-stats">
+          <div class="airdrop-stat">
+            <div class="ads-label" data-i18n>Today Remaining</div>
+            <div class="ads-val" id="ad-today-remaining">-- / 100</div>
+          </div>
+          <div class="airdrop-stat">
+            <div class="ads-label" data-i18n>Per Claim</div>
+            <div class="ads-val">10,000 AIGENT</div>
+          </div>
+          <div class="airdrop-stat">
+            <div class="ads-label" data-i18n>Total Claimed</div>
+            <div class="ads-val" id="ad-total-claimed">-- / 400,000,000</div>
+          </div>
+          <div class="airdrop-stat">
+            <div class="ads-label" data-i18n>Your Status</div>
+            <div class="ads-val" id="ad-your-status">--</div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+          <button class="airdrop-btn" id="btn-airdrop-claim" onclick="claimAirdrop()" data-i18n>Claim AIGENT</button>
+          <div class="dapp-msg" id="airdrop-msg" style="margin-top:12px;text-align:center;"></div>
+        </div>
+
+        <div style="margin-top: 24px; padding: 16px 20px; border-radius: 10px; background: rgba(0,229,255,0.03); border: 1px solid rgba(0,229,255,0.08);">
+          <p style="font-size: 12px; color: var(--dim); line-height: 1.8;">
+            <strong style="color: var(--text-bright);" data-i18n>Rules:</strong><br>
+            <span data-i18n>• 1,000,000 AIGENT released daily, first 100 claims only</span><br>
+            <span data-i18n>• 10,000 AIGENT per claim (equal share for everyone)</span><br>
+            <span data-i18n>• One claim per wallet per UTC day</span><br>
+            <span data-i18n>• Resets at 00:00 UTC — come back tomorrow</span><br>
+            <span data-i18n>• 400,000,000 total airdrop pool (80% of supply)</span><br>
+            <span data-i18n>• No cost, no investment, no expectations — just free tokens for early participants</span>
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <!-- ── TOKEN ── -->
   <div class="container">
     <section id="token">
@@ -1600,183 +1679,6 @@
         <div class="contract-bar">
           <span class="addr" id="contract-addr">0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39</span>
           <button class="btn" id="copy-btn" onclick="copyAddr()" data-i18n>Copy</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── HOW TO BUY ── -->
-    <section id="buy">
-      <div class="card reveal">
-        <div class="section-header" style="text-align: left; margin-bottom: 28px;">
-          <div class="section-tag">// <span data-i18n>Trade</span></div>
-          <div class="section-title" data-i18n>How to Buy $AIGENT</div>
-          <p class="section-sub" style="margin-left: 0;" data-i18n>Trade AIGENT/USDT on Uniswap V3 — X Layer Mainnet</p>
-        </div>
-        <div class="feature-grid">
-          <div class="feature-card">
-            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;" data-i18n>STEP 1</div>
-            <div class="fc-desc">
-              <span class="highlight-cyan" data-i18n>Add X Layer to Wallet</span><br>
-              Chain ID: 196 | RPC: rpc.xlayer.tech<br>
-              Bridge USDT to X Layer via official bridge.
-            </div>
-          </div>
-          <div class="feature-card">
-            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;" data-i18n>STEP 2</div>
-            <div class="fc-desc">
-              <span class="highlight-cyan" data-i18n>Open Uniswap V3</span><br>
-              Go to app.uniswap.org → Pool → New Position.<br>
-              Paste AIGENT contract + USDT.
-            </div>
-          </div>
-          <div class="feature-card">
-            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;" data-i18n>STEP 3</div>
-            <div class="fc-desc">
-              <span class="highlight-cyan" data-i18n>Set Parameters</span><br>
-              Fee: 1.00% | Range: Full Range<br>
-              Initial Price: $0.0001 per AIGENT
-            </div>
-          </div>
-          <div class="feature-card">
-            <div class="fc-title" style="font-size: 14px; color: var(--dim); letter-spacing: 2px;" data-i18n>STEP 4</div>
-            <div class="fc-desc">
-              <span class="highlight-cyan" data-i18n>Add Liquidity</span><br>
-              Approve AIGENT → Deposit tokens.<br>
-              Verify listing on DexScreener.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── PRESALE ── -->
-    <section id="presale">
-      <div class="card reveal">
-        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// <span data-i18n>Presale</span></div>
-          <div class="section-title" data-i18n>Private Sale — Buy $AIGENT</div>
-          <p class="section-sub" style="margin-left: 0;" data-i18n>Send USDT to the presale contract, receive AIGENT instantly at a fixed price. No vesting, no lockup.</p>
-        </div>
-
-        <div class="presale-price-row">
-          <div class="presale-price-card">
-            <div class="pp-label" data-i18n>Price</div>
-            <div class="pp-val">$0.0001</div>
-            <div class="pp-sub" data-i18n>per AIGENT</div>
-          </div>
-          <div class="presale-price-card">
-            <div class="pp-label" data-i18n>Exchange Rate</div>
-            <div class="pp-val">10,000</div>
-            <div class="pp-sub" data-i18n>AIGENT per 1 USDT</div>
-          </div>
-          <div class="presale-price-card">
-            <div class="pp-label" data-i18n>Hard Cap</div>
-            <div class="pp-val">50M</div>
-            <div class="pp-sub" data-i18n>AIGENT (10% supply)</div>
-          </div>
-          <div class="presale-price-card">
-            <div class="pp-label" data-i18n>Status</div>
-            <div class="pp-val live-tag" data-i18n>LIVE</div>
-            <div class="pp-sub" data-i18n>No vesting period</div>
-          </div>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="progress-wrap" id="presale-progress-wrap">
-          <div class="progress-header">
-            <span class="progress-sold" id="progress-sold-text" data-i18n>0 AIGENT sold</span>
-            <span class="progress-cap" id="progress-cap-text" data-i18n>/ 50,000,000 cap</span>
-          </div>
-          <div class="progress-bar-outer">
-            <div class="progress-bar-inner" id="progress-bar-fill" style="width:0%;"></div>
-          </div>
-          <div class="progress-pct" id="progress-pct">0%</div>
-        </div>
-
-        <!-- Network Info -->
-        <div class="presale-info-grid">
-          <div class="presale-info-box">
-            <div class="pi-head" data-i18n>Network</div>
-            <div class="pi-body" data-i18n>X Layer Mainnet</div>
-            <div class="pi-sub" data-i18n>Chain ID: 196 | RPC: rpc.xlayer.tech</div>
-          </div>
-          <div class="presale-info-box">
-            <div class="pi-head" data-i18n>Token Contract</div>
-            <div class="pi-body mono" id="token-copy" data-i18n>0xE543...C3e39</div>
-            <div class="pi-sub" data-i18n>AIGENT ERC-20 + EIP-2612</div>
-          </div>
-          <div class="presale-info-box">
-            <div class="pi-head" data-i18n>Presale Contract</div>
-            <div class="pi-body mono" id="presale-copy" data-i18n>0x316b...ccD9</div>
-            <div class="pi-sub" data-i18n>Verified on-chain</div>
-          </div>
-          <div class="presale-info-box">
-            <div class="pi-head" data-i18n>Payment Token</div>
-            <div class="pi-body mono" data-i18n>USDT0</div>
-            <div class="pi-sub" data-i18n>0x779D...3736 (LayerZero OFT)</div>
-          </div>
-        </div>
-
-        <!-- How to Participate -->
-        <div class="presale-howto">
-          <h3 data-i18n>How to Participate</h3>
-
-          <div class="presale-steps">
-            <div class="pstep">
-              <div class="pstep-num">01</div>
-              <div class="pstep-text">
-                <strong data-i18n>Add X Layer to Your Wallet</strong>
-                <p data-i18n>Network: X Layer Mainnet | Chain ID: 196 | RPC: https://rpc.xlayer.tech | Currency: OKB</p>
-              </div>
-            </div>
-            <div class="pstep">
-              <div class="pstep-num">02</div>
-              <div class="pstep-text">
-                <strong data-i18n>Get USDT on X Layer</strong>
-                <p>Bridge USDT from Ethereum/OKX to X Layer via the <a href="https://www.okx.com/web3/bridge" target="_blank" rel="noopener" data-i18n>OKX Bridge</a>. You need USDT0 on X Layer.</p>
-              </div>
-            </div>
-            <div class="pstep">
-              <div class="pstep-num">03</div>
-              <div class="pstep-text">
-                <strong data-i18n>Approve USDT Spending</strong>
-                <p>Call <code>approve()</code> on USDT contract (0x779D...3736), spender = Presale (0x316b...ccD9), amount = your desired USDT amount.</p>
-              </div>
-            </div>
-            <div class="pstep">
-              <div class="pstep-num">04</div>
-              <div class="pstep-text">
-                <strong data-i18n>Call buy(amount)</strong>
-                <p>Send transaction to Presale contract (0x316b...ccD9) calling <code>buy(usdtAmount)</code>. AIGENT is transferred to your wallet instantly.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Full Contract Addresses -->
-        <div style="margin-top: 28px;">
-          <h3 style="font-size:14px;color:var(--dim);letter-spacing:2px;margin-bottom:14px;" data-i18n>CONTRACT ADDRESSES</h3>
-          <div class="contract-bar">
-            <span style="color:var(--dim);font-size:11px;margin-right:8px;" data-i18n>AIGENT</span>
-            <span class="addr" id="contract-addr2">0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39</span>
-            <button class="btn" onclick="copyEl('contract-addr2', this)" data-i18n>Copy</button>
-          </div>
-          <div class="contract-bar">
-            <span style="color:var(--dim);font-size:11px;margin-right:8px;" data-i18n>PRESALE</span>
-            <span class="addr" id="presale-addr">0x316b1cE062cC4525F0129C3D41351a976981ccD9</span>
-            <button class="btn" onclick="copyEl('presale-addr', this)" data-i18n>Copy</button>
-          </div>
-          <div class="contract-bar">
-            <span style="color:var(--dim);font-size:11px;margin-right:8px;" data-i18n>USDT</span>
-            <span class="addr" id="usdt-addr">0x779Ded0c9e1022225f8E0630b35a9b54bE713736</span>
-            <button class="btn" onclick="copyEl('usdt-addr', this)" data-i18n>Copy</button>
-          </div>
-        </div>
-
-        <!-- Warning -->
-        <div class="presale-notice" style="border-color: rgba(255,68,68,0.35); background: rgba(255,68,68,0.06);">
-          <strong style="color:#ff4444;" data-i18n>DO NOT TRANSFER USDT DIRECTLY</strong>
-          <p>Sending USDT directly to the presale contract address will result in <strong style="color:#ff4444;" data-i18n>PERMANENT LOSS</strong> of your funds. You must interact through the contract's <code style="background:rgba(255,68,68,0.1);padding:1px 4px;border-radius:3px;">buy()</code> function via a DApp or wallet that supports contract interaction. Never use "Send" or "Transfer" in your wallet to buy presale tokens. Minimum purchase: 1 USDT.</p>
         </div>
       </div>
     </section>
@@ -1883,79 +1785,10 @@
             <button class="btn" onclick="agentQuick('send 10 to 0xAbC...')" style="font-size:10px;padding:4px 10px;" data-i18n>Send 10</button>
             <button class="btn" onclick="agentQuick('help')" style="font-size:10px;padding:4px 10px;" data-i18n>Help</button>
           </div>
-
-          <!-- Presale Buy -->
-          <hr class="dapp-divider" id="presale-divider" style="display:none;">
-          <div id="presale-buy-section" style="display:none;">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10l4-4 4 4M8 14l4 4 4-4"/></svg>
-              <div>
-                <div style="font-size:14px;font-weight:700;color:var(--text-bright);" data-i18n>Buy AIGENT Presale</div>
-                <div style="font-size:11px;color:var(--dim);" data-i18n>10,000 AIGENT per USDT — instant delivery</div>
-              </div>
-            </div>
-
-            <div class="dapp-input-group" style="margin-bottom:8px;">
-              <input class="dapp-input" id="presale-usdt-amt" type="text" placeholder="USDT amount (min 1)" autocomplete="off">
-              <button class="dapp-btn magenta" id="btn-presale-buy" onclick="presaleBuy()" data-i18n>Buy AIGENT</button>
-            </div>
-            <div class="dapp-msg" id="presale-msg"></div>
-          </div>
         </div>
       </div>
     </section>
 
-    <!-- ── STAKING ── -->
-    <section id="staking">
-      <div class="card reveal">
-        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// <span data-i18n>Earn</span></div>
-          <div class="section-title" data-i18n>Stake AIGENT</div>
-          <p class="section-sub" style="margin-left: 0;" data-i18n>Stake AIGENT to earn rewards. 80M reward pool, 1-year duration.</p>
-        </div>
-
-        <div class="farm-row" id="stake-stats">
-          <div class="farm-stat"><div class="fs-label" data-i18n>Total Staked</div><div class="fs-val" id="st-total">--</div></div>
-          <div class="farm-stat"><div class="fs-label" data-i18n>Reward Rate</div><div class="fs-val" id="st-rate">--</div></div>
-          <div class="farm-stat"><div class="fs-label" data-i18n>Your Staked</div><div class="fs-val" id="st-yours">--</div></div>
-          <div class="farm-stat"><div class="fs-label" data-i18n>Pending Rewards</div><div class="fs-val" id="st-pending">--</div></div>
-        </div>
-
-        <div class="farm-input-row" style="margin-bottom:8px;">
-          <input class="farm-input" id="stake-amount" type="text" placeholder="AIGENT amount" autocomplete="off">
-          <button class="farm-btn" id="btn-stake" onclick="stakeTokens()" data-i18n>Stake</button>
-          <button class="farm-btn magenta" id="btn-unstake" onclick="unstakeTokens()" data-i18n>Unstake</button>
-          <button class="farm-btn red" id="btn-claim-stake" onclick="claimStakeReward()" data-i18n>Claim</button>
-        </div>
-        <div class="dapp-msg" id="stake-msg"></div>
-      </div>
-    </section>
-
-    <!-- ── LP FARM ── -->
-    <section id="lpfarm">
-      <div class="card reveal">
-        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// <span data-i18n>Farm</span></div>
-          <div class="section-title" data-i18n>LP Farm</div>
-          <p class="section-sub" style="margin-left: 0;" data-i18n>Stake LP tokens to earn AIGENT rewards. 60M reward pool, 1-year duration.</p>
-        </div>
-
-        <div class="farm-row" id="lp-stats">
-          <div class="farm-stat"><div class="fs-label" data-i18n>Total LP Staked</div><div class="fs-val" id="lp-total">--</div></div>
-          <div class="farm-stat"><div class="fs-label" data-i18n>Reward Rate</div><div class="fs-val" id="lp-rate">--</div></div>
-          <div class="farm-stat"><div class="fs-label" data-i18n>Your LP Staked</div><div class="fs-val" id="lp-yours">--</div></div>
-          <div class="farm-stat"><div class="fs-label" data-i18n>Pending Rewards</div><div class="fs-val" id="lp-pending">--</div></div>
-        </div>
-
-        <div class="farm-input-row" style="margin-bottom:8px;">
-          <input class="farm-input" id="lp-amount" type="text" placeholder="LP token amount" autocomplete="off">
-          <button class="farm-btn" id="btn-stake-lp" onclick="stakeLP()" data-i18n>Stake LP</button>
-          <button class="farm-btn magenta" id="btn-unstake-lp" onclick="unstakeLP()" data-i18n>Unstake LP</button>
-          <button class="farm-btn red" id="btn-claim-lp" onclick="claimLPReward()" data-i18n>Claim</button>
-        </div>
-        <div class="dapp-msg" id="lp-msg"></div>
-      </div>
-    </section>
 
     <!-- ── HOLDER PORTFOLIO CHECKER ── -->
     <section id="portfolio">
@@ -2001,299 +1834,6 @@
         </div>
 
         <div class="pf-msg" id="pf-msg"></div>
-      </div>
-    </section>
-
-    <!-- ── YIELD CALCULATOR ── -->
-    <section id="yieldcalc">
-      <div class="card reveal">
-        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// <span data-i18n>Tool</span></div>
-          <div class="section-title" data-i18n>Yield Calculator</div>
-          <p class="section-sub" style="margin-left: 0;" data-i18n>Estimate your staking rewards</p>
-        </div>
-
-        <div class="yc-grid">
-          <div class="yc-input-area">
-            <div class="yc-input-label" data-i18n>Stake Amount (AIGENT)</div>
-            <div class="yc-input-row">
-              <input class="yc-input" id="yc-amount" type="text" placeholder="10000" autocomplete="off" oninput="updateYieldCalc()">
-            </div>
-            <div class="yc-info" id="yc-info">
-              <span data-i18n>Total Staked</span>: <strong id="yc-total-staked">--</strong>
-              &nbsp;|&nbsp; <span data-i18n>Reward Rate</span>: <strong id="yc-rate">--</strong>
-            </div>
-          </div>
-          <div class="yc-results">
-            <div class="yc-row">
-              <div class="yc-item">
-                <div class="yc-label" data-i18n>Daily</div>
-                <div class="yc-val" id="yc-daily">--</div>
-              </div>
-              <div class="yc-item">
-                <div class="yc-label" data-i18n>Monthly</div>
-                <div class="yc-val" id="yc-monthly">--</div>
-              </div>
-              <div class="yc-item">
-                <div class="yc-label" data-i18n>Yearly</div>
-                <div class="yc-val" id="yc-yearly">--</div>
-              </div>
-              <div class="yc-item yc-apy-item">
-                <div class="yc-label" data-i18n>APY</div>
-                <div class="yc-val" id="yc-apy">--</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── STAKING LEADERBOARD ── -->
-    <section id="leaderboard">
-      <div class="card reveal">
-        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// <span data-i18n>Leaderboard</span></div>
-          <div class="section-title" data-i18n>Top Stakers</div>
-          <p class="section-sub" style="margin-left: 0;" data-i18n>Biggest stakers and LP providers on AIGENT</p>
-        </div>
-
-        <div class="lb-tabs">
-          <button class="lb-tab active" id="lb-tab-stakers" onclick="switchLeaderboardTab('stakers')" data-i18n>Top Stakers</button>
-          <button class="lb-tab" id="lb-tab-lp" onclick="switchLeaderboardTab('lp')" data-i18n>Top LP</button>
-          <button class="lb-tab" id="lb-tab-holders" onclick="switchLeaderboardTab('holders')" data-i18n>Top Holders</button>
-        </div>
-
-        <div class="lb-table-wrap" id="lb-table-wrap">
-          <table class="lb-table" id="lb-table">
-            <thead>
-              <tr>
-                <th style="width:50px;">#</th>
-                <th data-i18n>Address</th>
-                <th style="text-align:right;" data-i18n>Amount</th>
-                <th style="text-align:right;" data-i18n>Share</th>
-              </tr>
-            </thead>
-            <tbody id="lb-tbody">
-              <tr><td colspan="4" style="text-align:center;color:var(--dim);padding:24px;" data-i18n>Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── AIGENT RISE — Bonding Curve Trading ── -->
-    <section id="rise">
-      <div class="card reveal">
-        <div class="section-header" style="text-align:left;margin-bottom:24px;">
-          <div class="section-tag">// <span data-i18n>Trade</span></div>
-          <div class="section-title" style="display:flex;align-items:center;gap:12px;">
-            AIgent Rise
-            <button id="rise-copy-link" onclick="riseCopyCurveLink()" style="
-              padding:4px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);
-              background:rgba(255,255,255,0.03);color:var(--dim);font-size:11px;cursor:pointer;
-              font-family:inherit;transition:all 0.2s;font-weight:400;letter-spacing:0;
-            " onmouseenter="this.style.borderColor='rgba(0,229,255,0.3)';this.style.color='var(--cyan)'"
-               onmouseleave="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--dim)'"
-            title="Copy shareable link" data-i18n-title="riseCopyLink">🔗 <span data-i18n>Share</span></button>
-          </div>
-          <p class="section-sub" style="margin-left:0;" data-i18n>Permanent bonding curve — trade anytime. Creators can optionally add Uniswap V3 liquidity.</p>
-        </div>
-
-        <!-- Current Token Header (dynamic) -->
-        <div class="rise-header" id="rise-header">
-          <div class="rise-icon" id="rise-icon">🚀</div>
-          <div>
-            <div class="rise-title" id="rise-token-title">Select a Token</div>
-            <div class="rise-tag" id="rise-token-tag">CURVE #--</div>
-          </div>
-        </div>
-
-        <!-- Search + Curve Selector -->
-        <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center;">
-          <div style="flex:1;position:relative;">
-            <input id="rise-search" type="text" data-i18n-placeholder="riseSearch" placeholder="Search by address, symbol, name, or Curve ID..." style="
-              width:100%;padding:10px 14px 10px 38px;border-radius:24px;
-              border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);
-              color:#fff;font-size:12px;font-family:inherit;outline:none;transition:border-color 0.2s;
-            " onfocus="this.style.borderColor='rgba(0,229,255,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" oninput="riseSearchTokens()">
-            <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;">🔍</span>
-          </div>
-          <button onclick="riseSearchTokens()" style="
-            padding:10px 18px;border-radius:24px;border:1px solid rgba(0,229,255,0.3);
-            background:rgba(0,229,255,0.06);color:var(--cyan);font-size:12px;font-weight:600;
-            cursor:pointer;font-family:inherit;transition:all 0.2s;
-          " onmouseenter="this.style.boxShadow='0 0 12px rgba(0,229,255,0.2)'" onmouseleave="this.style.boxShadow='none'" data-i18n>
-            Search
-          </button>
-        </div>
-        <div style="margin-bottom:20px;display:flex;gap:8px;flex-wrap:wrap;" id="rise-curve-list">
-          <button class="rise-curve-chip active" data-id="0" onclick="riseSelectCurve(0)" style="
-            padding:8px 16px;border-radius:20px;border:1px solid rgba(255,215,0,0.3);background:rgba(255,215,0,0.08);
-            color:#ffd700;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;
-          " data-i18n>Loading...</button>
-        </div>
-
-        <!-- Main Grid: Chart + Trade -->
-        <div class="rise-grid">
-          <!-- LEFT: Chart + Progress -->
-          <div>
-            <div class="rise-chart-wrap">
-              <canvas id="rise-canvas"></canvas>
-            </div>
-            <div class="rise-progress-section">
-              <div class="rise-progress-header">
-                <span data-i18n>Curve Progress</span>
-                <span id="rise-progress-pct">0%</span>
-              </div>
-              <div class="rise-progress-bar">
-                <div class="rise-progress-fill" id="rise-progress-fill" style="width:0%"></div>
-              </div>
-              <div class="rise-curve-label" id="rise-curve-label" data-i18n>
-                AIGENT locked in curve reserve
-              </div>
-            </div>
-            <div class="rise-stats" id="rise-stats">
-              <div class="rise-stat">
-                <div class="rise-stat-label" data-i18n>Price</div>
-                <div class="rise-stat-val" id="rise-price">--</div>
-              </div>
-              <div class="rise-stat">
-                <div class="rise-stat-label" data-i18n>AIGENT Reserve</div>
-                <div class="rise-stat-val" id="rise-reserve">--</div>
-              </div>
-              <div class="rise-stat">
-                <div class="rise-stat-label" data-i18n>Sold / Total</div>
-                <div class="rise-stat-val" id="rise-sold">--</div>
-              </div>
-              <div class="rise-stat">
-                <div class="rise-stat-label" data-i18n>Status</div>
-                <div class="rise-stat-val" id="rise-status" style="color:#ffd700;" data-i18n>Trading</div>
-              </div>
-              <div class="rise-stat">
-                <div class="rise-stat-label" data-i18n>Market Cap</div>
-                <div class="rise-stat-val" id="rise-mcap">--</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- RIGHT: Buy/Sell -->
-          <div class="rise-trade">
-            <div class="rise-tabs">
-              <button class="rise-tab active-buy" id="rise-tab-buy" onclick="riseSetMode('buy')" data-i18n>BUY</button>
-              <button class="rise-tab" id="rise-tab-sell" onclick="riseSetMode('sell')" data-i18n>SELL</button>
-            </div>
-
-            <div class="rise-input-group">
-              <div class="rise-input-label">
-                <span id="rise-input-label" data-i18n>You Pay (AIGENT)</span>
-                <span id="rise-balance-hint"></span>
-              </div>
-              <div class="rise-input-row">
-                <input class="rise-input" id="rise-amount" type="text" placeholder="0.0" autocomplete="off" oninput="riseUpdatePreview()">
-                <div class="rise-currency" id="rise-currency-in" data-i18n>AIGENT</div>
-              </div>
-            </div>
-
-            <div class="rise-preview" id="rise-preview">
-              <div>You Receive: <strong id="rise-preview-amount">0</strong> <span id="rise-preview-symbol" data-i18n>TOKEN</span></div>
-              <div style="margin-top:4px;font-size:10px;">Fee: <span id="rise-preview-fee">1%</span> &nbsp;|&nbsp; Creator: <span id="rise-preview-cut">0.3%</span></div>
-            </div>
-
-            <button class="rise-btn rise-btn-buy" id="rise-action-btn" onclick="riseExecute()" data-i18n>BUY</button>
-            <div class="rise-msg" id="rise-msg"></div>
-          </div>
-        </div>
-
-        <!-- Trade History -->
-        <div class="rise-trade-history" id="rise-trade-history" style="display:none;">
-          <h4 data-i18n>Recent Trades</h4>
-          <div style="overflow-x:auto;">
-            <table class="rise-trade-table">
-              <thead>
-                <tr><th data-i18n>Type</th><th data-i18n>Amount</th><th data-i18n>AIGENT</th><th data-i18n>Account</th><th data-i18n>Tx</th></tr>
-              </thead>
-              <tbody id="rise-trade-tbody"></tbody>
-            </table>
-          </div>
-          <div id="rise-trade-empty" style="font-size:11px;color:var(--dim);text-align:center;padding:20px;" data-i18n>No trades yet</div>
-        </div>
-
-        <!-- Uniswap V3 Creator Panel -->
-        <div class="rise-uniswap-panel" id="rise-uniswap-panel" style="display:none;margin-top:24px;position:relative;z-index:2;">
-          <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:24px;">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-              <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ff007a,#ff4da6);display:flex;align-items:center;justify-content:center;font-size:18px;">🦄</div>
-              <div>
-                <div style="font-size:15px;font-weight:700;color:#fff;" data-i18n>Uniswap V3 Liquidity</div>
-                <div style="font-size:11px;color:var(--dim);" data-i18n>Add deeper liquidity — your token trades on both the bonding curve AND Uniswap</div>
-              </div>
-            </div>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
-              <!-- Step 1 -->
-              <div style="padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-                <div style="font-size:11px;font-weight:700;color:var(--magenta);margin-bottom:8px;" data-i18n>STEP 1</div>
-                <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;" data-i18n>Create Uniswap V3 Pool</div>
-                <div style="font-size:11px;color:var(--dim);margin-bottom:10px;">
-                  Pool: <strong style="color:var(--text-bright);" id="rise-uni-pair" data-i18n>$TOKEN / AIGENT</strong><br>
-                  Fee tier: <strong style="color:var(--cyan);">1%</strong> (recommended for new tokens)<br>
-                  Price range: <strong style="color:var(--cyan);" data-i18n>Full range</strong>
-                </div>
-                <button onclick="riseOpenUniswapCreate()" style="
-                  width:100%;padding:10px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
-                  background:linear-gradient(135deg,#ff007a,#ff4da6);color:#fff;font-family:inherit;transition:all 0.2s;
-                " onmouseenter="this.style.boxShadow='0 0 20px rgba(255,0,122,0.4)'" onmouseleave="this.style.boxShadow='none'" data-i18n>
-                  Open Uniswap Interface →
-                </button>
-              </div>
-
-              <!-- Step 2 -->
-              <div style="padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-                <div style="font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:8px;" data-i18n>STEP 2</div>
-                <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;" data-i18n>Link Pool to Curve</div>
-                <div style="font-size:11px;color:var(--dim);margin-bottom:10px;" data-i18n>
-                  Paste the Uniswap V3 pool address below and click "Link Pool". This adds the ★ badge to your token.
-                </div>
-                <div style="display:flex;gap:8px;">
-                  <input id="rise-uni-pool-input" type="text" placeholder="0x... pool address" style="
-                    flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);
-                    background:rgba(255,255,255,0.03);color:#fff;font-size:11px;font-family:'SF Mono','Fira Code',monospace;
-                    outline:none;
-                  " onfocus="this.style.borderColor='rgba(0,229,255,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
-                  <button onclick="riseSetUniswapPool()" style="
-                    padding:8px 14px;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;
-                    background:linear-gradient(135deg,#00c853,#00e676);color:#000;font-family:inherit;white-space:nowrap;transition:all 0.2s;
-                  " onmouseenter="this.style.boxShadow='0 0 16px rgba(0,230,118,0.4)'" onmouseleave="this.style.boxShadow='none'" data-i18n>
-                    Link Pool
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Step 3: Add Liquidity -->
-            <div style="padding:16px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
-              <div style="font-size:11px;font-weight:700;color:#ffd700;margin-bottom:8px;" data-i18n>STEP 3</div>
-              <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;" data-i18n>Add Liquidity to the Pool</div>
-              <div style="font-size:11px;color:var(--dim);margin-bottom:10px;">
-                After creating the pool, add both tokens as liquidity. The more liquidity you add, the better the trading experience.
-                <br><br>
-                <strong style="color:var(--text-bright);" data-i18n>Why 1% fee tier?</strong> New tokens benefit from wider spreads — LPs earn more, encouraging deeper liquidity.
-                <br>
-                <strong style="color:var(--text-bright);" data-i18n>Why Full Range?</strong> Allows trading at any price, maximizing accessibility for early buyers.
-              </div>
-              <div style="display:flex;gap:8px;">
-                <button onclick="riseOpenUniswapAdd()" style="
-                  padding:10px 18px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
-                  background:linear-gradient(135deg,#ff007a,#ff4da6);color:#fff;font-family:inherit;transition:all 0.2s;
-                " onmouseenter="this.style.boxShadow='0 0 20px rgba(255,0,122,0.4)'" onmouseleave="this.style.boxShadow='none'" data-i18n>
-                  Add Liquidity on Uniswap →
-                </button>
-              </div>
-            </div>
-
-            <div id="rise-uni-msg" style="font-size:12px;margin-top:10px;padding:10px 14px;border-radius:8px;display:none;"></div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -2358,8 +1898,8 @@
               <line x1="33" y1="36" x2="28" y2="24" stroke="#00e5ff" stroke-width="1.2" opacity="0.6"/>
             </svg>
           </div>
-          <div class="fc-title" data-i18n>5-Contract Ecosystem</div>
-          <div class="fc-desc" data-i18n>Token, Staking, LP Farm, Vault, and Timelock — all deployed and verified on X Layer mainnet. A complete DeFi primitive suite.</div>
+          <div class="fc-title" data-i18n>Open Source SDK</div>
+          <div class="fc-desc" data-i18n>TypeScript + Python SDK for AI agent integration. EIP-2612 Permit signing, gasless transfers, and batch operations — all open source under MIT license.</div>
         </div>
 
         <div class="feature-card">
@@ -2376,7 +1916,7 @@
             </svg>
           </div>
           <div class="fc-title" data-i18n>Fixed Supply & Burnable</div>
-          <div class="fc-desc" data-i18n>500,000,000 total supply — no mint, no inflation. Built-in burn mechanism enables deflationary tokenomics for agent economy models.</div>
+          <div class="fc-desc" data-i18n>500,000,000 total supply — no mint, no inflation. Built-in burn mechanism enables supply adjustment through protocol usage.</div>
         </div>
       </div>
     </section>
@@ -2392,21 +1932,12 @@
           <div class="donut-wrap">
             <svg viewBox="0 0 240 240" width="240" height="240">
               <circle cx="120" cy="120" r="95" fill="none" stroke="rgba(0,229,255,0.04)" stroke-width="24"/>
-              <!-- 40% Ecosystem -->
+              <!-- 80% Airdrop -->
               <circle cx="120" cy="120" r="95" fill="none" stroke="#00e5ff" stroke-width="24"
-                stroke-dasharray="226.2 339.3" stroke-dashoffset="0" stroke-linecap="butt" opacity="0.9"/>
-              <!-- 25% Liquidity -->
+                stroke-dasharray="452.4 113.1" stroke-dashoffset="0" stroke-linecap="butt" opacity="0.9"/>
+              <!-- 20% Development -->
               <circle cx="120" cy="120" r="95" fill="none" stroke="#d500f9" stroke-width="24"
-                stroke-dasharray="141.4 424.1" stroke-dashoffset="-226.2" stroke-linecap="butt" opacity="0.9"/>
-              <!-- 20% Dev -->
-              <circle cx="120" cy="120" r="95" fill="none" stroke="#304ffe" stroke-width="24"
-                stroke-dasharray="113.1 452.4" stroke-dashoffset="-367.6" stroke-linecap="butt" opacity="0.85"/>
-              <!-- 10% Marketing -->
-              <circle cx="120" cy="120" r="95" fill="none" stroke="#00e676" stroke-width="24"
-                stroke-dasharray="56.5 509.0" stroke-dashoffset="-480.7" stroke-linecap="butt" opacity="0.8"/>
-              <!-- 5% Airdrop -->
-              <circle cx="120" cy="120" r="95" fill="none" stroke="#ff9100" stroke-width="24"
-                stroke-dasharray="28.3 537.2" stroke-dashoffset="-537.2" stroke-linecap="butt" opacity="0.8"/>
+                stroke-dasharray="113.1 452.4" stroke-dashoffset="-452.4" stroke-linecap="butt" opacity="0.85"/>
             </svg>
             <div class="donut-center">
               <div class="big">500M</div>
@@ -2416,33 +1947,15 @@
           <div class="alloc-list">
             <div class="alloc-row">
               <span class="alloc-dot" style="background:#00e5ff;"></span>
-              <span class="alloc-label" data-i18n>Ecosystem &amp; Agent Incentives</span>
-              <span class="alloc-pct">40%</span>
-              <span class="alloc-amt">200M</span>
+              <span class="alloc-label" data-i18n>Free Airdrop</span>
+              <span class="alloc-pct">80%</span>
+              <span class="alloc-amt">400M</span>
             </div>
             <div class="alloc-row">
               <span class="alloc-dot" style="background:#d500f9;"></span>
-              <span class="alloc-label" data-i18n>Liquidity &amp; DEX Listing</span>
-              <span class="alloc-pct">25%</span>
-              <span class="alloc-amt">125M</span>
-            </div>
-            <div class="alloc-row">
-              <span class="alloc-dot" style="background:#304ffe;"></span>
-              <span class="alloc-label" data-i18n>Development Fund</span>
+              <span class="alloc-label" data-i18n>Development &amp; Operations</span>
               <span class="alloc-pct">20%</span>
               <span class="alloc-amt">100M</span>
-            </div>
-            <div class="alloc-row">
-              <span class="alloc-dot" style="background:#00e676;"></span>
-              <span class="alloc-label" data-i18n>Marketing &amp; Partnerships</span>
-              <span class="alloc-pct">10%</span>
-              <span class="alloc-amt">50M</span>
-            </div>
-            <div class="alloc-row">
-              <span class="alloc-dot" style="background:#ff9100;"></span>
-              <span class="alloc-label" data-i18n>Community Airdrop</span>
-              <span class="alloc-pct">5%</span>
-              <span class="alloc-amt">25M</span>
             </div>
           </div>
         </div>
@@ -2459,32 +1972,32 @@
       <div class="roadmap reveal">
         <div class="phase">
           <div class="ph-num" data-i18n>PHASE 01</div>
-          <div class="ph-title" data-i18n>Token Launch</div>
-          <div class="ph-desc" data-i18n>Deploy AIGENT on X Layer. Smart contract audit. Community building. Initial marketing push and brand establishment.</div>
+          <div class="ph-title" data-i18n>Token Launch & SDK</div>
+          <div class="ph-desc" data-i18n>Deploy AIGENT on X Layer. Release open-source TypeScript + Python SDK with EIP-2612 Permit support for AI agent integration.</div>
           <span class="ph-badge live" data-i18n>LIVE</span>
         </div>
         <div class="phase">
           <div class="ph-num" data-i18n>PHASE 02</div>
-          <div class="ph-title" data-i18n>DEX Listing</div>
-          <div class="ph-desc" data-i18n>List on Uniswap V3. Establish AIGENT/USDT liquidity pools. DEX tools verification. Price tracking on DexScreener.</div>
-          <span class="ph-badge upcoming" data-i18n>NEXT</span>
+          <div class="ph-title" data-i18n>Free Airdrop</div>
+          <div class="ph-desc" data-i18n>Distribute 80% of total supply (400M AIGENT) for free via daily claims. 1M tokens per day, first 100 wallets, no cost to participants.</div>
+          <span class="ph-badge live" data-i18n>LIVE</span>
         </div>
         <div class="phase">
           <div class="ph-num" data-i18n>PHASE 03</div>
-          <div class="ph-title" data-i18n>AI Agent SDK</div>
-          <div class="ph-desc" data-i18n>Release developer toolkit for AI agent integration. Documentation, examples, and templates for Permit-based transactions.</div>
+          <div class="ph-title" data-i18n>Agent Economy</div>
+          <div class="ph-desc" data-i18n>Enable agent-to-agent microtransactions. Relayer network for gasless execution. Knowledge marketplace and autonomous service discovery.</div>
           <span class="ph-badge upcoming" data-i18n>UPCOMING</span>
         </div>
         <div class="phase">
           <div class="ph-num" data-i18n>PHASE 04</div>
-          <div class="ph-title" data-i18n>Agent Economy</div>
-          <div class="ph-desc" data-i18n>Enable agent-to-agent microtransactions. Deploy autonomous trading and reward distribution using AIGENT primitives.</div>
+          <div class="ph-title" data-i18n>Autonomous Organizations</div>
+          <div class="ph-desc" data-i18n>Agent-governed DAOs. On-chain governance for token holders. Multi-agent investment committees and treasury management.</div>
           <span class="ph-badge upcoming" data-i18n>UPCOMING</span>
         </div>
         <div class="phase">
           <div class="ph-num" data-i18n>PHASE 05</div>
-          <div class="ph-title" data-i18n>DAO Governance</div>
-          <div class="ph-desc" data-i18n>Community-driven protocol. Token holders vote on upgrades, fund allocation, and ecosystem direction via on-chain governance.</div>
+          <div class="ph-title" data-i18n>Physical World Integration</div>
+          <div class="ph-desc" data-i18n>Machine-to-machine payments via AIGENT. Autonomous infrastructure, energy grid agents, and IoT commerce.</div>
           <span class="ph-badge upcoming" data-i18n>UPCOMING</span>
         </div>
       </div>
@@ -2706,7 +2219,7 @@
           <br>
           <ul style="padding-left:20px;color:var(--dim);">
             <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Agent-to-agent micropayments</strong> — sub-cent transactions between autonomous services</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Programmatic reward distribution</strong> — agents earn and spend rewards automatically</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Programmatic distribution</strong> — protocol allocations are distributed automatically to participants</li>
             <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Cross-chain agent coordination</strong> — one agent can operate across multiple chains without holding native gas on each</li>
             <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Autonomous organizations</strong> — DAOs operated entirely by AI agents with zero human gas management overhead</li>
           </ul>
@@ -2761,7 +2274,7 @@
           <ul style="padding-left:20px;color:var(--dim);">
             <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>One-sentence launch</strong> — Type "Launch 'CatCoin' with 1M supply, 0.0001 start, 0.01 max" and the agent deploys the BondingCurve contract</li>
             <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Auto-generated metadata</strong> — Name, symbol, description, and token image are set during deployment</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Creator reward</strong> — Launch a token and earn 0.3% of every trade on your curve, forever</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Creator incentive</strong> — Launch a token and receive 0.3% of every trade on your curve, forever</li>
             <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Instant trading</strong> — The curve is live immediately after deployment, no waiting, no lockups</li>
           </ul>
           <br>
@@ -3036,7 +2549,7 @@
         agentConnectFirst: 'Please connect your wallet first, then click Launch again.',
         agentTokenImage: 'Token Image URL (optional):',
         agentInsufficient: 'Not enough AIGENT!',
-        agentGetAigent: 'Get AIGENT from the Presale panel or add liquidity.',
+        agentGetAigent: 'Get AIGENT from the Liquidity panel or Uniswap.',
         agentLaunched: 'Token Launched on AIgent Rise!',
         agentTradeNow: 'Trade',
         // Rise Trading
@@ -3060,19 +2573,19 @@
         // Staking & LP Farm
         stake: 'Stake', unstake: 'Unstake', lpFarmTitle: 'LP Farm',
         // About
-        aboutTag: 'About', aboutTitle: 'AIgent Rise — One-Click Token Launch',
-        aboutDesc: 'Launch your own token with a permanent bonding curve on X Layer. No coding. No liquidity pool setup. Just connect, name it, and deploy.',
+        aboutTag: 'About', aboutTitle: 'AIGENT — Autonomous Intelligence Agent Token',
+        aboutDesc: 'AIGENT is an experimental token built for the AI agent economy. No presale. No fundraising. No profit promises. 80% of tokens freely distributed to early participants.',
         // Token section
         tokenTag: 'Token', tokenTitle: 'AIGENT Token',
         tokenDesc: 'Autonomous Intelligence Agent Token on X Layer',
         // Tokenomics
-        tokenomicsTag: 'Tokenomics', tokenomicsTitle: 'Token Distribution',
+        tokenomicsTag: 'Tokenomics', tokenomicsTitle: 'Token Distribution (Total: 500,000,000)',
         // Roadmap
         roadmapTag: 'Roadmap', roadmapTitle: 'Development Roadmap',
         // Article
         articleTag: 'Article', articleTitle: 'Technical Article',
         // Section tags
-        trade: 'Trade', earn: 'Earn', farm: 'Farm', deepDive: 'Deep Dive',
+        trade: 'Trade', earn: 'Participate', farm: 'Farm', deepDive: 'Deep Dive',
         // Search
         searchAll: 'All', searchCurve: 'Curve', searchToken: 'Token',
         // Ticker
@@ -3080,7 +2593,7 @@
         tickerFeeDesc: '1% trade fee + 0.3% creator cut',
         tickerLaunch: 'LAUNCH', tickerLaunchDesc: 'to deploy',
         tickerEip: 'EIP-2612', tickerEipDesc: 'Gasless approvals for AI agents',
-        tickerSlogan: 'AIgent Rise — Launch. Trade. Thrive.',
+        tickerSlogan: 'AIGENT — Free. Open. Autonomous.',
         // QR
         qrLabel: 'Scan with your phone to open on mobile',
         // Notifications
@@ -3096,6 +2609,21 @@
         priceUnavailable: 'Price feed unavailable, try again later.',
         feeAdjusted: 'Deploy fee updated!',
         feeAdjustFailed: 'Fee adjustment failed:',
+        Free: 'Free', 'Free': 'Free',
+        'Airdrop Claim': 'Airdrop Claim',
+        'Claim 10,000 AIGENT daily — first 100 wallets only. 80% of total supply (400M) distributed free.': 'Claim 10,000 AIGENT daily — first 100 wallets only. 80% of total supply (400M) distributed free.',
+        'Today Remaining': 'Today Remaining',
+        'Per Claim': 'Per Claim',
+        'Total Claimed': 'Total Claimed',
+        'Your Status': 'Your Status',
+        'Claim AIGENT': 'Claim AIGENT',
+        'Rules:': 'Rules:',
+        '• 1,000,000 AIGENT released daily, first 100 claims only': '• 1,000,000 AIGENT released daily, first 100 claims only',
+        '• 10,000 AIGENT per claim (equal share for everyone)': '• 10,000 AIGENT per claim (equal share for everyone)',
+        '• One claim per wallet per UTC day': '• One claim per wallet per UTC day',
+        '• Resets at 00:00 UTC — come back tomorrow': '• Resets at 00:00 UTC — come back tomorrow',
+        '• 400,000,000 total airdrop pool (80% of supply)': '• 400,000,000 total airdrop pool (80% of supply)',
+        '• No cost, no investment, no expectations — just free tokens for early participants': '• No cost, no investment, no expectations — just free tokens for early participants',
       },
       zh: {
         about: '关于', token: '代币', tokenomics: '代币经济', presale: '预售',
@@ -3126,7 +2654,7 @@
         agentConnectFirst: '请先连接钱包，再点击发行。',
         agentTokenImage: '代币图片URL (可选):',
         agentInsufficient: 'AIGENT余额不足！',
-        agentGetAigent: '请从预售面板获取AIGENT或添加流动性。',
+        agentGetAigent: '请从Uniswap或流动性面板获取AIGENT。',
         agentLaunched: '代币已在AIgent Rise上线！',
         agentTradeNow: '交易',
         riseSelect: '选择代币', riseSearch: '搜索名称、符号、地址或曲线ID...',
@@ -3153,7 +2681,7 @@
         tokenomicsTag: '代币经济', tokenomicsTitle: '代币分配',
         roadmapTag: '路线图', roadmapTitle: '开发路线图',
         articleTag: '技术文章', articleTitle: '技术文章',
-        trade: '交易', earn: '收益', farm: '农场', deepDive: '深度解析',
+        trade: '交易', earn: '参与', farm: '农场', deepDive: '深度解析',
         searchAll: '全部', searchCurve: '曲线', searchToken: '代币',
         tickerAigent: 'AIGENT', tickerFee: '手续费',
         tickerFeeDesc: '1%交易费+0.3%创作者分成',
@@ -3276,9 +2804,9 @@
         'signeip-2612permit(off-chain)': '签署EIP-2612许可（链下）',
         'sold/total': '已售/总量',
         stakeaigent: '质押 AIGENT',
-        'stakeaigenttoearnrewards.80mrewardpool,1-yearduration.': '质押AIGENT赚取收益。8000万奖励池，为期1年。',
+        'stakeaigenttoearnrewards.80mrewardpool,1-yearduration.': '质押AIGENT参与协议。8000万分配池，为期1年。',
         stakelp: '质押LP',
-        'stakelptokenstoearnaigentrewards.60mrewardpool,1-yearduration.': '质押LP代币赚取AIGENT收益。6000万奖励池，为期1年。',
+        'stakelptokenstoearnaigentrewards.60mrewardpool,1-yearduration.': '质押LP代币参与协议。6000万分配池，为期1年。',
         standard: '标准',
         status: '状态',
         step1: '步骤 1',
@@ -3354,7 +2882,7 @@
         'auto-generatedmetadata': '自动生成元数据',
         'auto-generatedmetadata—name,symbol,description,andtokenimagearesetduringdeployment': '自动生成元数据 — 名称、符号、描述和代币图片在部署时设置',
         'creatorreward': '创作者奖励',
-        'creatorreward—launchatokenandearn0.3%ofeverytradeonyourcurve,forever': '创作者奖励 — 发行代币，从你的曲线上每笔交易中永久赚取0.3%',
+        'creatorreward—launchatokenandearn0.3%ofeverytradeonyourcurve,forever': '创作者激励 — 发行代币，从你的曲线上每笔交易中获得0.3%',
         'instanttrading': '即时交易',
         'instanttrading—thecurveisliveimmediatelyafterdeployment,nowaiting,nolockups': '即时交易 — 部署后曲线立即生效，无需等待，无锁定期',
         '9.3trading&feestructure': '9.3 交易与费用结构',
@@ -3409,8 +2937,8 @@
         'invalidaddress': '无效地址',
         'close': '关闭',
         // Yield Calculator
-        'yieldcalculator': '收益计算器',
-        'estimateyourstakingrewards': '预估你的质押收益',
+        'yieldcalculator': '分配预估',
+        'estimateyourstakingrewards': '预估你的参与分配',
         'stakeamount(aigent)': '质押数量 (AIGENT)',
         'daily': '每日',
         'monthly': '每月',
@@ -3427,7 +2955,7 @@
         'share': '占比',
         'nodata': '暂无数据，连接钱包后刷新',
         // Admin reward rate
-        'admin:setrewardrate': '管理：设置奖励速率',
+        'admin:setdistributionrate': '管理：设置分配速率',
         'apply': '应用',
         'current': '当前',
         'loweringreducesapyforstakers.': '降低会减少质押者APY。',
@@ -3574,6 +3102,61 @@
       'function TRADE_FEE_BPS() external view returns (uint256)',
     ]);
 
+    // ── Airdrop ──
+    const AIRDROP_ADDR = '0x5f8Def997FeB403fE8Ce544D9DAf4de4d0fb27FD';
+    const AIRDROP_ABI = parseAbi([
+      'function claim() external',
+      'function today() external view returns (uint256)',
+      'function remainingToday() external view returns (uint256)',
+      'function hasClaimedToday(address user) external view returns (bool)',
+      'function totalClaimed() external view returns (uint256)',
+      'function dailyClaimed(uint256 day) external view returns (uint256)',
+      'function CLAIM_AMOUNT() external view returns (uint256)',
+      'function MAX_TOTAL() external view returns (uint256)',
+    ]);
+
+    async function refreshAirdropStats() {
+      if (!publicClient) { loadAirdropPlaceholder(); return; }
+      try {
+        const [rem, total, addr] = await Promise.all([
+          publicClient.readContract({ address: AIRDROP_ADDR, abi: AIRDROP_ABI, functionName: 'remainingToday' }),
+          publicClient.readContract({ address: AIRDROP_ADDR, abi: AIRDROP_ABI, functionName: 'totalClaimed' }),
+          userAddress ? publicClient.readContract({ address: AIRDROP_ADDR, abi: AIRDROP_ABI, functionName: 'hasClaimedToday', args: [userAddress] }) : Promise.resolve(false),
+        ]);
+        const remNum = Number(rem);
+        document.getElementById('ad-today-remaining').textContent = remNum + ' / 100';
+        document.getElementById('ad-total-claimed').textContent = (Number(total) / 1e18).toLocaleString() + ' / 400,000,000';
+        document.getElementById('ad-your-status').textContent = addr ? 'Claimed today' : 'Available';
+        document.getElementById('ad-your-status').style.color = addr ? 'var(--dim)' : 'var(--green)';
+        const btn = document.getElementById('btn-airdrop-claim');
+        btn.disabled = (remNum === 0 || !!addr);
+      } catch(e) { loadAirdropPlaceholder(); }
+    }
+
+    function loadAirdropPlaceholder() {
+      document.getElementById('ad-today-remaining').textContent = '-- / 100';
+      document.getElementById('ad-total-claimed').textContent = '-- / 400,000,000';
+      document.getElementById('ad-your-status').textContent = 'Connect wallet';
+      document.getElementById('ad-your-status').style.color = 'var(--dim)';
+    }
+
+    window.claimAirdrop = async function() {
+      const msgEl = document.getElementById('airdrop-msg');
+      if (!walletClient || !userAddress) { msgEl.innerHTML = '<span style=\"color:#ff4444;\">Connect your wallet first.</span>'; return; }
+      msgEl.innerHTML = '<span style=\"color:var(--cyan);\">Claiming...</span>';
+      try {
+        const hash = await walletClient.writeContract({
+          address: AIRDROP_ADDR, abi: AIRDROP_ABI, functionName: 'claim', chain: xLayer, account: userAddress,
+          args: [],
+        });
+        msgEl.innerHTML = '<span style=\"color:var(--green);\">Claimed! TX: ' + hash.substring(0,10) + '...</span>';
+        setTimeout(refreshAirdropStats, 3000);
+      } catch(e) {
+        msgEl.innerHTML = '<span style=\"color:#ff4444;\">' + (e.shortMessage || e.message || 'Claim failed').substring(0, 100) + '</span>';
+      }
+    };
+
+    // ── Deploy ──
     let pendingDeploy = null; // stores parsed params until user confirms
     window.executeDeploy = function() {
       if (!pendingDeploy) { agentChatAdd('agent', 'No pending deploy. Type a deploy command first.'); return; }
@@ -3656,6 +3239,7 @@
       el.divider.style.display = 'none';
       el.balanceSection.style.display = 'none';
       el.transferSection.style.display = 'none';
+      loadAirdropPlaceholder();
       el.agentDivider.style.display = 'none';
       el.agentConsole.style.display = 'none';
       el.agentSteps.style.display = 'none';
@@ -3714,6 +3298,7 @@
         walletClient = createWalletClient({ chain: xLayer, transport: custom(provider) });
         renderConnected(); hideMsg();
         await dappRefreshBalance();
+        await refreshAirdropStats();
       } catch (err) {
         console.error('Connect error:', err);
         renderDisconnected();
@@ -4231,7 +3816,7 @@
 
         if (aigentBal < deployFee) {
           agentStepError(2, 'Insufficient AIGENT: need ' + deployFeeDisplay + ', have ' + formatEther(aigentBal) + ' AIGENT');
-          agentChatAdd('agent', '❌ <strong>Not enough AIGENT!</strong><br><br>Deploy fee: <strong>' + deployFeeDisplay + '</strong><br>Your balance: <strong>' + formatEther(aigentBal) + ' AIGENT</strong><br><br>Get AIGENT from the Presale panel or add liquidity.');
+          agentChatAdd('agent', '❌ <strong>Not enough AIGENT!</strong><br><br>Deploy fee: <strong>' + deployFeeDisplay + '</strong><br>Your balance: <strong>' + formatEther(aigentBal) + ' AIGENT</strong><br><br>Get AIGENT from the Liquidity panel or Uniswap.');
           return;
         }
 
