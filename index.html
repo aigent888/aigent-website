@@ -6,10 +6,10 @@
   <title data-i18n>AIGENT — Autonomous Intelligence Agent Token</title>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#060b14">
-  <meta name="description" content="One-click token launch and permanent bonding curve trading on X Layer">
+  <meta name="description" content="EIP-2612 gasless meta-transactions — AI agent infrastructure on X Layer">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AIgent Rise">
+  <meta name="apple-mobile-web-app-title" content="AIGENT">
   <link rel="apple-touch-icon" href="/assets/aigent-icon.svg">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -753,38 +753,6 @@
       color: var(--cyan);
     }
 
-    /* ── Airdrop ── */
-    .airdrop-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 8px; }
-    .airdrop-stat {
-      background: rgba(0, 229, 255, 0.04);
-      border: 1px solid rgba(0, 229, 255, 0.08);
-      border-radius: 10px;
-      padding: 16px 12px;
-      text-align: center;
-    }
-    .ads-label { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-    .ads-val { font-size: 18px; font-weight: 700; color: var(--cyan); }
-    .airdrop-btn {
-      padding: 16px 48px;
-      font-size: 18px;
-      font-weight: 700;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      background: linear-gradient(135deg, var(--cyan), #00b8d4);
-      color: #000;
-      letter-spacing: 1px;
-      transition: all 0.25s;
-      font-family: inherit;
-    }
-    .airdrop-btn:hover { box-shadow: var(--glow-cyan); transform: translateY(-1px); }
-    .airdrop-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    @media (max-width: 768px) {
-      .airdrop-stats { grid-template-columns: repeat(2, 1fr); }
-      .airdrop-btn { width: 100%; }
-    }
-
     /* ── Footer ── */
     footer {
       padding: 60px 0 40px;
@@ -1463,7 +1431,6 @@
       <li><a href="#about" data-i18n>About</a></li>
       <li><a href="#token" data-i18n>Token</a></li>
       <li><a href="#tokenomics" data-i18n>Tokenomics</a></li>
-      <li><a href="#airdrop" data-i18n>Airdrop</a></li>
       <li><a href="#dapp" data-i18n>DApp</a></li>
       <li><a href="#roadmap" data-i18n>Roadmap</a></li>
       <li><a href="https://github.com/Mrxu6995/aigent/blob/gh-pages/whitepaper.md" target="_blank" data-i18n>Whitepaper</a></li>
@@ -1532,7 +1499,7 @@
       </svg>
     </div>
 
-    <div class="hero-label" data-i18n>Experiment &middot; Free Airdrop &middot; No Fundraising</div>
+    <div class="hero-label" data-i18n>EIP-2612 &middot; Gasless Meta-Transactions &middot; AI Agent Infrastructure</div>
     <h1 class="hero-title">AI<span class="accent" data-i18n>GENT</span></h1>
     <div class="hero-sub">
       <span id="typed"></span><span class="cursor">&#9611;</span>
@@ -1540,20 +1507,20 @@
 
     <div class="hero-stats">
       <div class="hero-stat">
-        <div class="val">400M</div>
-        <div class="lbl" data-i18n>Free Airdrop</div>
-      </div>
-      <div class="hero-stat">
         <div class="val" data-i18n>EIP-2612</div>
         <div class="lbl" data-i18n>Gasless Permit</div>
       </div>
       <div class="hero-stat">
-        <div class="val">500M</div>
-        <div class="lbl" data-i18n>Total Supply</div>
+        <div class="val" data-i18n>ERC-20</div>
+        <div class="lbl" data-i18n>Token Standard</div>
       </div>
       <div class="hero-stat">
         <div class="val" data-i18n>X Layer</div>
-        <div class="lbl" data-i18n>Network</div>
+        <div class="lbl" data-i18n>OKX L2 Network</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val" data-i18n>Open Source</div>
+        <div class="lbl" data-i18n>MIT Licensed</div>
       </div>
     </div>
 
@@ -1586,55 +1553,6 @@
         <div class="eco-stat" id="eco-staked">
           <div class="eco-stat-val">$--</div>
           <div class="eco-stat-lbl" data-i18n>Total Staked</div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ── AIRDROP ── -->
-  <div class="container">
-    <section id="airdrop">
-      <div class="card reveal">
-        <div class="section-header" style="text-align: left; margin-bottom: 24px;">
-          <div class="section-tag">// <span data-i18n>Free</span></div>
-          <div class="section-title" data-i18n>Airdrop Claim</div>
-          <p class="section-sub" style="margin-left: 0;" data-i18n>Claim 10,000 AIGENT daily — first 100 wallets only. 80% of total supply (400M) distributed free.</p>
-        </div>
-
-        <div class="airdrop-stats" id="airdrop-stats">
-          <div class="airdrop-stat">
-            <div class="ads-label" data-i18n>Today Remaining</div>
-            <div class="ads-val" id="ad-today-remaining">-- / 100</div>
-          </div>
-          <div class="airdrop-stat">
-            <div class="ads-label" data-i18n>Per Claim</div>
-            <div class="ads-val">10,000 AIGENT</div>
-          </div>
-          <div class="airdrop-stat">
-            <div class="ads-label" data-i18n>Total Claimed</div>
-            <div class="ads-val" id="ad-total-claimed">-- / 400,000,000</div>
-          </div>
-          <div class="airdrop-stat">
-            <div class="ads-label" data-i18n>Your Status</div>
-            <div class="ads-val" id="ad-your-status">--</div>
-          </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 20px;">
-          <button class="airdrop-btn" id="btn-airdrop-claim" onclick="claimAirdrop()" data-i18n>Claim AIGENT</button>
-          <div class="dapp-msg" id="airdrop-msg" style="margin-top:12px;text-align:center;"></div>
-        </div>
-
-        <div style="margin-top: 24px; padding: 16px 20px; border-radius: 10px; background: rgba(0,229,255,0.03); border: 1px solid rgba(0,229,255,0.08);">
-          <p style="font-size: 12px; color: var(--dim); line-height: 1.8;">
-            <strong style="color: var(--text-bright);" data-i18n>Rules:</strong><br>
-            <span data-i18n>• 1,000,000 AIGENT released daily, first 100 claims only</span><br>
-            <span data-i18n>• 10,000 AIGENT per claim (equal share for everyone)</span><br>
-            <span data-i18n>• One claim per wallet per UTC day</span><br>
-            <span data-i18n>• Resets at 00:00 UTC — come back tomorrow</span><br>
-            <span data-i18n>• 400,000,000 total airdrop pool (80% of supply)</span><br>
-            <span data-i18n>• No cost, no investment, no expectations — just free tokens for early participants</span>
-          </p>
         </div>
       </div>
     </section>
@@ -1773,12 +1691,11 @@
           <div class="dapp-msg" id="agent-msg"></div>
 
           <div class="dapp-input-group" style="margin-bottom:10px;">
-            <input class="dapp-input" id="agent-cmd" type="text" placeholder='Chat: "deploy token DogKing symbol DKING supply 1M" | "check balance" | "send 10 to 0x..."' autocomplete="off" onkeydown="if(event.key==='Enter')agentExecute()">
+            <input class="dapp-input" id="agent-cmd" type="text" placeholder='Chat: "check balance" | "send 10 to 0x..." | "total supply"' autocomplete="off" onkeydown="if(event.key==='Enter')agentExecute()">
             <button class="dapp-btn" id="btn-agent" onclick="agentExecute()" data-i18n>Send</button>
           </div>
 
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button class="btn" onclick="agentQuick('deploy a token called MyCoin symbol MYC supply 1000000')" style="font-size:10px;padding:4px 10px;background:linear-gradient(135deg,var(--magenta),var(--purple));color:#fff;border:none;">🚀 <span data-i18n>Launch Token</span></button>
             <button class="btn" onclick="agentQuick('Check my balance')" style="font-size:10px;padding:4px 10px;" data-i18n>Balance</button>
             <button class="btn" onclick="agentQuick('What is the total supply?')" style="font-size:10px;padding:4px 10px;" data-i18n>Supply</button>
             <button class="btn" onclick="agentQuick('send 10 to 0xAbC...')" style="font-size:10px;padding:4px 10px;" data-i18n>Send 10</button>
@@ -1841,7 +1758,7 @@
       <div class="section-header reveal">
         <div class="section-tag">// <span data-i18n>About</span></div>
         <div class="section-title" data-i18n>What is AIGENT?</div>
-        <p class="section-sub" data-i18n>The next-generation AI agent token — built for autonomous economies</p>
+        <p class="section-sub" data-i18n>An ERC-20 token with EIP-2612 gasless meta-transactions — built for AI agent infrastructure on X Layer</p>
       </div>
 
       <div class="feature-grid reveal">
@@ -1914,8 +1831,8 @@
               <line x1="22" y1="26" x2="22" y2="30" stroke="#00e5ff" stroke-width="1"/>
             </svg>
           </div>
-          <div class="fc-title" data-i18n>Fixed Supply & Burnable</div>
-          <div class="fc-desc" data-i18n>500,000,000 total supply — no mint, no inflation. Built-in burn mechanism enables supply adjustment through protocol usage.</div>
+          <div class="fc-title" data-i18n>EIP-2612 Gasless Meta-Transactions</div>
+          <div class="fc-desc" data-i18n>ERC-20 with EIP-2612 Permit extension — off-chain signatures enable gasless approvals. AI agents can transact without holding native tokens.</div>
         </div>
       </div>
     </section>
@@ -1931,7 +1848,7 @@
           <div class="donut-wrap">
             <svg viewBox="0 0 240 240" width="240" height="240">
               <circle cx="120" cy="120" r="95" fill="none" stroke="rgba(0,229,255,0.04)" stroke-width="24"/>
-              <!-- 80% Airdrop -->
+              <!-- 80% Community -->
               <circle cx="120" cy="120" r="95" fill="none" stroke="#00e5ff" stroke-width="24"
                 stroke-dasharray="452.4 113.1" stroke-dashoffset="0" stroke-linecap="butt" opacity="0.9"/>
               <!-- 20% Development -->
@@ -1946,7 +1863,7 @@
           <div class="alloc-list">
             <div class="alloc-row">
               <span class="alloc-dot" style="background:#00e5ff;"></span>
-              <span class="alloc-label" data-i18n>Free Airdrop</span>
+              <span class="alloc-label" data-i18n>Community & Ecosystem</span>
               <span class="alloc-pct">80%</span>
               <span class="alloc-amt">400M</span>
             </div>
@@ -1971,14 +1888,14 @@
       <div class="roadmap reveal">
         <div class="phase">
           <div class="ph-num" data-i18n>PHASE 01</div>
-          <div class="ph-title" data-i18n>Token Launch & SDK</div>
-          <div class="ph-desc" data-i18n>Deploy AIGENT on X Layer. Release open-source TypeScript + Python SDK with EIP-2612 Permit support for AI agent integration.</div>
+          <div class="ph-title" data-i18n>Core Protocol & SDK</div>
+          <div class="ph-desc" data-i18n>Deploy ERC-20 token with EIP-2612 on X Layer. Release open-source TypeScript + Python SDK for AI agent gasless transaction integration.</div>
           <span class="ph-badge live" data-i18n>LIVE</span>
         </div>
         <div class="phase">
           <div class="ph-num" data-i18n>PHASE 02</div>
-          <div class="ph-title" data-i18n>Free Airdrop</div>
-          <div class="ph-desc" data-i18n>Distribute 80% of total supply (400M AIGENT) for free via daily claims. 1M tokens per day, first 100 wallets, no cost to participants.</div>
+          <div class="ph-title" data-i18n>EIP-2612 Integration</div>
+          <div class="ph-desc" data-i18n>Complete gasless meta-transaction support. AI agents sign permits off-chain, execute on-chain — no OKB required for any token operation.</div>
           <span class="ph-badge live" data-i18n>LIVE</span>
         </div>
         <div class="phase">
@@ -2233,115 +2150,6 @@
         </div>
       </div>
 
-      <!-- Section 9: AIgent Rise Trading Platform -->
-      <div class="card reveal" style="max-width: 900px; margin: 32px auto 0;">
-        <div style="font-size:16px; line-height: 1.9; color: var(--text);">
-
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;" data-i18n>9. AIgent Rise — The AI-Native Token Launch & Trading Layer</h3>
-
-          <p data-i18n>While EIP-2612 solves the gas-token problem for AI agents, the next question is: what do agents do on-chain? The answer is AIgent Rise — a bonding curve platform where anyone can launch a token with a single natural-language prompt, and trade it instantly on a transparent, math-driven curve.</p>
-          <br>
-
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>9.1 Bonding Curve Mechanics</h3>
-
-          <p data-i18n>AIGENT uses a linear bonding curve for each launched token. The price increases linearly as more tokens are bought, and decreases as tokens are sold back:</p>
-          <br>
-
-          <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0;">
-            <p style="font-family:'SF Mono','Fira Code',monospace;font-size:16px;color:var(--cyan);text-align:center;">
-              <strong>price = p<sub>min</sub> + (p<sub>max</sub> − p<sub>min</sub>) × (tokens<sub>sold</sub> / total<sub>curve</sub>)</strong>
-            </p>
-          </div>
-
-          <p data-i18n>Each curve has four configurable parameters:</p>
-          <br>
-          <ul style="padding-left:20px;color:var(--dim);">
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>pMin</strong> — the starting price when no tokens have been sold (the ground floor)</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>pMax</strong> — the final price when the entire curve supply is sold</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>totalCurveSupply</strong> — the total number of tokens available on the curve</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>curveReserve</strong> — AIGENT tokens locked as the reserve backing on the curve</li>
-          </ul>
-          <br>
-
-          <p data-i18n>This linear model means early buyers get the lowest price, and the price discovery is fully transparent — no hidden liquidity, no secret allocations, no team pre-mines. Every token on AIgent Rise starts from zero with the same rules for everyone.</p>
-          <br>
-
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>9.2 AI-Powered Token Launch</h3>
-
-          <p data-i18n>The AIgent Rise console lets you launch a token by simply describing it in natural language. The AI agent handles everything:</p>
-          <br>
-          <ul style="padding-left:20px;color:var(--dim);">
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>One-sentence launch</strong> — Type "Launch 'CatCoin' with 1M supply, 0.0001 start, 0.01 max" and the agent deploys the BondingCurve contract</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Auto-generated metadata</strong> — Name, symbol, description, and token image are set during deployment</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Creator incentive</strong> — Launch a token and receive 0.3% of every trade on your curve, forever</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Instant trading</strong> — The curve is live immediately after deployment, no waiting, no lockups</li>
-          </ul>
-          <br>
-
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>9.3 Trading & Fee Structure</h3>
-
-          <p data-i18n>Buying and selling on the curve is simple — the contract calculates the exact AIGENT required (for buys) or returned (for sells) based on the current curve price:</p>
-          <br>
-
-          <div class="code-block" style="margin: 16px 0;">
-<pre>
-<span class="c">// Buying tokens: spend AIGENT, receive curve tokens</span>
-<span class="k">function</span> <span class="f">buy</span>(uint256 curveId, uint256 tokenAmount) <span class="k">external</span>;
-
-<span class="c">// Selling tokens: return curve tokens, receive AIGENT back</span>
-<span class="k">function</span> <span class="f">sell</span>(uint256 curveId, uint256 tokenAmount) <span class="k">external</span>;
-
-<span class="c">// AIGENT is auto-deposited & withdrawn — no separate approve step</span>
-</pre>
-          </div>
-          <br>
-
-          <p data-i18n>Fee breakdown per trade:</p>
-          <br>
-          <ul style="padding-left:20px;color:var(--dim);">
-            <li style="margin-bottom:8px;"><strong style="color:var(--cyan);" data-i18n>1% protocol fee</strong> — collected in AIGENT, distributed to stakers and the ecosystem treasury</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--cyan);" data-i18n>0.3% creator fee</strong> — goes directly to the token creator as a perpetual reward for launching</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--cyan);" data-i18n>Launch fee</strong> — a one-time AIGENT fee to deploy a new curve, preventing spam and adding value to AIGENT</li>
-          </ul>
-          <br>
-
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>9.4 Uniswap V3 Dual-Venue Trading</h3>
-
-          <p data-i18n>AIGENT itself trades on both the bonding curve platform and Uniswap V3. The AIgent Rise platform features a built-in Uniswap integration panel that:</p>
-          <br>
-          <ul style="padding-left:20px;color:var(--dim);">
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Displays real-time Uniswap V3 quotes</strong> — price, 24h volume, and liquidity depth for AIGENT/USDT</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>One-click swap widget</strong> — swap AIGENT ↔ USDT directly from the platform without leaving the page</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Arbitrage visibility</strong> — side-by-side pricing lets traders spot and act on price differences between the curve and Uniswap</li>
-          </ul>
-          <br>
-
-          <div style="background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0;">
-            <p><strong style="color:var(--cyan);" data-i18n>Why dual-venue matters:</strong> The bonding curve provides predictable, manipulation-resistant price discovery for new tokens. Uniswap V3 provides deep, capital-efficient liquidity for the mature AIGENT token. Together, they create a complete trading ecosystem — launch on the curve, graduate to Uniswap.</p>
-          </div>
-          <br>
-
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>9.5 AI Agent Console Integration</h3>
-
-          <p data-i18n>The AIgent Rise trading platform is natively integrated with the AI Agent Console. The same agent that handles gasless transfers (via EIP-2612) can also:</p>
-          <br>
-          <ul style="padding-left:20px;color:var(--dim);">
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Voice/Natural Language Trading</strong> — "Buy 100 CAT on curve 3" or "Sell half my position at 2x" — the agent parses intent and executes</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Portfolio monitoring</strong> — "What's my total exposure across all curves?" — agent reads on-chain state and reports</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Automated strategies</strong> — "Alert me when curve 0 hits 0.001" or "Buy $10 of every new token launched" — programmable trading rules</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Cross-venue execution</strong> — The agent can route trades through either the bonding curve or Uniswap, whichever gives better execution</li>
-          </ul>
-          <br>
-
-          <div style="border-left: 2px solid var(--cyan); padding: 12px 20px; margin: 20px 0; background: rgba(0,229,255,0.03);">
-            <p style="color:var(--text-bright);font-style:italic;" data-i18n>"AIGENT's bonding curve platform is the logical extension of gasless AI agent transactions. EIP-2612 gives agents the ability to transact. AIgent Rise gives them somewhere to go. Together, they form the first end-to-end AI-native token economy — launch, trade, stake, and LP, all through natural language."</p>
-          </div>
-
-          <p style="color:var(--dim);font-size:13px;margin-top:28px;">Try it now: scroll up to the <a href="#rise" style="color:var(--cyan);" data-i18n>AIgent Rise</a> platform and launch your first token, or explore the <a href="#dapp" style="color:var(--cyan);" data-i18n>AI Agent Console</a> to trade with natural language commands.</p>
-
-        </div>
-      </div>
-
     </section>
   </div>
 
@@ -2531,7 +2339,7 @@
         amountPlaceholder: 'Amount (AIGENT)',
         // AI Agent Console
         agentTitle: 'AI Agent Console', agentSub: 'Chat with the AI agent — natural language commands',
-        agentServer: 'local', agentPlaceholder: 'Type: deploy a token called MyCoin symbol MYC...',
+        agentServer: 'local', agentPlaceholder: 'Type: check balance | send 10 to 0x... | total supply',
         agentHelp: 'I\'m not sure what you mean. Try:',
         agentLaunchToken: 'Launch Token',
         agentBuyPresale: 'Buy AIGENT Presale',
@@ -2572,8 +2380,8 @@
         // Staking & LP Farm
         stake: 'Stake', unstake: 'Unstake', lpFarmTitle: 'LP Farm',
         // About
-        aboutTag: 'About', aboutTitle: 'AIGENT — Autonomous Intelligence Agent Token',
-        aboutDesc: 'AIGENT is an experimental token built for the AI agent economy. No presale. No fundraising. No profit promises. 80% of tokens freely distributed to early participants.',
+        aboutTag: 'About', aboutTitle: 'AIGENT — EIP-2612 Gasless Token Standard',
+        aboutDesc: 'AIGENT is an ERC-20 token on X Layer implementing EIP-2612 Permit for gasless meta-transactions. Open-source TypeScript + Python SDKs for AI agent integration.',
         // Token section
         tokenTag: 'Token', tokenTitle: 'AIGENT Token',
         tokenDesc: 'Autonomous Intelligence Agent Token on X Layer',
@@ -2636,7 +2444,7 @@
         switchToXLayer: '切换到X Layer', recipientPlaceholder: '收款地址 (0x...)',
         amountPlaceholder: '数量 (AIGENT)',
         agentTitle: 'AI智能体控制台', agentSub: '与AI智能体对话 — 自然语言指令',
-        agentServer: '本地', agentPlaceholder: '输入: 创建一个代币叫MyCoin符号MYC...',
+        agentServer: '本地', agentPlaceholder: '输入: 查余额 | 发10到0x... | 总供应量',
         agentHelp: '我不太理解您的意思。请尝试:',
         agentLaunchToken: '发行代币',
         agentBuyPresale: '购买AIGENT预售',
@@ -2673,8 +2481,8 @@
         presaleNever: '切勿使用钱包中的"发送"或"转账"功能购买预售代币。',
         presaleBuy: '购买AIGENT预售',
         stake: '质押', unstake: '解除质押', lpFarmTitle: 'LP农场',
-        aboutTag: '关于', aboutTitle: 'AIgent Rise — 一键发行代币',
-        aboutDesc: '在X Layer上一键发行您自己的代币，附带永久绑定曲线。无需编程，无需设置流动性池。只需连接钱包，命名，即可部署。',
+        aboutTag: '关于', aboutTitle: 'AIGENT — EIP-2612 免Gas代币标准',
+        aboutDesc: 'AIGENT 是 X Layer 上的 ERC-20 代币，实现了 EIP-2612 Permit 标准，支持免 Gas 元交易。提供开源 TypeScript + Python SDK，用于 AI 智能体集成。',
         tokenTag: '代币', tokenTitle: 'AIGENT代币',
         tokenDesc: 'X Layer上的自主智能体代币',
         tokenomicsTag: '代币经济', tokenomicsTitle: '代币分配',
@@ -2686,7 +2494,7 @@
         tickerFeeDesc: '1%交易费+0.3%创作者分成',
         tickerLaunch: '发行费', tickerLaunchDesc: '发行一个代币',
         tickerEip: 'EIP-2612', tickerEipDesc: 'AI智能体免Gas授权',
-        tickerSlogan: 'AIgent Rise — 发行 · 交易 · 繁荣',
+        tickerSlogan: 'AIGENT — EIP-2612 · 免Gas · AI原生',
         $aigent: '$AIGENT',
         '$token/aigent': '$TOKEN / AIGENT',
         '/50,000,000cap': '/ 50,000,000 硬顶',
@@ -2716,7 +2524,7 @@
         aigentlockedincurvereserve: '曲线储备中锁定的AIGENT',
         aigentper1usdt: '1 USDT = 10,000 AIGENT',
         aigentreserve: 'AIGENT储备',
-        'aigentrise—tokenlaunchplatform': 'AIgent Rise — 代币发行平台',
+        'aigentrise—tokenlaunchplatform': 'AIGENT — EIP-2612 智能体基础设施',
         autonomousagentready: '自主智能体就绪',
         autonomousintelligenceagenttokenonxlayer: 'X Layer上的自主智能体代币',
         balance: '余额',
@@ -3101,69 +2909,6 @@
       'function TRADE_FEE_BPS() external view returns (uint256)',
     ]);
 
-    // ── Airdrop ──
-    const AIRDROP_ADDR = '0x5f8Def997FeB403fE8Ce544D9DAf4de4d0fb27FD';
-    const AIRDROP_ABI = parseAbi([
-      'function claim() external',
-      'function today() external view returns (uint256)',
-      'function remainingToday() external view returns (uint256)',
-      'function hasClaimedToday(address user) external view returns (bool)',
-      'function totalClaimed() external view returns (uint256)',
-      'function dailyClaimed(uint256 day) external view returns (uint256)',
-      'function CLAIM_AMOUNT() external view returns (uint256)',
-      'function MAX_TOTAL() external view returns (uint256)',
-    ]);
-
-    async function refreshAirdropStats() {
-      if (!publicClient) { loadAirdropPlaceholder(); return; }
-      try {
-        const [rem, total, addr] = await Promise.all([
-          publicClient.readContract({ address: AIRDROP_ADDR, abi: AIRDROP_ABI, functionName: 'remainingToday' }),
-          publicClient.readContract({ address: AIRDROP_ADDR, abi: AIRDROP_ABI, functionName: 'totalClaimed' }),
-          userAddress ? publicClient.readContract({ address: AIRDROP_ADDR, abi: AIRDROP_ABI, functionName: 'hasClaimedToday', args: [userAddress] }) : Promise.resolve(false),
-        ]);
-        const remNum = Number(rem);
-        document.getElementById('ad-today-remaining').textContent = remNum + ' / 100';
-        document.getElementById('ad-total-claimed').textContent = (Number(total) / 1e18).toLocaleString() + ' / 400,000,000';
-        document.getElementById('ad-your-status').textContent = addr ? 'Claimed today' : 'Available';
-        document.getElementById('ad-your-status').style.color = addr ? 'var(--dim)' : 'var(--green)';
-        const btn = document.getElementById('btn-airdrop-claim');
-        btn.disabled = (remNum === 0 || !!addr);
-      } catch(e) { loadAirdropPlaceholder(); }
-    }
-
-    function loadAirdropPlaceholder() {
-      document.getElementById('ad-today-remaining').textContent = '-- / 100';
-      document.getElementById('ad-total-claimed').textContent = '-- / 400,000,000';
-      document.getElementById('ad-your-status').textContent = 'Connect wallet';
-      document.getElementById('ad-your-status').style.color = 'var(--dim)';
-    }
-
-    window.claimAirdrop = async function() {
-      const msgEl = document.getElementById('airdrop-msg');
-      if (!walletClient || !userAddress) { msgEl.innerHTML = '<span style=\"color:#ff4444;\">Connect your wallet first.</span>'; return; }
-      msgEl.innerHTML = '<span style=\"color:var(--cyan);\">Claiming...</span>';
-      try {
-        const hash = await walletClient.writeContract({
-          address: AIRDROP_ADDR, abi: AIRDROP_ABI, functionName: 'claim', chain: xLayer, account: userAddress,
-          args: [],
-        });
-        msgEl.innerHTML = '<span style=\"color:var(--green);\">Claimed! TX: ' + hash.substring(0,10) + '...</span>';
-        setTimeout(refreshAirdropStats, 3000);
-      } catch(e) {
-        msgEl.innerHTML = '<span style=\"color:#ff4444;\">' + (e.shortMessage || e.message || 'Claim failed').substring(0, 100) + '</span>';
-      }
-    };
-
-    // ── Deploy ──
-    let pendingDeploy = null; // stores parsed params until user confirms
-    window.executeDeploy = function() {
-      if (!pendingDeploy) { agentChatAdd('agent', 'No pending deploy. Type a deploy command first.'); return; }
-      if (!walletClient || !userAddress) { agentChatAdd('agent', '⚠️ Please <strong>connect your wallet</strong> first, then click Launch again.'); return; }
-      const params = pendingDeploy;
-      pendingDeploy = null;
-      agentExecuteDeploy(params);
-    };
 
     const $ = (id) => document.getElementById(id);
     const el = {
@@ -3238,7 +2983,6 @@
       el.divider.style.display = 'none';
       el.balanceSection.style.display = 'none';
       el.transferSection.style.display = 'none';
-      loadAirdropPlaceholder();
       el.agentDivider.style.display = 'none';
       el.agentConsole.style.display = 'none';
       el.agentSteps.style.display = 'none';
@@ -3297,7 +3041,6 @@
         walletClient = createWalletClient({ chain: xLayer, transport: custom(provider) });
         renderConnected(); hideMsg();
         await dappRefreshBalance();
-        await refreshAirdropStats();
       } catch (err) {
         console.error('Connect error:', err);
         renderDisconnected();
@@ -3514,46 +3257,6 @@
       const t = text.trim();
       if (!t) return { intent: 'empty' };
 
-      // Deploy token
-      const hasDeployAction = /deploy|create|launch|make|mint|new|发|创建|部署|发行|上/i.test(t);
-      const hasTokenWord = /token|coin|erc20|币|代币|令牌|土狗|meme/i.test(t);
-      if (hasDeployAction && hasTokenWord) {
-        // Name: stop at keywords
-        let nameM = t.match(/(?:called|named|名叫|叫做|叫|名字是?|名称是?|name\s*(?:is)?)\s*["']?([^，。,\.\s]{1,30}?)(?:[，。,\.\s]|币|代币|令牌|符号|代号|代码|缩写|ticker|symbol|总量|供应|发行|数量)/i);
-        let name = nameM ? nameM[1].trim() : undefined;
-        if (name) { name = name.replace(/[的之]?(?:币种|币|代币|名字|名称|符号|代码).*$/i,'').trim(); if (!name) name=undefined; }
-        if (!name) {
-          let m2 = t.match(/(?:个(?:币|代币|token|coin)|币种|代币|token|coin)\s*["']?([^，。,\.\s]{1,30}?)(?:[，。,\.\s]|叫|符号|代号|代码|ticker|symbol|总量|供应|发行)/i);
-          if (m2) name = m2[1].trim();
-        }
-        if (!name) {
-          let im = t.match(/(?:叫|发行|创建|部署|发)\s*(?:一个|个)?\s*["']?([^，。,\.\s叫]{1,30}?)(?:的?[币代]|[，。,\.\s]|$)/i);
-          if (im) { name = im[1].trim().replace(/[的之]?(?:币种|币|代币|名字|名称).*$/i,'').trim(); }
-        }
-
-        let symM = t.match(/(?:symbol|ticker|符号|代码|代号|缩写)\s*["']?([a-zA-Z]{2,10})["']?/i);
-        let symbol = symM ? symM[1].toUpperCase() : undefined;
-        const wantsInitials = /首字母|缩写|initials|abbrev/i.test(t);
-
-        const supplyCtx = t.match(/(?:supply|total|总量|供应|发行量|数量)\s*(.{1,40}?)(?:[，。,\.]|$)/i);
-        const st = supplyCtx ? supplyCtx[1] : t;
-        const cn = parseChineseNumber(st);
-        let supply = cn && cn>=1 ? cn.toString() : undefined;
-
-        if (!symbol && name) {
-          if (wantsInitials) symbol = name.replace(/[^a-zA-Z一-龥]/g,'').slice(0,6).toUpperCase();
-          else { let c = name.replace(/[^a-zA-Z0-9一-龥]/g,'').slice(0,6).toUpperCase(); if (/[A-Z]/.test(c)) symbol = c; }
-        }
-
-        if (name && symbol) return { intent: 'deploy', params: { name, symbol, supply: supply||'1000000' } };
-        if (name || symbol) {
-          const n = name || symbol;
-          const s = symbol || (name ? name.replace(/[^a-zA-Z0-9]/g,'').slice(0,6).toUpperCase()||'TOKEN' : 'TOKEN');
-          return { intent: 'deploy', params: { name: n, symbol: s, supply: supply||'1000000' } };
-        }
-        return { intent: 'deploy', params: { supply: supply||'1000000' } };
-      }
-
       // Transfer
       const sendRe = /(?:send|transfer|pay|give|move|转|发)\s+(\d+(?:\.\d+)?)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})/i;
       const sendRev = /(?:send|transfer|pay|give|move|转|发)\s+(?:to\s+)?(0x[a-fA-F0-9]{40})\s+(\d+(?:\.\d+)?)/i;
@@ -3632,13 +3335,6 @@
               const parsed = parseCommand(cmd);
               if (parsed.intent === 'transfer') await agentExecuteTransfer(parsed.params.to, parsed.params.amount);
             }
-            if (data.action === 'deploy' && data.steps) {
-              const parsed = parseCommand(cmd);
-              if (parsed.intent === 'deploy') {
-                pendingDeploy = parsed.params;
-                agentChatAdd('agent', '<button class="agent-deploy-btn" onclick="executeDeploy()" style="display:block;width:100%;margin-top:12px;padding:12px 20px;background:linear-gradient(135deg,var(--magenta),var(--purple));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;box-shadow:0 0 20px rgba(192,56,228,0.3);" onmouseover="this.style.boxShadow=\'0 0 30px rgba(192,56,228,0.6)\'" onmouseout="this.style.boxShadow=\'0 0 20px rgba(192,56,228,0.3)\'">🚀 Launch Token Now</button>');
-              }
-            }
           }
           return;
         } catch (_) { agentServerLive = false; el.agentServerDot.className = 'agent-server-dot offline'; el.agentServerLabel.textContent = 'local'; }
@@ -3648,12 +3344,12 @@
       const parsed = parseCommand(cmd);
 
       if (parsed.intent === 'greet') {
-        agentChatAdd('agent', 'Hello! I\'m your AIGENT AI agent on X Layer. I can help you:<br><br>• <strong style="color:var(--magenta);">🚀 Launch a token</strong> — deploy via AIgent Rise + bonding curve<br>• <strong style="color:#ffd700;">📈 Buy tokens</strong> — trade on the bonding curve<br>• <strong style="color:#ffd700;">📉 Sell tokens</strong> — sell back to the curve anytime<br>• <strong style="color:var(--cyan);">Check balance</strong> — view your AIGENT<br>• <strong style="color:var(--cyan);">Total supply</strong> — 500M fixed supply<br>• <strong style="color:var(--cyan);">Send tokens</strong> — transfer via gasless EIP-2612 Permit<br><br>What would you like to do?');
+        agentChatAdd('agent', 'Hello! I\'m your AIGENT AI agent on X Layer. I can help you:<br><br>• <strong style="color:var(--cyan);">Check balance</strong> — view your AIGENT<br>• <strong style="color:var(--cyan);">Total supply</strong> — 500M fixed supply<br>• <strong style="color:var(--cyan);">Send tokens</strong> — transfer via gasless EIP-2612 Permit<br><br>What would you like to do?');
         return;
       }
 
       if (parsed.intent === 'help') {
-        agentChatAdd('agent', 'I\'m an autonomous AI agent on X Layer. Here\'s what I can do:<br><br><code>deploy a token called [name] symbol [SYM] supply [N]</code> — Launch via AIgent Rise + bonding curve<br><code>buy 100 AIGENT of [SYMBOL]</code> — Buy tokens on the bonding curve<br><code>sell 1000 [SYMBOL]</code> — Sell tokens back to the curve<br><code>check balance</code> — Read your AIGENT balance<br><code>total supply</code> — View the fixed 500M supply<br><code>send 100 to 0x...</code> — Transfer via gasless EIP-2612 Permit<br><br>All tokens include <strong style="color:var(--cyan);">EIP-2612</strong> for gasless transfers + a permanent bonding curve.');
+        agentChatAdd('agent', 'I\'m an autonomous AI agent on X Layer. Here\'s what I can do:<br><br><code>check balance</code> — Read your AIGENT balance on-chain<br><code>total supply</code> — View the fixed 500M supply<br><code>send 100 to 0x...</code> — Transfer via gasless EIP-2612 Permit<br><br>All transfers use <strong style="color:var(--cyan);">EIP-2612</strong> for gasless meta-transactions — you sign off-chain, no OKB needed.');
         return;
       }
 
@@ -3684,36 +3380,8 @@
         return;
       }
 
-      if (parsed.intent === 'deploy') {
-        const p = parsed.params;
-        const name = p.name || 'MyToken';
-        const symbol = (p.symbol || 'MTK').toUpperCase();
-        const supply = p.supply || '1000000';
-        const supplyFmt = parseInt(supply).toLocaleString();
-        agentChatAdd('agent',
-          '🚀 <strong style="color:var(--magenta);font-size:16px;">AIgent Mint — Deploying Token</strong><br><br>' +
-          '<table style="width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;">' +
-          '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Name</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);"><strong>' + name + '</strong></td></tr>' +
-          '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Symbol</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);"><strong>$' + symbol + '</strong></td></tr>' +
-          '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Total Supply</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);"><strong>' + supplyFmt + '</strong></td></tr>' +
-          '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Standard</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">ERC-20 + EIP-2612</td></tr>' +
-          '<tr><td style="padding:6px 8px;">Network</td><td style="padding:6px 8px;">X Layer (Chain 196)</td></tr>' +
-          '</table><br>' +
-          'Your token will support <strong style="color:var(--cyan);">gasless transfers</strong> via EIP-2612.<br><br>' +
-          '<div style="margin-top:6px;">' +
-          '<label style="font-size:10px;color:var(--dim);">Token Image URL (optional):</label>' +
-          '<input id="deploy-token-image" type="text" placeholder="https://example.com/token-icon.png" style="width:100%;margin-top:4px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#fff;font-size:12px;font-family:inherit;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor=\'rgba(0,229,255,0.4)\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.1)\'">' +
-          '</div><br>' +
-          'To deploy, confirm the transaction in your wallet.<br><br>' +
-          '<strong style="color:var(--cyan);">AIgent Rise</strong> will create your token + a permanent bonding curve.'
-        );
-        pendingDeploy = parsed.params;
-        agentChatAdd('agent', '<button class="agent-deploy-btn" onclick="executeDeploy()" style="display:block;width:100%;margin-top:12px;padding:12px 20px;background:linear-gradient(135deg,var(--magenta),var(--purple));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;box-shadow:0 0 20px rgba(192,56,228,0.3);" onmouseover="this.style.boxShadow=\'0 0 30px rgba(192,56,228,0.6)\'" onmouseout="this.style.boxShadow=\'0 0 20px rgba(192,56,228,0.3)\'">🚀 Launch Token Now</button>');
-        return;
-      }
-
       // Unknown
-      agentChatAdd('agent', 'I\'m not sure what you mean. Try:<br><br>• <strong style="color:var(--magenta);">Deploy a token called MyCoin symbol MYC supply 1000000</strong><br>• <strong style="color:#ffd700;">Buy 100 AIGENT of MYC</strong><br>• <strong style="color:#ffd700;">Sell 1000 MYC</strong><br>• <strong style="color:var(--cyan);">Check my balance</strong><br>• <strong style="color:var(--cyan);">What\'s the total supply?</strong><br>• <strong style="color:var(--cyan);">Send 100 to 0xAbC...</strong><br><br>Or say <strong style="color:var(--magenta);">help</strong> for all commands.');
+      agentChatAdd('agent', 'I\'m not sure what you mean. Try:<br><br>• <strong style="color:var(--cyan);">Check my balance</strong><br>• <strong style="color:var(--cyan);">What\'s the total supply?</strong><br>• <strong style="color:var(--cyan);">Send 100 to 0xAbC...</strong><br><br>Or say <strong style="color:var(--cyan);">help</strong> for all commands.');
     };
 
     async function agentExecuteTransfer(to, amountStr) {
@@ -3777,130 +3445,6 @@
       }
     }
 
-    // ── Deploy Token via AIgent Rise (BondingCurve) ──
-
-    async function agentExecuteDeploy(params) {
-      el.agentSteps.style.display = 'block';
-      agentResetSteps();
-      setStepTitles(['Parse Request', 'Check AIGENT Allowance', 'Approve AIGENT Spend', 'Launch Token + Curve', 'Verify on Explorer']);
-      showSteps(5);
-
-      const name = params.name || 'MyToken';
-      const symbol = (params.symbol || 'MTK').toUpperCase();
-      const supply = params.supply || '1000000';
-      const totalSupply = parseEther(supply);
-      const curveBps = 8000n;        // 80% to curve
-      const pMin = parseEther('0.0001');  // 0.0001 AIGENT starting price
-      const pMax = parseEther('100');     // 100 AIGENT max price per token
-
-      // Step 1: Parse request
-      agentStepDone(1, 'Token: ' + name + ' ($' + symbol + ') — Supply: ' + parseInt(supply).toLocaleString() + ' | 80% to curve');
-
-      // Step 2: Check AIGENT allowance for BondingCurve
-      agentStepActive(2, 'Checking AIGENT allowance for BondingCurve...');
-      try {
-        const bcAddr = BONDING_CURVE_ADDR;
-
-        const deployFee = await publicClient.readContract({
-          address: bcAddr, abi: BONDING_CURVE_ABI, functionName: 'deployFee',
-        });
-
-        // Check AIGENT balance
-        const aigentBal = await publicClient.readContract({
-          address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'balanceOf', args: [userAddress],
-        });
-        const deployFeeNum = Number(ethers.formatEther(deployFee));
-        const deployFeeUsd = deployFeeNum * (await _riseGetAigentPrice());
-        const deployFeeDisplay = _riseFmtFee({ fee: deployFeeNum, usd: deployFeeUsd });
-
-        if (aigentBal < deployFee) {
-          agentStepError(2, 'Insufficient AIGENT: need ' + deployFeeDisplay + ', have ' + formatEther(aigentBal) + ' AIGENT');
-          agentChatAdd('agent', '❌ <strong>Not enough AIGENT!</strong><br><br>Deploy fee: <strong>' + deployFeeDisplay + '</strong><br>Your balance: <strong>' + formatEther(aigentBal) + ' AIGENT</strong><br><br>Get AIGENT from the Liquidity panel or Uniswap.');
-          return;
-        }
-
-        const allowance = await publicClient.readContract({
-          address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'allowance',
-          args: [userAddress, bcAddr],
-        });
-
-        agentStepDone(2, 'Fee: ' + deployFeeDisplay + ' | Balance: ' + formatEther(aigentBal) + ' | Allowance: ' + formatEther(allowance));
-
-        // Step 3: Approve if needed
-        if (allowance < deployFee) {
-          agentStepActive(3, '⚠️ Check your wallet — confirm the AIGENT approval...');
-          try {
-            const approveHash = await walletClient.writeContract({
-              address: AIGENT_ADDRESS, abi: AIGENT_ABI, functionName: 'approve',
-              args: [bcAddr, deployFee], chain: xLayer, account: userAddress,
-            });
-            agentStepDone(3, 'Approved — ' + approveHash);
-            await publicClient.waitForTransactionReceipt({ hash: approveHash });
-          } catch (e) {
-            agentStepError(3, e.shortMessage || e.message);
-            agentChatAdd('agent', '❌ Approval failed: ' + (e.shortMessage || e.message) + '<br><br>Make sure you confirmed the transaction in your wallet.');
-            return;
-          }
-        } else {
-          agentStepDone(3, 'Allowance sufficient — skip approval');
-        }
-
-        // Step 4: Launch token + curve via BondingCurve
-        agentStepActive(4, 'Launching ' + name + ' ($' + symbol + ') via AIgent Rise...');
-        try {
-          const launchHash = await walletClient.writeContract({
-            address: bcAddr, abi: BONDING_CURVE_ABI, functionName: 'launch',
-            args: [name, symbol, totalSupply, curveBps, pMin, pMax, userAddress],
-            chain: xLayer, account: userAddress,
-          });
-          agentStepDone(4, 'Launch tx: ' + launchHash);
-
-          const receipt = await publicClient.waitForTransactionReceipt({ hash: launchHash });
-
-          // Extract token address + curveId from Launched event
-          const topic0 = '0xd0e11d530087619172d445573482c32639eb84569c8f6c75632841704b2b45b8';
-          const deployLog = receipt.logs.find(log =>
-            log.address.toLowerCase() === bcAddr.toLowerCase() && log.topics[0] === topic0
-          );
-          let tokenAddr = 'Unknown';
-          let curveId = '?';
-          if (deployLog) {
-            curveId = BigInt(deployLog.topics[1]).toString();
-            tokenAddr = '0x' + deployLog.topics[2].slice(26);
-          }
-
-          agentStepDone(5, 'Curve #' + curveId + ' — ' + parseInt(supply).toLocaleString() + ' $' + symbol + ' launched');
-          agentChatAdd('agent',
-            '🎉 <strong style="color:var(--green);font-size:16px;">Token Launched on AIgent Rise!</strong><br><br>' +
-            '<table style="width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;">' +
-            '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Token</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);"><strong>' + name + '</strong> ($' + symbol + ')</td></tr>' +
-            '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Address</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);"><code>' + tokenAddr + '</code></td></tr>' +
-            '<tr><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">Curve ID</td><td style="padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.06);">#' + curveId + ' — 80% supply on bonding curve</td></tr>' +
-            '<tr><td style="padding:6px 8px;">Explorer</td><td style="padding:6px 8px;"><a href="' + XLAYER_EXPLORER + '/address/' + tokenAddr + '" target="_blank" style="color:var(--cyan);">View on OKX Explorer &rarr;</a></td></tr>' +
-            '</table><br>' +
-            '<button onclick="riseGoToNewToken(' + curveId + ')" style="padding:10px 20px;background:linear-gradient(135deg,#ffd700,#ff8c00);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-right:8px;">Trade $' + symbol + ' Now</button>' +
-            '<span style="color:var(--dim);font-size:11px;">or scroll down to AIgent Rise</span>'
-          );
-
-          // Auto-switch: refresh list, select new curve, scroll to Rise panel
-          await riseLoadCurveList();
-          await riseSelectCurve(parseInt(curveId));
-          setTimeout(function() {
-            const riseSection = document.getElementById('rise');
-            if (riseSection) riseSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 300);
-          showNotification('$' + symbol + ' launched on AIgent Rise!', 'success');
-
-        } catch (e) {
-          agentStepError(4, e.shortMessage || e.message);
-          agentChatAdd('agent', 'Deployment failed: ' + (e.shortMessage || e.message));
-        }
-
-      } catch (e) {
-        agentStepError(2, e.shortMessage || e.message);
-        agentChatAdd('agent', 'Failed to read BondingCurve: ' + (e.shortMessage || e.message) + '. Make sure you are connected to X Layer.');
-      }
-    }
 
     // ── Presale Buy ──
 
@@ -5566,7 +5110,7 @@ window.toggleQR = function() {
 <!-- Ticker Bar -->
 <div class="rise-ticker">
   <div class="rise-ticker-label">
-    <span style="font-size:14px;">📡</span> AIgent Rise
+    <span style="font-size:14px;">📡</span> AIGENT Network
   </div>
   <div class="rise-ticker-track">
     <div class="rise-ticker-content" id="rise-ticker-content">
