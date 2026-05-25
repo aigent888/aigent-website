@@ -1,0 +1,10 @@
+{
+  "contract": "AIGENTLoyaltyAirdrop",
+  "address": "0x2257Bf84abB0fa021e26E34a4002724411D0B1db",
+  "deployer": "0x38bA1dD6cA31c8b2971de7c61A87f1F7c4Eba7e4",
+  "verifier": "0x38bA1dD6cA31c8b2971de7c61A87f1F7c4Eba7e4",
+  "aigent": "0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39",
+  "chain": "X Layer",
+  "chainId": 196,
+  "deployedAt": "2026-05-25T02:31:45.676Z"
+}

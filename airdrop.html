@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIGENT 空投 | 五层忠诚计划</title>
+<style>
+:root {
+  --bg: #060b14; --surface: #0a1628; --card: #0d1f3c;
+  --cyan: #00e5ff; --green: #00e676; --amber: #fbbf24; --purple: #a78bfa;
+  --text: #b0c4de; --text-bright: #e8edf5; --muted: #5a7a9a;
+  --border: rgba(0,229,255,0.1); --glow: 0 0 20px rgba(0,229,255,0.15);
+  --radius: 14px; --radius-sm: 8px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 10%,rgba(0,229,255,0.06) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(167,139,250,0.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+/* Nav */
+nav{position:sticky;top:0;z-index:100;background:rgba(6,11,20,0.95);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+nav .logo{font-weight:800;font-size:1.1em;color:#fff;display:flex;align-items:center;gap:8px}
+nav .logo span{background:var(--cyan);color:#000;padding:2px 8px;border-radius:4px;font-size:.75em}
+nav button{padding:8px 16px;border-radius:var(--radius-sm);border:1px solid var(--cyan);background:transparent;color:var(--cyan);cursor:pointer;font-size:.85em;font-weight:600;transition:all .2s}
+nav button:hover{background:rgba(0,229,255,0.1)}
+nav button.connected{background:var(--cyan);color:#000}
+
+/* Container */
+.container{max-width:960px;margin:0 auto;padding:32px 24px;position:relative;z-index:1}
+
+/* Hero */
+.hero{text-align:center;padding:40px 0 20px}
+.hero h1{font-size:2.4em;font-weight:800;color:#fff;letter-spacing:-1px}
+.hero h1 span{background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--muted);font-size:1.05em;margin-top:8px}
+
+/* Tier Card */
+.tier-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin:24px 0;text-align:center;position:relative;overflow:hidden}
+.tier-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,229,255,0.06) 0%,transparent 70%);pointer-events:none}
+.tier-badge{display:inline-block;padding:6px 18px;border-radius:20px;font-size:.8em;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.tier-badge.L1{background:rgba(0,230,118,0.15);color:var(--green)}
+.tier-badge.L2{background:rgba(0,229,255,0.15);color:var(--cyan)}
+.tier-badge.L3{background:rgba(167,139,250,0.15);color:var(--purple)}
+.tier-badge.L4{background:rgba(251,191,36,0.15);color:var(--amber)}
+.tier-badge.L5{background:linear-gradient(135deg,rgba(0,229,255,0.2),rgba(167,139,250,0.2));color:#fff}
+.tier-name{font-size:1.6em;font-weight:700;color:#fff}
+.tier-reward{font-size:.95em;color:var(--muted);margin-top:4px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:24px 0}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center}
+.stat .val{font-size:1.5em;font-weight:700;color:#fff}
+.stat .lbl{font-size:.75em;color:var(--muted);margin-top:4px}
+
+/* Progress */
+.progress-wrap{margin:24px 0}
+.progress-bar{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:4px;transition:width .5s}
+.progress-labels{display:flex;justify-content:space-between;margin-top:8px;font-size:.7em;color:var(--muted)}
+.progress-labels span.active{color:var(--cyan);font-weight:700}
+
+/* Grid */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin:24px 0}
+
+/* Card */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+.card h3{font-size:1em;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+/* Task List */
+.task-list{display:flex;flex-direction:column;gap:10px}
+.task{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.task.done{opacity:.5}
+.task .task-info{flex:1}
+.task .task-name{font-size:.88em;color:var(--text-bright)}
+.task .task-pts{font-size:.75em;color:var(--muted)}
+.task button{padding:6px 14px;border-radius:6px;border:none;font-size:.78em;font-weight:600;cursor:pointer;white-space:nowrap}
+.task .btn-do{background:var(--cyan);color:#000}
+.task .btn-do:hover{box-shadow:0 0 12px rgba(0,229,255,0.3)}
+.task .btn-done{background:rgba(0,230,118,0.2);color:var(--green);cursor:default}
+
+/* Buttons */
+.btn{display:inline-block;padding:12px 28px;border:none;border-radius:var(--radius-sm);font-size:.9em;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-claim{background:linear-gradient(135deg,var(--cyan),#0097a7);color:#000;box-shadow:0 4px 24px rgba(0,229,255,0.25);width:100%;font-size:1.05em;padding:16px}
+.btn-claim:hover{transform:translateY(-2px);box-shadow:0 6px 32px rgba(0,229,255,0.4)}
+.btn-claim:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* Input */
+input,select{width:100%;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:#fff;font-size:.9em;font-family:inherit;outline:none}
+input:focus,select:focus{border-color:var(--cyan)}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.8em;color:var(--muted);margin-bottom:6px}
+
+/* Toast */
+.toast{position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:var(--radius-sm);font-size:.85em;font-weight:500;z-index:999;animation:slideIn .3s}
+.toast.success{background:#065f46;color:var(--green)}
+.toast.error{background:#7f1d1d;color:#f87171}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* Referral */
+.ref-box{background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center}
+.ref-box .ref-link{font-size:.85em;color:var(--cyan);word-break:break-all;margin:8px 0}
+
+/* Responsive */
+@media(max-width:600px){
+  .hero h1{font-size:1.6em}
+  .grid2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">🎣 AIGENT <span>空投</span></div>
+  <button id="walletBtn" onclick="connectWallet()">连接钱包</button>
+</nav>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>AIGENT <span>五层忠诚计划</span></h1>
+    <p>越投入越多 · 真正的用户获得真正的奖励</p>
+  </div>
+
+  <!-- Tier Card -->
+  <div class="tier-card" id="tierCard">
+    <div class="tier-badge L1" id="tierBadge">L1 · 基础用户</div>
+    <div class="tier-name" id="tierName">连接钱包开始</div>
+    <div class="tier-reward" id="tierReward">完成任务升级，解锁更高奖励</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat"><div class="val" id="statPoints">0</div><div class="lbl">我的积分</div></div>
+    <div class="stat"><div class="val" id="statClaimed">0</div><div class="lbl">已领取 AIGENT</div></div>
+    <div class="stat"><div class="val" id="statReferrals">0</div><div class="lbl">已邀请</div></div>
+    <div class="stat"><div class="val" id="statStaked">0</div><div class="lbl">锁仓中</div></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-labels">
+      <span id="pl1">L1 基础</span><span id="pl2">L2 锁仓</span><span id="pl3">L3 创作者</span><span id="pl4">L4 邀请者</span><span id="pl5">L5 大使</span>
+    </div>
+  </div>
+
+  <!-- L1 Claim -->
+  <button class="btn btn-claim" id="claimBtn" onclick="claimL1()" disabled>
+    🎁 领取 1,000 AIGENT（连接钱包后领取）
+  </button>
+
+  <div class="grid2">
+
+    <!-- Tasks -->
+    <div class="card">
+      <h3>📋 任务中心</h3>
+      <div class="task-list" id="taskList">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- Stake -->
+    <div class="card">
+      <h3>🔒 锁仓赚更多</h3>
+      <div class="field"><label>锁仓数量 (AIGENT)</label><input type="number" id="stakeAmount" placeholder="最少 1000" min="1000"></div>
+      <div class="field"><label>锁仓时长</label>
+        <select id="stakeDuration">
+          <option value="30">30 天 (+10% 奖励)</option>
+          <option value="90" selected>90 天 (+30% 奖励)</option>
+          <option value="180">180 天 (+80% 奖励)</option>
+        </select>
+      </div>
+      <button class="btn btn-claim" onclick="doStake()" style="margin-top:8px">🔒 锁仓</button>
+      <button class="btn btn-outline" onclick="doUnstake()" style="margin-top:8px;width:100%">📤 解锁</button>
+    </div>
+
+    <!-- Referral -->
+    <div class="card">
+      <h3>👥 邀请好友</h3>
+      <div class="ref-box">
+        <p style="font-size:.85em;color:var(--muted)">分享你的专属链接</p>
+        <div class="ref-link" id="refLink">连接钱包后生成</div>
+        <button class="btn btn-outline btn-sm" onclick="copyRefLink()" style="margin-top:8px">📋 复制链接</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div id="toastContainer"></div>
+
+<!-- ethers.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.min.js"></script>
+
+<script>
+// ── Contract config ──
+const AIGENT_ADDRESS = "0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39";
+const LOYALTY_ADDRESS = "0x2257Bf84abB0fa021e26E34a4002724411D0B1db";
+
+const LOYALTY_ABI = [
+  "function claimL1(address referrer) external",
+  "function submitTask(uint8 task, bytes signature) external",
+  "function stake(uint256 amount, uint256 durationDays) external",
+  "function unstake() external",
+  "function emergencyUnstake() external",
+  "function getPlayer(address) view returns (uint8 tier, uint256 totalClaimed, uint256 points, uint256 lastClaimTime, address referrer, uint256 referralCount)",
+  "function getStake(address) view returns (tuple(uint256 amount, uint256 startTime, uint256 duration, bool active))",
+  "function hasCompletedTask(address, uint8 task) view returns (bool)",
+  "function remainingToday() view returns (uint256)",
+  "function tiers(uint8) view returns (uint256 reward, string name)",
+  "function taskPoints(uint8) view returns (uint256)",
+  "function MIN_STAKE_AMOUNT() view returns (uint256)",
+];
+const ERC20_ABI = ["function approve(address spender, uint256 amount) returns (bool)","function allowance(address owner, address spender) view returns (uint256)"];
+
+// Tasks
+const TASKS = [
+  { id: 0, name: "关注 X (Twitter)", pts: 1, url: "https://x.com/AIGENT_token" },
+  { id: 1, name: "转发置顶推文", pts: 2, url: "https://x.com/AIGENT_token" },
+  { id: 2, name: "原创推文带 #AIGENT", pts: 10, url: null },
+  { id: 4, name: "创作内容 (视频/文章)", pts: 20, url: null },
+];
+
+const TIER_NAMES = ["无","L1 基础","L2 锁仓","L3 创作者","L4 邀请者","L5 大使"];
+const TIER_POINTS = [0, 0, 10, 50, 200, 1000];
+
+// ── State ──
+let provider, signer, loyaltyContract, userAddress;
+
+// ── Connect Wallet ──
+async function connectWallet() {
+  if (!window.ethereum) return toast("请安装 MetaMask 或 OKX Wallet","error");
+  try {
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+    loyaltyContract = new ethers.Contract(LOYALTY_ADDRESS, LOYALTY_ABI, signer);
+    document.getElementById("walletBtn").textContent = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
+    document.getElementById("walletBtn").classList.add("connected");
+    document.getElementById("claimBtn").disabled = false;
+    document.getElementById("refLink").textContent = `https://aigent.cc/?ref=${userAddress}`;
+    await refreshUI();
+    toast("钱包已连接","success");
+  } catch(e) { toast("连接失败: "+e.message,"error"); }
+}
+
+// ── Refresh ──
+async function refreshUI() {
+  if (!loyaltyContract || !userAddress) return;
+  try {
+    const [player, stake, remainingDay] = await Promise.all([
+      loyaltyContract.getPlayer(userAddress),
+      loyaltyContract.getStake(userAddress),
+      loyaltyContract.remainingToday(),
+    ]);
+    const tier = Number(player[0]);
+    const totalClaimed = player[1];
+    const points = player[2];
+    const refCount = player[5];
+    const stakedAmt = stake[3] ? stake[0] : 0n;
+
+    // Update stats
+    document.getElementById("statPoints").textContent = points.toString();
+    document.getElementById("statClaimed").textContent = (Number(totalClaimed)/1e18).toFixed(0);
+    document.getElementById("statReferrals").textContent = refCount.toString();
+    document.getElementById("statStaked").textContent = (Number(stakedAmt)/1e18).toFixed(0);
+
+    // Tier
+    const tierEl = document.getElementById("tierBadge");
+    tierEl.textContent = TIER_NAMES[tier];
+    tierEl.className = "tier-badge L" + (tier || 1);
+    document.getElementById("tierName").textContent = TIER_NAMES[tier] + (tier > 0 ? ` · 已领 ${(Number(totalClaimed)/1e18).toFixed(0)} AIGENT` : "");
+    document.getElementById("tierReward").textContent = tier >= 5 ? "🏆 社区大使，最高荣誉" : `距下一级还需 ${Math.max(0, TIER_POINTS[tier+1] - Number(points))} 积分`;
+
+    // Progress
+    const pct = Math.min(100, Number(points) / 10);
+    document.getElementById("progFill").style.width = pct + "%";
+    for (let i=1;i<=5;i++) document.getElementById("pl"+i).classList.toggle("active", tier >= i);
+
+    // Tasks
+    renderTasks(tier);
+
+    // Disable claim if already claimed
+    if (tier > 0) {
+      document.getElementById("claimBtn").disabled = true;
+      document.getElementById("claimBtn").textContent = "✅ 已领取 L1 空投";
+    }
+
+    // Stake info
+    if (stake[3]) {
+      const endDate = new Date((Number(stake[1]) + Number(stake[2])) * 1000);
+      document.getElementById("stakeAmount").value = Number(stake[0]) / 1e18;
+      document.getElementById("stakeAmount").disabled = true;
+      document.getElementById("stakeDuration").disabled = true;
+    }
+
+    document.getElementById("remainingToday").textContent = (Number(remainingDay)/1e18).toFixed(0);
+  } catch(e) { console.error(e); }
+}
+
+async function renderTasks(tier) {
+  const container = document.getElementById("taskList");
+  let html = "";
+  for (const t of TASKS) {
+    let done = false;
+    if (loyaltyContract && userAddress) {
+      try { done = await loyaltyContract.hasCompletedTask(userAddress, t.id); } catch(e) {}
+    }
+    html += `<div class="task ${done ? 'done' : ''}">
+      <div class="task-info"><div class="task-name">${t.name}</div><div class="task-pts">+${t.pts} 积分</div></div>
+      ${done
+        ? '<button class="btn-done">✅ 已完成</button>'
+        : (t.url
+          ? `<button class="btn-do" onclick="window.open('${t.url}')">去做</button>`
+          : '<button class="btn-do" onclick="toast(\'完成后联系管理员验证\',\'info\')">去创作</button>')
+      }
+    </div>`;
+  }
+  container.innerHTML = html || "<p style='color:var(--muted)'>连接钱包查看任务</p>";
+}
+
+// ── Claim L1 ──
+async function claimL1() {
+  if (!signer) return toast("请先连接钱包","error");
+  const urlParams = new URLSearchParams(window.location.search);
+  const ref = urlParams.get("ref") || ethers.ZeroAddress;
+  try {
+    const tx = await loyaltyContract.claimL1(ref);
+    toast("交易已发送，等待确认...","info");
+    await tx.wait();
+    toast("🎉 恭喜！已领取 1,000 AIGENT！","success");
+    await refreshUI();
+  } catch(e) { toast("领取失败: "+e.message,"error"); }
+}
+
+// ── Stake ──
+async function doStake() {
+  if (!signer) return toast("请先连接钱包","error");
+  const amt = document.getElementById("stakeAmount").value;
+  const dur = document.getElementById("stakeDuration").value;
+  if (!amt || Number(amt) < 1000) return toast("最少锁仓 1000 AIGENT","error");
+
+  try {
+    const amtWei = ethers.parseUnits(amt, 18);
+    // Approve first
+    const token = new ethers.Contract(AIGENT_ADDRESS, ERC20_ABI, signer);
+    const allowance = await token.allowance(userAddress, LOYALTY_ADDRESS);
+    if (allowance < amtWei) {
+      const approveTx = await token.approve(LOYALTY_ADDRESS, amtWei);
+      await approveTx.wait();
+    }
+    const tx = await loyaltyContract.stake(amtWei, Number(dur));
+    toast("锁仓中...","info");
+    await tx.wait();
+    toast(`🔒 已锁仓！${dur}天后解锁 +${dur==30?10:dur==90?30:80}% 奖励`,"success");
+    await refreshUI();
+  } catch(e) { toast("锁仓失败: "+e.message,"error"); }
+}
+
+async function doUnstake() {
+  if (!signer) return toast("请先连接钱包","error");
+  try {
+    const tx = await loyaltyContract.unstake();
+    await tx.wait();
+    toast("已解锁，奖励已到账！","success");
+    await refreshUI();
+  } catch(e) { toast("解锁失败 (可能还在锁定期): "+e.message,"error"); }
+}
+
+// ── Referral ──
+function copyRefLink() {
+  const link = document.getElementById("refLink").textContent;
+  if (!link || link.includes("连接")) return toast("请先连接钱包","error");
+  navigator.clipboard.writeText(link);
+  toast("📋 推荐链接已复制！","success");
+}
+
+// ── Toast ──
+function toast(msg, type) {
+  const t = document.createElement("div");
+  t.className = "toast " + type;
+  t.textContent = msg;
+  document.getElementById("toastContainer").appendChild(t);
+  setTimeout(() => { t.style.opacity="0"; t.style.transition="opacity .3s"; setTimeout(()=>t.remove(),300); }, 3000);
+}
+</script>
+</body>
+</html>
