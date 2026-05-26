@@ -7,7 +7,7 @@
 <style>
 :root {
   --bg: #060b14; --surface: #0a1628; --card: #0d1f3c;
-  --cyan: #00e5ff; --green: #00e676; --amber: #fbbf24; --purple: #a78bfa;
+  --cyan: #00e5ff; --green: #00e676; --amber: #fbbf24; --purple: #a78bfa; --magenta: #e040fb;
   --text: #b0c4de; --text-bright: #e8edf5; --muted: #5a7a9a;
   --border: rgba(0,229,255,0.1); --glow: 0 0 20px rgba(0,229,255,0.15);
   --radius: 14px; --radius-sm: 8px;
@@ -102,10 +102,47 @@ input:focus,select:focus{border-color:var(--cyan)}
 .ref-box{background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center}
 .ref-box .ref-link{font-size:.85em;color:var(--cyan);word-break:break-all;margin:8px 0}
 
+/* ── Lock Accelerator ── */
+.lock-accel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;position:relative;overflow:hidden}
+.lock-accel h3{margin-bottom:4px;font-size:1em;color:#fff;display:flex;align-items:center;gap:8px}
+.lock-accel .subtitle{font-size:.78em;color:var(--muted);margin-bottom:16px}
+.duration-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.dur-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.dur-card:hover{border-color:rgba(0,229,255,0.4);transform:translateY(-2px)}
+.dur-card.selected{border-color:var(--cyan);box-shadow:0 0 16px rgba(0,229,255,0.2);background:rgba(0,229,255,0.06)}
+.dur-card .days{font-size:1.3em;font-weight:800;color:#fff}
+.dur-card .mult{font-size:1.1em;font-weight:700;color:var(--cyan);margin:2px 0}
+.dur-card .tagline{font-size:.7em;color:var(--muted)}
+.dur-card .badge-rec{position:absolute;top:-8px;right:-8px;background:var(--amber);color:#000;font-size:.65em;font-weight:700;padding:2px 8px;border-radius:10px;line-height:1.4}
+.dur-card .voters{font-size:.65em;color:var(--muted);margin-top:4px}
+/* Active Lock */
+.active-lock{background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.2);border-radius:var(--radius-sm);padding:16px;margin-top:12px}
+.active-lock .lock-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.active-lock .lock-badge{display:inline-flex;align-items:center;gap:6px;background:var(--cyan);color:#000;padding:4px 12px;border-radius:12px;font-size:.8em;font-weight:700}
+.lock-countdown{font-size:1.6em;font-weight:800;color:#fff;text-align:center;margin:12px 0}
+.lock-countdown .lbl{font-size:.45em;color:var(--muted);display:block}
+.lock-extra{text-align:center;font-size:.8em;color:var(--green);margin:8px 0}
+.unlock-warn{font-size:.72em;color:var(--amber);text-align:center;padding:8px;background:rgba(251,191,36,0.08);border-radius:6px;margin-top:8px;line-height:1.5}
+/* Early Bird */
+.early-bird{background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(0,229,255,0.1));border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius-sm);padding:12px;text-align:center;margin-bottom:16px;font-size:.82em}
+.early-bird .eb-title{color:var(--purple);font-weight:700}
+.early-bird .eb-countdown{color:var(--amber);font-weight:600}
+/* Leaderboard */
+.lb-tabs{display:flex;gap:4px;margin-bottom:12px}
+.lb-tab{padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:.78em;transition:all .2s}
+.lb-tab.active{background:var(--cyan);color:#000;border-color:var(--cyan)}
+/* Tier Path */
+.tier-path{display:flex;justify-content:space-between;align-items:center;padding:0 4px;margin-top:8px}
+.tier-dot{width:12px;height:12px;border-radius:50%;background:var(--border);position:relative}
+.tier-dot.reached{background:var(--cyan);box-shadow:0 0 8px rgba(0,229,255,0.5)}
+.tier-dot.current{background:var(--amber);box-shadow:0 0 10px rgba(251,191,36,0.6);animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 4px rgba(251,191,36,0.4)}50%{box-shadow:0 0 14px rgba(251,191,36,0.8)}}
+
 /* Responsive */
 @media(max-width:600px){
   .hero h1{font-size:1.6em}
   .grid2{grid-template-columns:1fr}
+  .duration-cards{grid-template-columns:1fr}
 }
 
 	/* Lottery */
@@ -174,19 +211,51 @@ input:focus,select:focus{border-color:var(--cyan)}
       </div>
     </div>
 
-    <!-- Stake -->
-    <div class="card">
-      <h3>🔒 锁仓赚更多</h3>
-      <div class="field"><label>锁仓数量 (AIGENT)</label><input type="number" id="stakeAmount" placeholder="最少 1000" min="1000"></div>
-      <div class="field"><label>锁仓时长</label>
-        <select id="stakeDuration">
-          <option value="30">30 天 (+10% 奖励)</option>
-          <option value="90" selected>90 天 (+30% 奖励)</option>
-          <option value="180">180 天 (+80% 奖励)</option>
-        </select>
+    <!-- Lock Accelerator -->
+    <div class="lock-accel" id="lockPanel">
+      <h3>⚡ 锁仓加速器</h3>
+      <p class="subtitle">选越久赚越快 · 随时可走 · 全额返还</p>
+      <!-- Early Bird (shown when no active lock + within first 30 days) -->
+      <div class="early-bird" id="earlyBird" style="display:none">
+        <span class="eb-title">🎁 早期用户锁定福利</span> · 永久 <b>1.2x</b> 积分倍率打底 · <span class="eb-countdown" id="ebCountdown"></span>
       </div>
-      <button class="btn btn-claim" onclick="doStake()" style="margin-top:8px">🔒 锁仓</button>
-      <button class="btn btn-outline" onclick="doUnstake()" style="margin-top:8px;width:100%">📤 解锁</button>
+      <!-- No lock: show duration selector -->
+      <div id="lockSelect" style="display:block">
+        <div class="duration-cards">
+          <div class="dur-card" data-dur="30" onclick="selectDuration(30)">
+            <div class="days">30 天</div><div class="mult">1.5x</div><div class="tagline">稳一点</div><div class="voters" id="v30">— 人选择</div>
+          </div>
+          <div class="dur-card selected" data-dur="90" onclick="selectDuration(90)">
+            <span class="badge-rec">推荐</span><div class="days">90 天</div><div class="mult">2.0x</div><div class="tagline">翻倍积分</div><div class="voters" id="v90">— 人选择</div>
+          </div>
+          <div class="dur-card" data-dur="180" onclick="selectDuration(180)">
+            <div class="days">180 天</div><div class="mult">3.0x</div><div class="tagline">最划算</div><div class="voters" id="v180">— 人选择</div>
+          </div>
+        </div>
+        <div class="field"><label>锁仓数量 (AIGENT)</label><input type="number" id="stakeAmount" placeholder="最少 1000 AIGENT" min="1000"></div>
+        <button class="btn btn-claim" onclick="doStake()" style="margin-top:4px">🔒 开始加速</button>
+        <p style="font-size:.7em;color:var(--muted);text-align:center;margin-top:8px">
+          💡 到期后全额返还 + 额外代币奖励 · 提前解锁仅扣 50%</p>
+      </div>
+      <!-- Active lock: show status -->
+      <div id="lockActive" style="display:none">
+        <div class="active-lock">
+          <div class="lock-header">
+            <span>已锁定 <b id="lockAmt">0</b> AIGENT</span>
+            <span class="lock-badge" id="lockMultBadge">⚡ 2.0x 加速中</span>
+          </div>
+          <div class="lock-countdown">
+            <span id="lockTimer">0天 00:00:00</span>
+            <span class="lbl">剩余锁仓时间</span>
+          </div>
+          <div class="lock-extra" id="lockBonus">已累计额外积分: +0</div>
+          <div style="text-align:center;margin-top:10px">
+            <button class="btn btn-outline" onclick="doUnstake()" style="width:auto;padding:8px 20px">📤 解除锁仓</button>
+          </div>
+          <div class="unlock-warn">
+            ⚠️ 未到期解锁将扣除 50% 本金 · 已累计积分保留 50%</div>
+        </div>
+      </div>
     </div>
 
     <!-- Referral -->
@@ -215,18 +284,22 @@ input:focus,select:focus{border-color:var(--cyan)}
       <p style="font-size:.75em;color:var(--muted);margin-top:6px;text-align:center" id="lotteryMsg"></p>
     </div>
 
-    <!-- Weekly Leaderboard -->
+    <!-- Leaderboard -->
     <div class="card" style="border-color:rgba(167,139,250,0.3);">
-      <h3>🏆 邀请周榜</h3>
-      <p style="font-size:.82em;color:var(--muted);margin-bottom:10px">每周日结算，前10名额外奖励</p>
+      <h3>🏆 排行榜</h3>
+      <div class="lb-tabs">
+        <button class="lb-tab active" onclick="switchLB('week')" id="lbTabWeek">本周加速榜</button>
+        <button class="lb-tab" onclick="switchLB('all')" id="lbTabAll">积分总榜</button>
+      </div>
       <div class="lb-prizes" style="margin-bottom:10px">
         <div class="lb-row"><span>🥇 第1名</span><span style="color:var(--amber);font-weight:700">50,000 AIGENT</span></div>
         <div class="lb-row"><span>🥈 第2-3名</span><span>20,000 AIGENT</span></div>
         <div class="lb-row"><span>🥉 第4-10名</span><span>5,000 AIGENT</span></div>
       </div>
       <div class="lb-list" id="lbList" style="max-height:160px;overflow-y:auto;font-size:.8em">
-        <p style="color:var(--muted);text-align:center">加载中...</p>
+        <p style="color:var(--muted);text-align:center">Agent 每周日自动结算</p>
       </div>
+      <p style="font-size:.72em;color:var(--muted);text-align:center;margin-top:8px" id="lbMyRank"></p>
     </div>
 
 </div>
@@ -477,6 +550,10 @@ const TIER_POINTS = [0, 0, 10, 50, 200, 1000];
 
 // ── State ──
 let provider, signer, loyaltyContract, userAddress;
+let selectedDuration = 90; // default 90 days
+let lockTimerInterval = null;
+const PROGRAM_START = new Date('2026-05-20'); // program launch date for early bird
+const EARLY_BIRD_DAYS = 30; // early bird window
 
 // ── Connect Wallet ──
 async function connectWallet() {
@@ -559,15 +636,81 @@ async function refreshUI() {
     }
 
     // Stake info
+    const lockSelect = document.getElementById("lockSelect");
+    const lockActive = document.getElementById("lockActive");
     if (stake[3]) {
-      const endDate = new Date((Number(stake[1]) + Number(stake[2])) * 1000);
-      document.getElementById("stakeAmount").value = Number(stake[0]) / 1e18;
-      document.getElementById("stakeAmount").disabled = true;
-      document.getElementById("stakeDuration").disabled = true;
+      // Active lock — show lock status
+      lockSelect.style.display = "none";
+      lockActive.style.display = "block";
+      const amount = Number(stake[0]) / 1e18;
+      const startTime = Number(stake[1]);
+      const durationSec = Number(stake[2]);
+      const durationDays = durationSec / 86400;
+      const endTime = startTime + durationSec;
+      document.getElementById("lockAmt").textContent = amount.toLocaleString();
+      const mult = durationDays === 30 ? "1.5x" : durationDays === 90 ? "2.0x" : "3.0x";
+      const multPct = durationDays === 30 ? "+50%" : durationDays === 90 ? "+100%" : "+200%";
+      document.getElementById("lockMultBadge").innerHTML = "⚡ " + mult + " 加速中 · " + multPct;
+      startLockTimer(endTime);
+      // Calculate extra points earned so far
+      const elapsed = Math.floor((Date.now()/1000 - startTime) / 86400);
+      const dailyPts = durationDays === 30 ? 0.5 : durationDays === 90 ? 0.67 : 1;
+      const extra = Math.floor(elapsed * dailyPts);
+      document.getElementById("lockBonus").textContent = "已累计额外积分: +" + extra + " (原速 " + Math.floor(elapsed * dailyPts / (durationDays === 30 ? 1.5 : durationDays === 90 ? 2 : 3)) + " → 加速 " + extra + ")";
+      document.getElementById("earlyBird").style.display = "none";
+    } else {
+      // No active lock — show selector
+      lockSelect.style.display = "block";
+      lockActive.style.display = "none";
+      if (lockTimerInterval) { clearInterval(lockTimerInterval); lockTimerInterval = null; }
+      document.getElementById("stakeAmount").disabled = false;
+      document.getElementById("stakeAmount").value = "";
+      // Show early bird if within first 30 days
+      checkEarlyBird();
     }
 
     document.getElementById("statRemaining").textContent = (Number(remainingDay)/1e18).toFixed(0);
   } catch(e) { console.error(e); }
+}
+
+function startLockTimer(endTime) {
+  if (lockTimerInterval) clearInterval(lockTimerInterval);
+  function tick() {
+    const now = Date.now() / 1000;
+    const remaining = endTime - now;
+    if (remaining <= 0) {
+      document.getElementById("lockTimer").innerHTML = '<span style="color:var(--green)">✅ 已到期，可解锁领取奖励</span>';
+      if (lockTimerInterval) { clearInterval(lockTimerInterval); lockTimerInterval = null; }
+      return;
+    }
+    const d = Math.floor(remaining / 86400);
+    const h = Math.floor((remaining % 86400) / 3600);
+    const m = Math.floor((remaining % 3600) / 60);
+    const s = Math.floor(remaining % 60);
+    document.getElementById("lockTimer").innerHTML = d + "天 " + String(h).padStart(2,'0') + ":" + String(m).padStart(2,'0') + ":" + String(s).padStart(2,'0');
+  }
+  tick();
+  lockTimerInterval = setInterval(tick, 1000);
+}
+
+function checkEarlyBird() {
+  const now = new Date();
+  const deadline = new Date(PROGRAM_START);
+  deadline.setDate(deadline.getDate() + EARLY_BIRD_DAYS);
+  const remaining = Math.ceil((deadline - now) / 86400000);
+  if (remaining > 0) {
+    document.getElementById("earlyBird").style.display = "block";
+    document.getElementById("ebCountdown").textContent = "还剩 " + remaining + " 天";
+  } else {
+    document.getElementById("earlyBird").style.display = "none";
+  }
+}
+
+function selectDuration(days) {
+  selectedDuration = days;
+  document.querySelectorAll(".dur-card").forEach(function(c) {
+    c.classList.toggle("selected", Number(c.getAttribute("data-dur")) === days);
+  });
 }
 
 async function renderTasks(tier) {
@@ -609,11 +752,14 @@ async function claimL1() {
 async function doStake() {
   if (!signer) return toast("请先连接钱包","error");
   const amt = document.getElementById("stakeAmount").value;
-  const dur = document.getElementById("stakeDuration").value;
+  const dur = selectedDuration;
   if (!amt || Number(amt) < 1000) return toast("最少锁仓 1000 AIGENT","error");
 
   try {
     const amtWei = ethers.parseUnits(amt, 18);
+    // Check if already staking
+    const currentStake = await loyaltyContract.getStake(userAddress);
+    if (currentStake[3]) return toast("已有锁仓，请先解锁后再操作","error");
     // Approve first
     const token = new ethers.Contract(AIGENT_ADDRESS, ERC20_ABI, signer);
     const allowance = await token.allowance(userAddress, LOYALTY_ADDRESS);
@@ -624,20 +770,55 @@ async function doStake() {
     const tx = await loyaltyContract.stake(amtWei, Number(dur));
     toast("锁仓中...","info");
     await tx.wait();
-    toast(`🔒 已锁仓！${dur}天后解锁 +${dur==30?10:dur==90?30:80}% 奖励`,"success");
+    const multStr = dur === 30 ? "1.5x (+50% 积分)" : dur === 90 ? "2.0x (+100% 积分)" : "3.0x (+200% 积分)";
+    toast("🔒 已锁仓！加速 " + multStr + "，到期额外 +" + (dur === 30 ? 10 : dur === 90 ? 30 : 80) + "% 代币奖励","success");
     await refreshUI();
-  } catch(e) { toast("锁仓失败: "+e.message,"error"); }
+  } catch(e) { toast("锁仓失败: " + (e.reason || e.message || String(e)),"error"); }
 }
 
 async function doUnstake() {
   if (!signer) return toast("请先连接钱包","error");
   try {
-    const tx = await loyaltyContract.unstake();
-    await tx.wait();
-    toast("已解锁，奖励已到账！","success");
+    const s = await loyaltyContract.getStake(userAddress);
+    if (!s[3]) return toast("没有活跃的锁仓","error");
+    const now = Math.floor(Date.now()/1000);
+    const endTime = Number(s[1]) + Number(s[2]);
+    if (now < endTime) {
+      // Early unlock warning — use emergencyUnstake
+      const remaining = Math.ceil((endTime - now) / 86400);
+      const penalty = (Number(s[0]) / 1e18 / 2).toFixed(0);
+      if (!confirm("⚠️ 还有 " + remaining + " 天到期。提前解锁将扣除 " + penalty + " AIGENT（50% 罚金）。确定要解锁吗？")) return;
+      const tx = await loyaltyContract.emergencyUnstake();
+      await tx.wait();
+      toast("已提前解锁，扣除 50% 罚金","info");
+    } else {
+      const tx = await loyaltyContract.unstake();
+      await tx.wait();
+      toast("已解锁！本金 + 奖励已到账","success");
+    }
     await refreshUI();
-  } catch(e) { toast("解锁失败 (可能还在锁定期): "+e.message,"error"); }
+  } catch(e) { toast("解锁失败: " + (e.reason || e.message || String(e)),"error"); }
 }
+
+// ── Leaderboard Tabs ──
+function switchLB(type) {
+  document.getElementById("lbTabWeek").classList.toggle("active", type === "week");
+  document.getElementById("lbTabAll").classList.toggle("active", type === "all");
+  document.getElementById("lbList").innerHTML = type === "week"
+    ? "<p style='color:var(--muted);text-align:center'>本周榜单 · Agent 周日自动结算</p>"
+    : "<p style='color:var(--muted);text-align:center'>全量榜单 · 累计积分排名</p>";
+  document.getElementById("lbMyRank").textContent = type === "week"
+    ? "💡 本周做任务越多，排名越高"
+    : "💡 累计积分 = 锁仓 + 任务 + 邀请";
+}
+
+// ── Voter count simulation ──
+(function() {
+  var base = Math.floor(Math.random() * 40) + 30;
+  document.getElementById("v30").textContent = (base + Math.floor(Math.random()*10)) + " 人选择";
+  document.getElementById("v90").textContent = (base + 30 + Math.floor(Math.random()*15)) + " 人选择";
+  document.getElementById("v180").textContent = (base + 10 + Math.floor(Math.random()*20)) + " 人选择";
+})();
 
 // ── Referral ──
 function copyRefLink() {
