@@ -338,7 +338,7 @@ async function connectWallet() {
     btn.textContent = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
     btn.classList.add("connected"); btn.disabled = false;
     document.getElementById("claimBtn").disabled = false;
-    document.getElementById("refLink").textContent = "https://aigent.cc/airdrop.html?ref=" + userAddress;
+    document.getElementById("refLink").textContent = "https://www.aigent.ink/airdrop.html?ref=" + userAddress;
     toast("钱包已连接","success");
 
     await refreshUI();

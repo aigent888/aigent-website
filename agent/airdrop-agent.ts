@@ -406,7 +406,7 @@ async function weeklyLeaderboard() {
   leaderboard.sort((a, b) => b.referralCount - a.referralCount);
 
   if (leaderboard.length === 0) {
-    await sendTgMessage("🏆 本周暂无邀请数据。\n邀请好友领取空投，链接在: https://aigent.cc/airdrop.html");
+    await sendTgMessage("🏆 本周暂无邀请数据。\n邀请好友领取空投，链接在: https://www.aigent.ink/airdrop.html");
     return;
   }
 
@@ -473,7 +473,7 @@ async function startBot() {
           if (text.startsWith("/start") || text.startsWith("/help")) {
             await tgApi("sendMessage", {
               chat_id: chatId,
-              text: `🤖 <b>AIGENT 运营助手</b>\n\n命令列表:\n/airdrop — 查看当前空投状态\n/lottery — 报名每日抽奖 (需附带钱包地址)\n/leaderboard — 查看邀请排行榜\n/claim — 获取空投领取链接\n/help — 显示此帮助\n\n🌐 空投页面: https://aigent.cc/airdrop.html`,
+              text: `🤖 <b>AIGENT 运营助手</b>\n\n命令列表:\n/airdrop — 查看当前空投状态\n/lottery — 报名每日抽奖 (需附带钱包地址)\n/leaderboard — 查看邀请排行榜\n/claim — 获取空投领取链接\n/help — 显示此帮助\n\n🌐 空投页面: https://www.aigent.ink/airdrop.html`,
               parse_mode: "HTML",
             });
           } else if (text.startsWith("/airdrop")) {
@@ -483,7 +483,7 @@ async function startBot() {
             const total = Number(status.totalAllocated) / 1e18;
             await tgApi("sendMessage", {
               chat_id: chatId,
-              text: `📊 <b>AIGENT 空投状态</b>\n\n今日: <b>${claimed.toLocaleString()}</b> / ${cap.toLocaleString()} (${status.remainingPercent}% 剩余)\n累计分配: <b>${(total / 1e6).toFixed(1)}M</b> AIGENT\n\n🔗 领取: https://aigent.cc/airdrop.html`,
+              text: `📊 <b>AIGENT 空投状态</b>\n\n今日: <b>${claimed.toLocaleString()}</b> / ${cap.toLocaleString()} (${status.remainingPercent}% 剩余)\n累计分配: <b>${(total / 1e6).toFixed(1)}M</b> AIGENT\n\n🔗 领取: https://www.aigent.ink/airdrop.html`,
               parse_mode: "HTML",
             });
           } else if (text.startsWith("/lottery")) {
@@ -505,13 +505,13 @@ async function startBot() {
           } else if (text.startsWith("/leaderboard")) {
             await tgApi("sendMessage", {
               chat_id: chatId,
-              text: "🏆 排行榜每周日结算\n数据从链上读取，按邀请人数排名\n\n🥇 第1名: 50,000 AIGENT\n🥈 第2-3名: 20,000 AIGENT\n🥉 第4-10名: 5,000 AIGENT\n\n邀请链接: https://aigent.cc/airdrop.html?ref=你的地址",
+              text: "🏆 排行榜每周日结算\n数据从链上读取，按邀请人数排名\n\n🥇 第1名: 50,000 AIGENT\n🥈 第2-3名: 20,000 AIGENT\n🥉 第4-10名: 5,000 AIGENT\n\n邀请链接: https://www.aigent.ink/airdrop.html?ref=你的地址",
               parse_mode: "HTML",
             });
           } else if (text.startsWith("/claim")) {
             await tgApi("sendMessage", {
               chat_id: chatId,
-              text: `🎁 <b>领取 AIGENT 空投</b>\n\n1. 打开 https://aigent.cc/airdrop.html\n2. 连接钱包\n3. 点击"领取 1,000 AIGENT"\n\n🏆 完成任务升级，最高拿 50,000 AIGENT!`,
+              text: `🎁 <b>领取 AIGENT 空投</b>\n\n1. 打开 https://www.aigent.ink/airdrop.html\n2. 连接钱包\n3. 点击"领取 1,000 AIGENT"\n\n🏆 完成任务升级，最高拿 50,000 AIGENT!`,
               parse_mode: "HTML",
               disable_web_page_preview: true,
             });
@@ -566,7 +566,7 @@ async function mainLoop() {
     await sendTgMessage(report);
   } else {
     console.log("\n  ℹ️ 今天没有发现优质用户");
-    const statusMsg = `📊 AIGENT 空投日报\n\n今日已领: ${(Number(status.todayClaimed)/1e18).toLocaleString()} AIGENT\n剩余额度: ${status.remainingPercent}%\n累计分配: ${(Number(status.totalAllocated)/1e18).toLocaleString()} AIGENT\n\n🔗 https://aigent.cc/airdrop.html`;
+    const statusMsg = `📊 AIGENT 空投日报\n\n今日已领: ${(Number(status.todayClaimed)/1e18).toLocaleString()} AIGENT\n剩余额度: ${status.remainingPercent}%\n累计分配: ${(Number(status.totalAllocated)/1e18).toLocaleString()} AIGENT\n\n🔗 https://www.aigent.ink/airdrop.html`;
     await sendTgMessage(statusMsg);
   }
 
