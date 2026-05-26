@@ -437,8 +437,9 @@ bytes32 ethSignedHash = hash.toEthSignedMessageHash();
 
 <div id="toastContainer"></div>
 
-<script src="/ethers.min.js?v=33"></script>
-<script>window.addEventListener('load', function(){ if (typeof ethers === 'undefined') { document.getElementById('walletBtn').textContent = '库加载失败，请刷新(Ctrl+Shift+R)'; } });</script>
+<!-- Primary: local ethers, fallback: unpkg CDN -->
+<script src="/ethers.min.js?v=34" onerror="var s=document.createElement('script');s.src='https://unpkg.com/ethers@6.13.4/dist/ethers.min.js';document.head.appendChild(s);console.warn('ethers local failed, trying unpkg...');"></script>
+<script>window.addEventListener('load',function(){if(typeof ethers==='undefined'){document.getElementById('walletBtn').textContent='请刷新页面重试(Ctrl+Shift+R)';}});</script>
 
 <script>
 // ── Contract config ──
