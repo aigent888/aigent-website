@@ -1,14 +1,14 @@
 /**
- * AIGENT AI 运营 Agent v3.0 — Telegram 集成版
+ * AIGENT AI 运营 Agent v4.0 — Discord + Telegram 双平台
  *
  * 用法:
- *   npx tsx agent.ts --auto          # 全自动模式 (每4小时一轮)
- *   npx tsx agent.ts --scan          # 扫描 Telegram 群，选优质用户
- *   npx tsx agent.ts --reward        # 给扫描出来的用户发奖励
- *   npx tsx agent.ts --lottery       # 执行每日抽奖
- *   npx tsx agent.ts --leaderboard   # 发放每周排行榜奖励
- *   npx tsx agent.ts --buyback       # 执行一次回购销毁
- *   npx tsx agent.ts --bot           # 启动 Telegram Bot (长驻，响应指令)
+ *   npx tsx agent/airdrop-agent.ts --auto        # 全自动模式
+ *   npx tsx agent/airdrop-agent.ts --scan         # 扫描社区用户
+ *   npx tsx agent/airdrop-agent.ts --reward       # 发奖励
+ *   npx tsx agent/airdrop-agent.ts --lottery      # 每日抽奖
+ *   npx tsx agent/airdrop-agent.ts --leaderboard  # 周排行榜
+ *   npx tsx agent/airdrop-agent.ts --buyback      # 回购销毁
+ *   npx tsx agent/airdrop-agent.ts --bot          # 启动 Bot
  */
 
 import "dotenv/config";
@@ -17,15 +17,20 @@ import { privateKeyToAccount } from "viem/accounts";
 import { xLayer } from "viem/chains";
 import { generateText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
+import { Client, GatewayIntentBits, TextChannel } from "discord.js";
 
 // ── 配置 ──
 const AIGENT = "0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39";
 const LOYALTY_AIRDROP = process.env.LOYALTY_AIRDROP_ADDRESS || "0x2257Bf84abB0fa021e26E34a4002724411D0B1db";
 const VERIFIER_PK = process.env.VERIFIER_PRIVATE_KEY || "";
-const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || ""; // 群组或频道 ID
 
-// 回购配置 (建池后填)
+// Platform configs
+const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
+const TG_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "";
+const DC_TOKEN = process.env.DISCORD_BOT_TOKEN || "";
+const DC_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID || "";
+
+// 回购配置
 const USDT = process.env.USDT_ADDRESS || "";
 const BUYBACK_USDT_AMOUNT = 20;
 
@@ -63,11 +68,11 @@ const verifierWallet = verifierAccount
   : null;
 
 // ═══════════════════════════════════════════
-//  Telegram API 工具
+//  平台抽象层: 统一消息发送
 // ═══════════════════════════════════════════
 
 async function tgApi(method: string, body: Record<string, any> = {}) {
-  const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/${method}`;
+  const url = `https://api.telegram.org/bot${TG_TOKEN}/${method}`;
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -76,22 +81,215 @@ async function tgApi(method: string, body: Record<string, any> = {}) {
   return res.json();
 }
 
-async function sendTgMessage(text: string) {
-  if (!TELEGRAM_TOKEN || !TELEGRAM_CHAT_ID) {
-    console.log("  ⚠ TELEGRAM 未配置，跳过发送");
-    return;
-  }
+let discordClient: Client | null = null;
+let discordChannel: TextChannel | null = null;
+
+async function getDiscordChannel(): Promise<TextChannel | null> {
+  if (!DC_TOKEN || !DC_CHANNEL_ID) return null;
+  if (discordChannel) return discordChannel;
   try {
-    await tgApi("sendMessage", {
-      chat_id: TELEGRAM_CHAT_ID,
-      text,
-      parse_mode: "HTML",
-      disable_web_page_preview: true,
-    });
-    console.log("  📤 已发送到 Telegram");
-  } catch (e: any) {
-    console.log(`  ❌ Telegram 发送失败: ${e.message}`);
+    if (!discordClient || !discordClient.isReady()) return null;
+    const ch = await discordClient.channels.fetch(DC_CHANNEL_ID);
+    if (ch && ch.isTextBased() && "send" in ch) {
+      discordChannel = ch as TextChannel;
+      return discordChannel;
+    }
+  } catch {}
+  return null;
+}
+
+async function sendMessage(text: string): Promise<void> {
+  let sent = 0;
+
+  // Telegram
+  if (TG_TOKEN && TG_CHAT_ID) {
+    try {
+      await tgApi("sendMessage", {
+        chat_id: TG_CHAT_ID,
+        text,
+        parse_mode: "HTML",
+        disable_web_page_preview: true,
+      });
+      console.log("  📤 Telegram 已发送");
+      sent++;
+    } catch (e: any) {
+      console.log(`  ❌ Telegram 发送失败: ${e.message}`);
+    }
   }
+
+  // Discord
+  const ch = await getDiscordChannel();
+  if (ch) {
+    try {
+      // Discord has a 2000-char limit; split if needed
+      const clean = text.replace(/<[^>]*>/g, ""); // strip HTML for Discord
+      if (clean.length <= 2000) {
+        await ch.send(clean);
+      } else {
+        // Split into chunks
+        for (let i = 0; i < clean.length; i += 1900) {
+          await ch.send(clean.slice(i, i + 1900));
+        }
+      }
+      console.log("  📤 Discord 已发送");
+      sent++;
+    } catch (e: any) {
+      console.log(`  ❌ Discord 发送失败: ${e.message}`);
+    }
+  }
+
+  if (sent === 0) {
+    console.log("  ⚠ 无可用平台 (Telegram/Discord 均未配置)");
+  }
+}
+
+// ═══════════════════════════════════════════
+//  平台抽象层: 统一社区用户结构
+// ═══════════════════════════════════════════
+
+interface CommunityUser {
+  handle: string;
+  platform: "telegram" | "discord";
+  userId: string;
+  address: string;
+  messageCount: number;
+  content: string;
+}
+
+// ═══════════════════════════════════════════
+//  扫描: Telegram
+// ═══════════════════════════════════════════
+
+async function scanTelegram(): Promise<CommunityUser[]> {
+  if (!TG_TOKEN) return [];
+  console.log("📡 扫描 Telegram...");
+
+  try {
+    const result = await tgApi("getUpdates", { limit: 100, timeout: 5 });
+    if (!result.ok || !result.result) {
+      console.log("  ⚠ 获取消息失败");
+      return [];
+    }
+
+    const updates = result.result;
+    console.log(`  获取到 ${updates.length} 条更新`);
+
+    const userMap = new Map<number, { handle: string; messages: string[] }>();
+    const addressRegex = /0x[a-fA-F0-9]{40}/g;
+
+    for (const upd of updates) {
+      const msg = upd.message || upd.channel_post;
+      if (!msg || !msg.from) continue;
+      const from = msg.from;
+      const name = from.username ? `@${from.username}` : (from.first_name || `user_${from.id}`);
+      const text = msg.text || msg.caption || "";
+      const addrs = text.match(addressRegex);
+      if (addrs || text.toLowerCase().includes("aigent")) {
+        if (!userMap.has(from.id)) {
+          userMap.set(from.id, { handle: name, messages: [] });
+        }
+        userMap.get(from.id)!.messages.push(text);
+      }
+    }
+
+    const users: CommunityUser[] = [];
+    for (const [uid, data] of userMap) {
+      const allText = data.messages.join(" | ");
+      const addrs = allText.match(addressRegex) || [];
+      users.push({
+        handle: data.handle,
+        platform: "telegram",
+        userId: String(uid),
+        address: addrs[0] || "",
+        messageCount: data.messages.length,
+        content: allText.slice(0, 200),
+      });
+    }
+    console.log(`  Telegram: ${users.length} 个活跃用户`);
+    return users;
+  } catch (e: any) {
+    console.log(`  ❌ Telegram 扫描失败: ${e.message}`);
+    return [];
+  }
+}
+
+// ═══════════════════════════════════════════
+//  扫描: Discord
+// ═══════════════════════════════════════════
+
+async function scanDiscord(): Promise<CommunityUser[]> {
+  if (!DC_TOKEN || !DC_CHANNEL_ID) return [];
+  console.log("📡 扫描 Discord...");
+
+  const ch = await getDiscordChannel();
+  if (!ch) {
+    console.log("  ⚠ 无法获取 Discord 频道");
+    return [];
+  }
+
+  try {
+    const messages = await ch.messages.fetch({ limit: 100 });
+    console.log(`  获取到 ${messages.size} 条消息`);
+
+    const userMap = new Map<string, { handle: string; messages: string[] }>();
+    const addressRegex = /0x[a-fA-F0-9]{40}/g;
+
+    for (const [, msg] of messages) {
+      if (!msg.author || msg.author.bot) continue;
+      const uid = msg.author.id;
+      const name = msg.author.displayName || msg.author.username;
+      const text = msg.content || "";
+      const addrs = text.match(addressRegex);
+      if (addrs || text.toLowerCase().includes("aigent")) {
+        if (!userMap.has(uid)) {
+          userMap.set(uid, { handle: name, messages: [] });
+        }
+        userMap.get(uid)!.messages.push(text);
+      }
+    }
+
+    const users: CommunityUser[] = [];
+    for (const [uid, data] of userMap) {
+      const allText = data.messages.join(" | ");
+      const addrs = allText.match(addressRegex) || [];
+      users.push({
+        handle: data.handle,
+        platform: "discord",
+        userId: uid,
+        address: addrs[0] || "",
+        messageCount: data.messages.length,
+        content: allText.slice(0, 200),
+      });
+    }
+    console.log(`  Discord: ${users.length} 个活跃用户`);
+    return users;
+  } catch (e: any) {
+    console.log(`  ❌ Discord 扫描失败: ${e.message}`);
+    return [];
+  }
+}
+
+// ═══════════════════════════════════════════
+//  统一扫描: 合并两个平台
+// ═══════════════════════════════════════════
+
+async function scanCommunity(): Promise<CommunityUser[]> {
+  const [tgUsers, dcUsers] = await Promise.all([
+    scanTelegram(),
+    scanDiscord(),
+  ]);
+  // Dedupe by address
+  const seen = new Set<string>();
+  const merged: CommunityUser[] = [];
+  for (const u of [...tgUsers, ...dcUsers]) {
+    const key = u.address || u.userId;
+    if (!seen.has(key)) {
+      seen.add(key);
+      merged.push(u);
+    }
+  }
+  console.log(`\n📊 社区总计: ${merged.length} 个去重用户 (TG:${tgUsers.length} + DC:${dcUsers.length})`);
+  return merged;
 }
 
 // ═══════════════════════════════════════════
@@ -116,95 +314,20 @@ async function checkAirdropStatus(): Promise<{
 }
 
 // ═══════════════════════════════════════════
-//  工具 2: 扫描 Telegram 群消息
+//  工具 2: AI 选优质用户
 // ═══════════════════════════════════════════
 
-interface TgUser {
-  handle: string;        // Telegram username 或 first_name
-  userId: number;        // Telegram user ID
-  address: string;       // 钱包地址 (从消息中提取)
-  messageCount: number;  // 发言次数
-  content: string;       // 最近发言内容
-}
-
-async function scanTelegramGroup(): Promise<TgUser[]> {
-  console.log(`\n📡 扫描 Telegram 群...`);
-
-  if (!TELEGRAM_TOKEN) {
-    console.log("  ⚠ TELEGRAM_BOT_TOKEN 未设置");
-    return [];
-  }
-
-  try {
-    // 获取最近 100 条消息
-    const result = await tgApi("getUpdates", { limit: 100, timeout: 5 });
-    if (!result.ok || !result.result) {
-      console.log("  ⚠ 获取消息失败，请确认 Bot 已加入群组并具有读取权限");
-      return [];
-    }
-
-    const updates = result.result;
-    console.log(`  获取到 ${updates.length} 条更新`);
-
-    // 提取用户和钱包地址
-    const userMap = new Map<number, { handle: string; messages: string[] }>();
-    const addressRegex = /0x[a-fA-F0-9]{40}/g;
-
-    for (const upd of updates) {
-      const msg = upd.message || upd.channel_post;
-      if (!msg || !msg.from) continue;
-
-      const from = msg.from;
-      const userId = from.id;
-      const name = from.username ? `@${from.username}` : (from.first_name || `user_${userId}`);
-      const text = msg.text || msg.caption || "";
-
-      // 提取钱包地址
-      const addrs = text.match(addressRegex);
-      if (addrs || text.toLowerCase().includes("aigent")) {
-        if (!userMap.has(userId)) {
-          userMap.set(userId, { handle: name, messages: [] });
-        }
-        userMap.get(userId)!.messages.push(text);
-      }
-    }
-
-    const users: TgUser[] = [];
-    for (const [userId, data] of userMap) {
-      const allText = data.messages.join(" | ");
-      const addrs = allText.match(addressRegex) || [];
-      users.push({
-        handle: data.handle,
-        userId,
-        address: addrs[0] || "",
-        messageCount: data.messages.length,
-        content: allText.slice(0, 200),
-      });
-    }
-
-    console.log(`  识别到 ${users.length} 个活跃用户`);
-    return users;
-  } catch (e: any) {
-    console.log(`  ❌ 扫描失败: ${e.message}`);
-    return [];
-  }
-}
-
-// ═══════════════════════════════════════════
-//  工具 3: AI 选优质用户
-// ═══════════════════════════════════════════
-
-async function selectQualityUsers(users: TgUser[]): Promise<
+async function selectQualityUsers(users: CommunityUser[]): Promise<
   { handle: string; address: string; reason: string; pointsAward: number }[]
 > {
   if (users.length === 0) return [];
 
   const model = anthropic("claude-sonnet-4-6");
   const userList = users.map(u =>
-    `${u.handle} (ID:${u.userId}) | 发言:${u.messageCount}次 | 内容:"${u.content.slice(0, 100)}"`
+    `${u.handle} [${u.platform}] | 发言:${u.messageCount}次 | 内容:"${u.content.slice(0, 100)}"`
   ).join("\n");
 
-  const prompt = `你是一个 Web3 社区运营专家。下面是 Telegram 群里讨论 AIGENT 的用户列表。
+  const prompt = `你是一个 Web3 社区运营专家。下面是社区里讨论 AIGENT 的用户列表。
 选出 3-5 个最值得空投奖励的用户（真用户、活跃、有影响力、不是机器人）。
 
 用户列表:
@@ -226,11 +349,11 @@ ${userList}
 }
 
 // ═══════════════════════════════════════════
-//  工具 4: 批量发奖励 (链上)
+//  工具 3: 批量发奖励
 // ═══════════════════════════════════════════
 
 async function batchReward(users: { address: string; pointsAward: number; reason?: string }[]) {
-  if (!verifierWallet) { console.log("  ⚠ VERIFIER_PRIVATE_KEY 未设置，跳过链上操作"); return; }
+  if (!verifierWallet) { console.log("  ⚠ VERIFIER_PRIVATE_KEY 未设置"); return; }
   console.log(`\n💰 批量发奖 (${users.length} 人)...`);
   const addresses = users.map(u => u.address as `0x${string}`);
   const amounts = users.map(u => BigInt(u.pointsAward) * 1000n * BigInt(1e18));
@@ -248,7 +371,7 @@ async function batchReward(users: { address: string; pointsAward: number; reason
 }
 
 // ═══════════════════════════════════════════
-//  工具 5: 标记黑名单
+//  工具 4: 黑名单
 // ═══════════════════════════════════════════
 
 async function blacklistBots(addresses: string[]) {
@@ -273,23 +396,23 @@ async function blacklistBots(addresses: string[]) {
 }
 
 // ═══════════════════════════════════════════
-//  工具 6: 生成运营报告
+//  工具 5: 生成运营报告
 // ═══════════════════════════════════════════
 
 async function generateReport(status: any, rewardedUsers: any[]) {
   const model = anthropic("claude-sonnet-4-6");
-  const prompt = `根据以下空投运营数据，写一条 Telegram 群公告（150字以内，中文）：
+  const prompt = `根据以下空投运营数据，写一条社区公告（150字以内，中文）：
 - 今日已领: ${status.todayClaimed} / ${status.dailyCap}
 - 累计分配: ${status.totalAllocated}
 - 今日奖励用户: ${rewardedUsers.length} 人
-要求: 有数据、有号召、有表情符号。直接输出内容，不要标题。`;
+要求: 有数据、有号召、有表情符号。直接输出内容。`;
 
   const result = await generateText({ model, prompt, maxTokens: 300 });
   return result.text;
 }
 
 // ═══════════════════════════════════════════
-//  工具 7: 回购销毁
+//  工具 6: 回购销毁
 // ═══════════════════════════════════════════
 
 async function buybackAndBurn() {
@@ -297,16 +420,14 @@ async function buybackAndBurn() {
   if (!USDT) { console.log("  ⚠ USDT_ADDRESS 未设置 (建池后配置)"); return; }
 
   console.log(`\n🔥 回购销毁 (${BUYBACK_USDT_AMOUNT} USDT → AIGENT → burn)`);
-  // 简化为直接 burn Agent 钱包的部分 AIGENT
-  // 完整版需 Uniswap swap 后 burn
   try {
     const bal = await publicClient.readContract({
       address: AIGENT as `0x${string}`, abi: AIGENT_ABI,
       functionName: "balanceOf", args: [verifierAccount!.address],
     }) as bigint;
 
-    if (bal > BigInt(100000) * BigInt(1e18)) { // > 10万才烧
-      const burnAmount = BigInt(10000) * BigInt(1e18); // 烧1万
+    if (bal > BigInt(100000) * BigInt(1e18)) {
+      const burnAmount = BigInt(10000) * BigInt(1e18);
       const hash = await verifierWallet!.writeContract({
         address: AIGENT as `0x${string}`, abi: AIGENT_ABI,
         functionName: "burn", args: [burnAmount],
@@ -320,24 +441,22 @@ async function buybackAndBurn() {
 }
 
 // ═══════════════════════════════════════════
-//  工具 8: 每日抽奖
+//  工具 7: 每日抽奖
 // ═══════════════════════════════════════════
 
 async function dailyLottery() {
   if (!verifierWallet) { console.log("  ⚠ VERIFIER_PRIVATE_KEY 未设置"); return; }
   console.log("\n🎰 每日抽奖...");
 
-  // 从 Telegram 消息中提取报名用户
-  const users = await scanTelegramGroup();
+  const users = await scanCommunity();
   const entries = users.filter(u => u.content.toLowerCase().includes("/lottery") && u.address);
 
   if (entries.length === 0) {
     console.log("  今日无人报名");
-    await sendTgMessage("🎰 今日抽奖无人报名，明天再来！\n发送 /lottery + 你的钱包地址 即可参与");
+    await sendMessage("🎰 今日抽奖无人报名，明天再来！\n发送 /lottery + 你的钱包地址 即可参与");
     return;
   }
 
-  // 加权随机 (从合约读层级)
   const tierWeights = [0, 1, 3, 6, 10, 20];
   const weighted: { addr: string; weight: number; handle: string }[] = [];
   for (const e of entries) {
@@ -353,14 +472,12 @@ async function dailyLottery() {
     }
   }
 
-  // 加权抽选
   const totalWeight = weighted.reduce((s, w) => s + w.weight, 0);
   let roll = Math.floor(Math.random() * totalWeight);
   let winner = weighted[0];
   for (const w of weighted) { roll -= w.weight; if (roll < 0) { winner = w; break; } }
 
   const prizeAmounts = [0, 100, 500, 1000, 5000, 10000];
-  // Read tier again for prize
   let tier = 1;
   try {
     const p = await publicClient.readContract({
@@ -373,20 +490,18 @@ async function dailyLottery() {
 
   await batchReward([{ address: winner.addr, pointsAward: Math.ceil(prize / 1000), reason: "每日抽奖" }]);
 
-  const msg = `🎰 <b>每日抽奖开奖!</b>\n\n🏆 中奖: <code>${winner.addr.slice(0, 10)}...</code>\n🎁 奖品: <b>${prize} AIGENT</b>\n📊 参与人数: ${entries.length}\n\n明天继续! 发送 /lottery 报名`;
-  await sendTgMessage(msg);
+  await sendMessage(`🎰 每日抽奖开奖!\n\n🏆 中奖: ${winner.addr.slice(0, 10)}...\n🎁 奖品: ${prize} AIGENT\n📊 参与人数: ${entries.length}\n\n明天继续! 发送 /lottery 报名`);
 }
 
 // ═══════════════════════════════════════════
-//  工具 9: 每周邀请排行榜
+//  工具 8: 每周排行榜
 // ═══════════════════════════════════════════
 
 async function weeklyLeaderboard() {
   if (!verifierWallet) { console.log("  ⚠ VERIFIER_PRIVATE_KEY 未设置"); return; }
   console.log("\n🏆 每周邀请排行榜...");
 
-  // 从 Telegram 群获取活跃用户，查链上推荐数据
-  const users = await scanTelegramGroup();
+  const users = await scanCommunity();
   const leaderboard: { address: string; handle: string; referralCount: number }[] = [];
 
   for (const u of users) {
@@ -406,20 +521,17 @@ async function weeklyLeaderboard() {
   leaderboard.sort((a, b) => b.referralCount - a.referralCount);
 
   if (leaderboard.length === 0) {
-    await sendTgMessage("🏆 本周暂无邀请数据。\n邀请好友领取空投，链接在: https://www.aigent.ink/airdrop.html");
+    await sendMessage("🏆 本周暂无邀请数据。\n邀请好友领取空投: https://www.aigent.ink/airdrop.html");
     return;
   }
 
   const top10 = leaderboard.slice(0, 10);
-
-  // 构建排行榜消息
-  let lbText = "🏆 <b>本周邀请排行榜</b>\n\n";
+  let lbText = "🏆 本周邀请排行榜\n\n";
   const medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
   for (let i = 0; i < top10.length; i++) {
-    lbText += `${medals[i]} ${top10[i].handle}: <b>${top10[i].referralCount}</b> 人\n`;
+    lbText += `${medals[i]} ${top10[i].handle}: ${top10[i].referralCount} 人\n`;
   }
 
-  // 发奖
   const rewards: { address: string; pointsAward: number; reason: string }[] = [];
   for (let i = 0; i < top10.length; i++) {
     let prize = 5000;
@@ -429,163 +541,234 @@ async function weeklyLeaderboard() {
   }
 
   if (rewards.length > 0) await batchReward(rewards);
-
   lbText += "\n💰 奖励已发放到链上!";
-  await sendTgMessage(lbText);
+  await sendMessage(lbText);
 }
 
 // ═══════════════════════════════════════════
-//  Telegram Bot 长驻 (响应指令)
+//  Bot 命令处理 (统一)
 // ═══════════════════════════════════════════
 
-let lastUpdateId = 0;
+const HELP_TEXT = `🤖 AIGENT 运营助手
 
-async function startBot() {
-  if (!TELEGRAM_TOKEN) {
-    console.log("❌ TELEGRAM_BOT_TOKEN 未设置");
-    console.log("   请在 .env 中设置 TELEGRAM_BOT_TOKEN=你的token");
+命令:
+/airdrop — 查看空投状态
+/lottery — 报名每日抽奖 (需附带钱包地址)
+/leaderboard — 查看邀请排行榜
+/claim — 获取空投领取链接
+/help — 显示此帮助
+
+🌐 空投页面: https://www.aigent.ink/airdrop.html
+💬 Discord: https://discord.gg/待设置`;
+
+async function handleCommand(cmd: string, reply: (text: string) => Promise<void>, userName: string) {
+  const text = cmd.trim();
+
+  if (text.startsWith("/start") || text.startsWith("/help")) {
+    await reply(HELP_TEXT);
+  } else if (text.startsWith("/airdrop")) {
+    const status = await checkAirdropStatus();
+    const claimed = Number(status.todayClaimed) / 1e18;
+    const cap = Number(status.dailyCap) / 1e18;
+    const total = Number(status.totalAllocated) / 1e18;
+    await reply(`📊 AIGENT 空投状态\n\n今日: ${claimed.toLocaleString()} / ${cap.toLocaleString()} (${status.remainingPercent}% 剩余)\n累计分配: ${(total / 1e6).toFixed(1)}M AIGENT\n\n🔗 领取: https://www.aigent.ink/airdrop.html`);
+  } else if (text.startsWith("/lottery")) {
+    const addrMatch = text.match(/0x[a-fA-F0-9]{40}/);
+    if (!addrMatch) {
+      await reply("🎰 请提供你的钱包地址:\n/lottery 0x你的地址");
+    } else {
+      await reply(`✅ ${userName} 已报名今日抽奖!\n地址: ${addrMatch[0].slice(0, 10)}...\n每日 00:00 UTC 开奖`);
+      console.log(`  抽奖报名: ${userName} (${addrMatch[0]})`);
+    }
+  } else if (text.startsWith("/leaderboard")) {
+    await reply("🏆 排行榜每周日结算\n数据从链上读取，按邀请人数排名\n\n🥇 第1名: 50,000 AIGENT\n🥈 第2-3名: 20,000 AIGENT\n🥉 第4-10名: 5,000 AIGENT\n\n邀请链接: https://www.aigent.ink/airdrop.html?ref=你的地址");
+  } else if (text.startsWith("/claim")) {
+    await reply(`🎁 领取 AIGENT 空投\n\n1. 打开 https://www.aigent.ink/airdrop.html\n2. 连接钱包\n3. 点击"领取 1,000 AIGENT"\n\n🏆 完成任务升级，最高拿 50,000 AIGENT!`);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  Telegram Bot (轮询)
+// ═══════════════════════════════════════════
+
+let tgLastUpdateId = 0;
+
+async function startTelegramBot(): Promise<void> {
+  if (!TG_TOKEN) {
+    console.log("⚠ Telegram 未配置 (TELEGRAM_BOT_TOKEN 为空)");
     return;
   }
 
-  console.log("🤖 Telegram Bot 启动中...");
-
-  // 发送上线通知
-  if (TELEGRAM_CHAT_ID) {
-    await sendTgMessage("🤖 AIGENT 运营 Agent 已上线!\n\n命令:\n/airdrop — 查看空投状态\n/lottery — 报名每日抽奖\n/leaderboard — 查看排行榜\n/help — 帮助");
+  console.log("🤖 Telegram Bot 启动 (轮询模式)...");
+  if (TG_CHAT_ID) {
+    await sendMessage("🤖 AIGENT 运营 Agent 已上线!\n\n命令:\n/airdrop — 查看空投状态\n/lottery — 报名每日抽奖\n/leaderboard — 查看排行榜\n/help — 帮助");
   }
 
-  // 轮询消息
   while (true) {
     try {
-      const result = await tgApi("getUpdates", { offset: lastUpdateId + 1, timeout: 30 });
+      const result = await tgApi("getUpdates", { offset: tgLastUpdateId + 1, timeout: 30 });
       if (result.ok && result.result) {
         for (const upd of result.result) {
-          lastUpdateId = upd.update_id;
+          tgLastUpdateId = upd.update_id;
           const msg = upd.message || upd.channel_post;
           if (!msg || !msg.text) continue;
 
-          const text = msg.text.trim();
           const chatId = msg.chat.id;
           const from = msg.from;
           const name = from?.username ? `@${from.username}` : (from?.first_name || "用户");
 
-          // ── 命令处理 ──
-          if (text.startsWith("/start") || text.startsWith("/help")) {
-            await tgApi("sendMessage", {
-              chat_id: chatId,
-              text: `🤖 <b>AIGENT 运营助手</b>\n\n命令列表:\n/airdrop — 查看当前空投状态\n/lottery — 报名每日抽奖 (需附带钱包地址)\n/leaderboard — 查看邀请排行榜\n/claim — 获取空投领取链接\n/help — 显示此帮助\n\n🌐 空投页面: https://www.aigent.ink/airdrop.html`,
-              parse_mode: "HTML",
-            });
-          } else if (text.startsWith("/airdrop")) {
-            const status = await checkAirdropStatus();
-            const claimed = Number(status.todayClaimed) / 1e18;
-            const cap = Number(status.dailyCap) / 1e18;
-            const total = Number(status.totalAllocated) / 1e18;
-            await tgApi("sendMessage", {
-              chat_id: chatId,
-              text: `📊 <b>AIGENT 空投状态</b>\n\n今日: <b>${claimed.toLocaleString()}</b> / ${cap.toLocaleString()} (${status.remainingPercent}% 剩余)\n累计分配: <b>${(total / 1e6).toFixed(1)}M</b> AIGENT\n\n🔗 领取: https://www.aigent.ink/airdrop.html`,
-              parse_mode: "HTML",
-            });
-          } else if (text.startsWith("/lottery")) {
-            const addrMatch = text.match(/0x[a-fA-F0-9]{40}/);
-            if (!addrMatch) {
+          await handleCommand(
+            msg.text,
+            async (replyText) => {
               await tgApi("sendMessage", {
                 chat_id: chatId,
-                text: "🎰 请提供你的钱包地址:\n/lottery 0x你的地址",
-              });
-            } else {
-              // 存储报名 (生产环境用 KV/数据库)
-              await tgApi("sendMessage", {
-                chat_id: chatId,
-                text: `✅ ${name} 已报名今日抽奖!\n地址: <code>${addrMatch[0].slice(0, 10)}...</code>\n每日 00:00 UTC 开奖`,
+                text: replyText,
                 parse_mode: "HTML",
+                disable_web_page_preview: true,
               });
-              console.log(`  抽奖报名: ${name} (${addrMatch[0]})`);
-            }
-          } else if (text.startsWith("/leaderboard")) {
-            await tgApi("sendMessage", {
-              chat_id: chatId,
-              text: "🏆 排行榜每周日结算\n数据从链上读取，按邀请人数排名\n\n🥇 第1名: 50,000 AIGENT\n🥈 第2-3名: 20,000 AIGENT\n🥉 第4-10名: 5,000 AIGENT\n\n邀请链接: https://www.aigent.ink/airdrop.html?ref=你的地址",
-              parse_mode: "HTML",
-            });
-          } else if (text.startsWith("/claim")) {
-            await tgApi("sendMessage", {
-              chat_id: chatId,
-              text: `🎁 <b>领取 AIGENT 空投</b>\n\n1. 打开 https://www.aigent.ink/airdrop.html\n2. 连接钱包\n3. 点击"领取 1,000 AIGENT"\n\n🏆 完成任务升级，最高拿 50,000 AIGENT!`,
-              parse_mode: "HTML",
-              disable_web_page_preview: true,
-            });
-          } else if (text.toLowerCase().includes("aigent") || text.match(/0x[a-fA-F0-9]{40}/)) {
-            // 有人讨论 AIGENT 或分享钱包 → 静默记录，不回复
-            console.log(`  👤 ${name}: ${text.slice(0, 80)}`);
-          }
+            },
+            name,
+          );
         }
       }
     } catch (e: any) {
-      console.log(`  Bot 轮询错误: ${e.message}`);
-      await new Promise(r => setTimeout(r, 5000));
+      if (!e.message?.includes("timeout")) {
+        console.log(`  TG Bot 错误: ${e.message}`);
+        await new Promise(r => setTimeout(r, 5000));
+      }
     }
   }
 }
 
 // ═══════════════════════════════════════════
-//  主循环 (定时运营)
+//  Discord Bot (Gateway WebSocket)
+// ═══════════════════════════════════════════
+
+async function startDiscordBot(): Promise<void> {
+  if (!DC_TOKEN) {
+    console.log("⚠ Discord 未配置 (DISCORD_BOT_TOKEN 为空)");
+    return;
+  }
+
+  console.log("🤖 Discord Bot 启动 (Gateway 模式)...");
+
+  discordClient = new Client({
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.MessageContent,
+    ],
+  });
+
+  discordClient.on("ready", async () => {
+    console.log(`  ✅ Discord 已登录: ${discordClient!.user?.tag}`);
+    // Send online notice
+    if (DC_CHANNEL_ID) {
+      const ch = await getDiscordChannel();
+      if (ch) {
+        await ch.send("🤖 AIGENT 运营 Agent 已上线!\n\n命令:\n/airdrop /lottery /leaderboard /claim /help");
+      }
+    }
+  });
+
+  discordClient.on("messageCreate", async (msg) => {
+    if (msg.author.bot) return;
+    if (!msg.content.startsWith("/")) return;
+
+    // Only respond in configured channel or DMs
+    if (DC_CHANNEL_ID && msg.channel.id !== DC_CHANNEL_ID) return;
+
+    const name = msg.author.displayName || msg.author.username;
+    await handleCommand(
+      msg.content,
+      async (replyText) => {
+        // Clean HTML tags for Discord
+        const clean = replyText.replace(/<[^>]*>/g, "");
+        if (clean.length <= 2000) {
+          await msg.reply(clean);
+        } else {
+          await msg.reply(clean.slice(0, 1990) + "...");
+        }
+      },
+      name,
+    );
+  });
+
+  discordClient.on("error", (e) => {
+    console.log(`  DC Bot 错误: ${e.message}`);
+  });
+
+  await discordClient.login(DC_TOKEN);
+}
+
+// ═══════════════════════════════════════════
+//  启动所有 Bot
+// ═══════════════════════════════════════════
+
+async function startAllBots(): Promise<void> {
+  // Run both bots concurrently
+  await Promise.all([
+    startDiscordBot(),
+    startTelegramBot(),
+  ]);
+}
+
+// ═══════════════════════════════════════════
+//  主循环
 // ═══════════════════════════════════════════
 
 async function mainLoop() {
   console.log("╔══════════════════════════════════╗");
-  console.log("║  🤖 AIGENT 运营 Agent v3.0      ║");
-  console.log("║  📡 Telegram 集成版             ║");
+  console.log("║  🤖 AIGENT 运营 Agent v4.0      ║");
+  console.log("║  Discord + Telegram 双平台      ║");
   console.log("╚══════════════════════════════════╝\n");
 
-  // 1. 检查空投合约状态
-  console.log("📊 Step 1: 检查合约状态");
+  // 1. 检查合约
+  console.log("📊 Step 1: 合约状态");
   const status = await checkAirdropStatus();
-  console.log(`  今日额度: ${status.todayClaimed}/${status.dailyCap} (${status.remainingPercent}%剩余)`);
-  console.log(`  累计分配: ${(Number(status.totalAllocated) / 1e18).toLocaleString()} AIGENT`);
+  console.log(`  今日: ${status.todayClaimed}/${status.dailyCap} (${status.remainingPercent}%剩余)`);
+  console.log(`  累计: ${(Number(status.totalAllocated) / 1e18).toLocaleString()} AIGENT`);
 
-  // 2. 扫描 Telegram 群
-  console.log("\n📡 Step 2: 扫描 Telegram 群");
-  const users = await scanTelegramGroup();
+  // 2. 扫描社区
+  console.log("\n📡 Step 2: 扫描社区");
+  const users = await scanCommunity();
 
-  // 3. AI 选优质用户
-  console.log("\n🧠 Step 3: AI 筛选优质用户");
+  // 3. AI 精选
+  console.log("\n🧠 Step 3: AI 筛选");
   const selected = await selectQualityUsers(users);
 
+  // 4-5. 发奖 + 报告
   if (selected.length > 0) {
-    // 4. 发奖励
-    console.log("\n💰 Step 4: 发奖励");
+    console.log("\n💰 Step 4: 发奖");
     await batchReward(selected.map(s => ({
       address: s.address, pointsAward: s.pointsAward, reason: s.reason,
     })));
 
-    // 5. 生成并发送运营报告到 Telegram
-    console.log("\n📝 Step 5: 生成运营报告 → Telegram");
+    console.log("\n📝 Step 5: 运营报告");
     const report = await generateReport(status, selected);
-    console.log(`\n  报告内容:\n  ${report}`);
-    await sendTgMessage(report);
+    console.log(`\n  ${report}`);
+    await sendMessage(report);
   } else {
-    console.log("\n  ℹ️ 今天没有发现优质用户");
-    const statusMsg = `📊 AIGENT 空投日报\n\n今日已领: ${(Number(status.todayClaimed)/1e18).toLocaleString()} AIGENT\n剩余额度: ${status.remainingPercent}%\n累计分配: ${(Number(status.totalAllocated)/1e18).toLocaleString()} AIGENT\n\n🔗 https://www.aigent.ink/airdrop.html`;
-    await sendTgMessage(statusMsg);
+    console.log("\n  ℹ️ 今日无优质用户");
+    const msg = `📊 AIGENT 空投日报\n\n今日已领: ${(Number(status.todayClaimed)/1e18).toLocaleString()} AIGENT\n剩余: ${status.remainingPercent}%\n累计: ${(Number(status.totalAllocated)/1e18).toLocaleString()} AIGENT\n\n🔗 https://www.aigent.ink/airdrop.html`;
+    await sendMessage(msg);
   }
 
-  // 6. 每日抽奖
+  // 6. 抽奖
   console.log("\n🎰 Step 6: 每日抽奖");
   await dailyLottery();
 
-  // 7. 每周排行榜 (周日执行)
-  const dayOfWeek = new Date().getUTCDay();
-  if (dayOfWeek === 0) {
+  // 7. 周榜 (周日 UTC)
+  if (new Date().getUTCDay() === 0) {
     console.log("\n🏆 Step 7: 每周排行榜");
     await weeklyLeaderboard();
   }
 
-  // 8. 回购销毁
+  // 8. 回购
   console.log("\n🔥 Step 8: 回购销毁");
   await buybackAndBurn();
 
-  console.log("\n✅ 本轮运营完成。\n");
+  console.log("\n✅ 本轮运营完成\n");
 }
 
 // ── CLI ──
@@ -594,20 +777,18 @@ const mode = process.argv[2] || "--auto";
 (async () => {
   switch (mode) {
     case "--bot":
-      // 长驻模式: 只启动 Bot，不跑运营循环
-      await startBot();
+      await startAllBots();
       break;
     case "--auto":
-      // 先跑一轮运营，再启动 Bot，然后每4小时运营
       await mainLoop().catch(console.error);
-      console.log("\n🤖 启动 Telegram Bot...\n");
-      startBot().catch(console.error);
+      console.log("\n🤖 启动 Bot (Discord + Telegram)...\n");
+      startAllBots().catch(console.error);
       setInterval(() => mainLoop().catch(console.error), 4 * 60 * 60 * 1000);
       break;
     case "--scan":
-      const users = await scanTelegramGroup();
-      console.log(`扫描结果: ${users.length} 个活跃用户`);
-      users.forEach(u => console.log(`  ${u.handle} | 发言${u.messageCount}次 | ${u.address ? u.address.slice(0,10)+'...' : '无地址'}`));
+      const users = await scanCommunity();
+      console.log(`\n扫描结果: ${users.length} 个去重用户`);
+      users.forEach(u => console.log(`  [${u.platform}] ${u.handle} | 发言${u.messageCount}次 | ${u.address ? u.address.slice(0,10)+'...' : '无地址'}`));
       break;
     case "--reward":
       await mainLoop().catch(console.error);
@@ -622,6 +803,6 @@ const mode = process.argv[2] || "--auto";
       await buybackAndBurn();
       break;
     default:
-      console.log("Usage: npx tsx agent.ts [--auto|--scan|--reward|--lottery|--leaderboard|--buyback|--bot]");
+      console.log("Usage: npx tsx agent/airdrop-agent.ts [--auto|--scan|--reward|--lottery|--leaderboard|--buyback|--bot]");
   }
 })();
