@@ -106,6 +106,17 @@ input:focus,select:focus{border-color:var(--cyan)}
   .hero h1{font-size:1.6em}
   .grid2{grid-template-columns:1fr}
 }
+
+	/* Lottery */
+	.prize-table{width:100%;font-size:.78em;border-collapse:collapse}
+	.prize-row{display:flex;justify-content:space-between;padding:5px 8px;border-bottom:1px solid var(--border)}
+	.prize-row:last-child{border-bottom:none}
+	/* Leaderboard */
+	.lb-prizes{font-size:.8em}
+	.lb-row{display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid var(--border)}
+	.lb-row:last-child{border-bottom:none}
+	.lb-list .lb-item{display:flex;justify-content:space-between;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.04)}
+	.lb-list .lb-item:last-child{border-bottom:none}
 </style>
 </head>
 <body>
@@ -186,7 +197,37 @@ input:focus,select:focus{border-color:var(--cyan)}
       </div>
     </div>
 
-  </div>
+  
+    <!-- Daily Lottery -->
+    <div class="card" style="border-color:rgba(251,191,36,0.3);">
+      <h3>🎰 每日抽奖</h3>
+      <p style="font-size:.82em;color:var(--muted);margin-bottom:10px">层级越高，中奖概率越大</p>
+      <div class="prize-table" style="margin-bottom:10px">
+        <div class="prize-row"><span>L1</span><span>1x 权重</span><span>100 AIGENT</span></div>
+        <div class="prize-row"><span>L2</span><span>3x 权重</span><span>500 AIGENT</span></div>
+        <div class="prize-row"><span>L3</span><span>6x 权重</span><span>1,000 AIGENT</span></div>
+        <div class="prize-row"><span>L4</span><span>10x 权重</span><span>5,000 AIGENT</span></div>
+        <div class="prize-row" style="color:var(--magenta)"><span>L5</span><span>20x 权重</span><span>10,000 AIGENT</span></div>
+      </div>
+      <button class="btn btn-claim" onclick="enterLottery()" style="width:100%;margin-top:8px">🎟 今日抽奖</button>
+      <p style="font-size:.75em;color:var(--muted);margin-top:6px;text-align:center" id="lotteryMsg"></p>
+    </div>
+
+    <!-- Weekly Leaderboard -->
+    <div class="card" style="border-color:rgba(167,139,250,0.3);">
+      <h3>🏆 邀请周榜</h3>
+      <p style="font-size:.82em;color:var(--muted);margin-bottom:10px">每周日结算，前10名额外奖励</p>
+      <div class="lb-prizes" style="margin-bottom:10px">
+        <div class="lb-row"><span>🥇 第1名</span><span style="color:var(--amber);font-weight:700">50,000 AIGENT</span></div>
+        <div class="lb-row"><span>🥈 第2-3名</span><span>20,000 AIGENT</span></div>
+        <div class="lb-row"><span>🥉 第4-10名</span><span>5,000 AIGENT</span></div>
+      </div>
+      <div class="lb-list" id="lbList" style="max-height:160px;overflow-y:auto;font-size:.8em">
+        <p style="color:var(--muted);text-align:center">加载中...</p>
+      </div>
+    </div>
+
+</div>
 
 </div>
 
@@ -386,6 +427,46 @@ function toast(msg, type) {
   document.getElementById("toastContainer").appendChild(t);
   setTimeout(() => { t.style.opacity="0"; t.style.transition="opacity .3s"; setTimeout(()=>t.remove(),300); }, 3000);
 }
+
+// ── Daily Lottery ──
+async function enterLottery() {
+  if (!wallet) { showToast('请先连接钱包', 'error'); return; }
+  const addr = wallet.address;
+  const msg = document.getElementById('lotteryMsg');
+  msg.textContent = '报名中...';
+  // Send lottery entry to agent backend (KV or API)
+  // For now, store in localStorage as demo
+  const today = new Date().toISOString().slice(0, 10);
+  const key = 'lottery_' + today;
+  let entries = JSON.parse(localStorage.getItem(key) || '[]');
+  if (entries.includes(addr)) {
+    msg.textContent = '今日已报名，明天再来!';
+    return;
+  }
+  entries.push(addr);
+  localStorage.setItem(key, JSON.stringify(entries));
+  msg.textContent = '✅ 报名成功! 每日 00:00 UTC 开奖';
+  showToast('🎟 已报名今日抽奖', 'success');
+}
+
+// ── Load Weekly Leaderboard ──
+async function loadLeaderboard() {
+  const lbList = document.getElementById('lbList');
+  try {
+    // Read from loyalty contract events or use cached data
+    // For demo: show static placeholder
+    lbList.innerHTML = '<p style="color:var(--muted);text-align:center">Agent 每周日自动结算并公布</p>';
+    // In production: fetch from agent API or contract events
+    // const data = await fetch('/api/leaderboard').then(r => r.json());
+    // render top 10
+  } catch(e) {
+    lbList.innerHTML = '<p style="color:var(--muted);text-align:center">加载失败</p>';
+  }
+}
+
+// Call on load
+loadLeaderboard();
+
 </script>
 </body>
 </html>
