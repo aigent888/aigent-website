@@ -437,7 +437,8 @@ bytes32 ethSignedHash = hash.toEthSignedMessageHash();
 
 <div id="toastContainer"></div>
 
-<script src="ethers.min.js"></script>
+<script src="/ethers.min.js?v=33"></script>
+<script>window.addEventListener('load', function(){ if (typeof ethers === 'undefined') { document.getElementById('walletBtn').textContent = '库加载失败，请刷新(Ctrl+Shift+R)'; } });</script>
 
 <script>
 // ── Contract config ──
