@@ -131,7 +131,7 @@ input:focus,select:focus{border-color:var(--cyan)}
   <!-- Hero -->
   <div class="hero">
     <h1>AIGENT <span>五层忠诚计划</span></h1>
-    <p>越投入越多 · 真正的用户获得真正的奖励</p>
+    <p>越投入越多 · 真正的用户获得真正的奖励</p><p style="margin-top:6px;font-size:.85em;color:var(--cyan);">📱 加入 Telegram: <a href="https://t.me/aigent_community" target="_blank" style="color:var(--cyan);text-decoration:underline;">t.me/aigent_community</a></p>
   </div>
 
   <!-- Tier Card -->
@@ -259,8 +259,8 @@ const ERC20_ABI = ["function approve(address spender, uint256 amount) returns (b
 
 // Tasks
 const TASKS = [
-  { id: 0, name: "关注 X (Twitter)", pts: 1, url: "https://x.com/AIGENT_token" },
-  { id: 1, name: "转发置顶推文", pts: 2, url: "https://x.com/AIGENT_token" },
+  { id: 0, name: "加入 Telegram 群组", pts: 1, url: "https://t.me/aigent_community" },
+  { id: 1, name: "邀请好友进群", pts: 2, url: null },
   { id: 2, name: "原创推文带 #AIGENT", pts: 10, url: null },
   { id: 4, name: "创作内容 (视频/文章)", pts: 20, url: null },
 ];
@@ -274,7 +274,33 @@ let provider, signer, loyaltyContract, userAddress;
 // ── Connect Wallet ──
 async function connectWallet() {
   if (!window.ethereum) return toast("请安装 MetaMask 或 OKX Wallet","error");
+
   try {
+    // Switch to X Layer (Chain ID 196)
+    const chainIdHex = '0xc4';
+    try {
+      await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: chainIdHex }] });
+    } catch (switchErr) {
+      if (switchErr.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: chainIdHex,
+              chainName: 'X Layer',
+              nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 },
+              rpcUrls: ['https://rpc.xlayer.tech'],
+              blockExplorerUrls: ['https://www.oklink.com/xlayer'],
+            }],
+          });
+        } catch (addErr) {
+          return toast("请手动添加 X Layer 网络","error");
+        }
+      } else {
+        return toast("请切换到 X Layer 网络","error");
+      }
+    }
+
     provider = new ethers.BrowserProvider(window.ethereum);
     signer = await provider.getSigner();
     userAddress = await signer.getAddress();
@@ -282,7 +308,7 @@ async function connectWallet() {
     document.getElementById("walletBtn").textContent = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
     document.getElementById("walletBtn").classList.add("connected");
     document.getElementById("claimBtn").disabled = false;
-    document.getElementById("refLink").textContent = `https://aigent.cc/?ref=${userAddress}`;
+    document.getElementById("refLink").textContent = `https://aigent.cc/airdrop.html?ref=${userAddress}`;
     await refreshUI();
     toast("钱包已连接","success");
   } catch(e) { toast("连接失败: "+e.message,"error"); }
@@ -466,6 +492,20 @@ async function loadLeaderboard() {
 
 // Call on load
 loadLeaderboard();
+
+
+// ── Wallet Event Listeners ──
+if (window.ethereum) {
+  window.ethereum.on('chainChanged', function() { window.location.reload(); });
+  window.ethereum.on('accountsChanged', function() {
+    document.getElementById("walletBtn").textContent = "连接钱包";
+    document.getElementById("walletBtn").classList.remove("connected");
+    document.getElementById("claimBtn").disabled = true;
+    document.getElementById("refLink").textContent = "连接钱包后生成";
+    provider = null; signer = null; loyaltyContract = null; userAddress = null;
+    toast("账号已切换，请重新连接","info");
+  });
+}
 
 </script>
 </body>
