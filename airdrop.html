@@ -147,6 +147,7 @@ input:focus,select:focus{border-color:var(--cyan)}
     <div class="stat"><div class="val" id="statClaimed">0</div><div class="lbl">已领取 AIGENT</div></div>
     <div class="stat"><div class="val" id="statReferrals">0</div><div class="lbl">已邀请</div></div>
     <div class="stat"><div class="val" id="statStaked">0</div><div class="lbl">锁仓中</div></div>
+  <div class="stat"><div class="val" id="statRemaining">0</div><div class="lbl">今日剩余额度</div></div>
   </div>
 
   <!-- Progress -->
@@ -564,7 +565,7 @@ async function refreshUI() {
       document.getElementById("stakeDuration").disabled = true;
     }
 
-    document.getElementById("remainingToday").textContent = (Number(remainingDay)/1e18).toFixed(0);
+    document.getElementById("statRemaining").textContent = (Number(remainingDay)/1e18).toFixed(0);
   } catch(e) { console.error(e); }
 }
 
