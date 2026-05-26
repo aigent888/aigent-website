@@ -273,31 +273,29 @@ let provider, signer, loyaltyContract, userAddress;
 
 // ── Connect Wallet ──
 async function connectWallet() {
-  if (!window.ethereum) return toast("请安装 MetaMask 或 OKX Wallet","error");
+  const btn = document.getElementById("walletBtn");
+  btn.textContent = "连接中..."; btn.disabled = true;
+
+  if (!window.ethereum) {
+    btn.textContent = "连接钱包"; btn.disabled = false;
+    return toast("请安装 MetaMask 或 OKX Wallet","error");
+  }
 
   try {
-    // Switch to X Layer (Chain ID 196)
     const chainIdHex = '0xc4';
     try {
       await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: chainIdHex }] });
     } catch (switchErr) {
       if (switchErr.code === 4902) {
-        try {
-          await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [{
-              chainId: chainIdHex,
-              chainName: 'X Layer',
-              nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 },
-              rpcUrls: ['https://rpc.xlayer.tech'],
-              blockExplorerUrls: ['https://www.oklink.com/xlayer'],
-            }],
-          });
-        } catch (addErr) {
-          return toast("请手动添加 X Layer 网络","error");
-        }
-      } else {
-        return toast("请切换到 X Layer 网络","error");
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: chainIdHex, chainName: 'X Layer',
+            nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 },
+            rpcUrls: ['https://rpc.xlayer.tech'],
+            blockExplorerUrls: ['https://www.oklink.com/xlayer'],
+          }],
+        });
       }
     }
 
@@ -305,13 +303,16 @@ async function connectWallet() {
     signer = await provider.getSigner();
     userAddress = await signer.getAddress();
     loyaltyContract = new ethers.Contract(LOYALTY_ADDRESS, LOYALTY_ABI, signer);
-    document.getElementById("walletBtn").textContent = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
-    document.getElementById("walletBtn").classList.add("connected");
+    btn.textContent = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
+    btn.classList.add("connected"); btn.disabled = false;
     document.getElementById("claimBtn").disabled = false;
     document.getElementById("refLink").textContent = `https://aigent.cc/airdrop.html?ref=${userAddress}`;
     await refreshUI();
     toast("钱包已连接","success");
-  } catch(e) { toast("连接失败: "+e.message,"error"); }
+  } catch(e) {
+    btn.textContent = "连接钱包"; btn.disabled = false;
+    toast("连接失败: "+e.message,"error");
+  }
 }
 
 // ── Refresh ──
