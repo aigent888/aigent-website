@@ -1948,205 +1948,198 @@
     </section>
 
     <!-- ── TECHNICAL ARTICLE ── -->
-    <section id="article">
+        <section id="article">
       <div class="section-header reveal">
         <div class="section-tag">// <span data-i18n>Deep Dive</span></div>
-        <div class="section-title" data-i18n>Building Gasless AI Agent Transactions with EIP-2612</div>
-        <p class="section-sub" data-i18n>How Permit signatures eliminate the gas token barrier for autonomous on-chain agents</p>
+        <div class="section-title">AIGENT 五层忠诚空投：告别羊毛党，用 AI Agent 驱动真实增长</div>
+        <p class="section-sub">5 级阶梯 + 链上任务验证 + AI 自动运营 — 一个人也能管理 4 亿代币分发</p>
       </div>
 
       <div class="card reveal" style="max-width: 900px; margin: 0 auto;">
         <div style="font-size:16px; line-height: 1.9; color: var(--text);">
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;" data-i18n>1. The Problem: AI Agents Can't Hold Gas Tokens</h3>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;">1. 传统空投之痛：为什么 99% 的项目白撒了币</h3>
 
-          <p data-i18n>Autonomous AI agents are increasingly performing on-chain actions — trading, arbitrage, data marketplace payments, and service orchestration. Industry projections estimate that by 2027, over 60% of on-chain transaction volume will involve non-human initiators.</p>
-          <br>
-          <p data-i18n>But there's a fundamental problem. Traditional ERC-20 tokens require a two-step pattern:</p>
-          <br>
-          <p><code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">approve(spender, amount)</code> → <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">transferFrom(owner, to, amount)</code></p>
-          <br>
-          <p>The <code>approve()</code> call is a separate on-chain transaction that <strong style="color:var(--cyan);" data-i18n>requires the chain's native gas token</strong> (OKB on X Layer, ETH on Ethereum). For an AI agent, this means:</p>
+          <p>区块链行业每年有数十亿美元的代币通过空投分发，但大多数项目面临同一个困境：</p>
           <br>
           <ul style="padding-left:20px;color:var(--dim);">
-            <li style="margin-bottom:8px;"><strong style="color:#ff4444;" data-i18n>Capital inefficiency</strong> — Agents must maintain gas token balances across multiple chains</li>
-            <li style="margin-bottom:8px;"><strong style="color:#ff4444;" data-i18n>Operational fragility</strong> — Gas price spikes cause approval transactions to fail</li>
-            <li style="margin-bottom:8px;"><strong style="color:#ff4444;" data-i18n>Centralization pressure</strong> — Agents must rely on trusted relayers or gas stations</li>
+            <li style="margin-bottom:8px;"><strong style="color:#ff4444;">羊毛党泛滥</strong> — 脚本机器人批量创建钱包，领完就卖，社区 0 留存</li>
+            <li style="margin-bottom:8px;"><strong style="color:#ff4444;">无差别撒币</strong> — 真用户和机器人拿的一样多，优质贡献者反而流失</li>
+            <li style="margin-bottom:8px;"><strong style="color:#ff4444;">运营成本高</strong> — 人工审核任务、手动发奖、写推文，团队疲于奔命</li>
+            <li style="margin-bottom:8px;"><strong style="color:#ff4444;">缺少忠诚度</strong> — 领一次就走的用户占 90%+，没有任何长期绑定机制</li>
           </ul>
           <br>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>2. The Solution: EIP-2612 Permit</h3>
+          <p>AIGENT 的解决思路很直接：<strong style="color:var(--cyan);">让空投变成一个游戏，而不是一次性的领币动作。</strong></p>
+          <br>
 
-          <p>EIP-2612 introduces <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">permit()</code> — a function that allows token holders to approve spending via an <strong style="color:var(--cyan);" data-i18n>off-chain signature</strong> rather than an on-chain transaction. The signature is bundled with the transfer in a single transaction.</p>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">2. 五层忠诚体系：不撒币，要升级</h3>
+
+          <p>整个空投系统像一个 RPG：每个用户从 L1 基础层开始，通过做任务、邀请好友、锁仓代币来积攒积分，积分够了自动晋级到更高层级。层级越高，拿得越多：</p>
+          <br>
+
+          <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:center;">
+            <thead>
+              <tr style="background:rgba(0,229,255,0.06);color:var(--text-bright);">
+                <th style="padding:10px;border:1px solid var(--border);">层级</th>
+                <th style="padding:10px;border:1px solid var(--border);">名称</th>
+                <th style="padding:10px;border:1px solid var(--border);">所需积分</th>
+                <th style="padding:10px;border:1px solid var(--border);">奖励 (AIGENT)</th>
+                <th style="padding:10px;border:1px solid var(--border);">关键条件</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:10px;border:1px solid var(--border);color:var(--cyan);font-weight:700;">L1</td><td style="padding:10px;border:1px solid var(--border);">基础用户</td><td style="padding:10px;border:1px solid var(--border);">0</td><td style="padding:10px;border:1px solid var(--border);">1,000</td><td style="padding:10px;border:1px solid var(--border);">连接钱包即可</td></tr>
+              <tr><td style="padding:10px;border:1px solid var(--border);color:var(--green);font-weight:700;">L2</td><td style="padding:10px;border:1px solid var(--border);">锁仓用户</td><td style="padding:10px;border:1px solid var(--border);">10</td><td style="padding:10px;border:1px solid var(--border);">5,000</td><td style="padding:10px;border:1px solid var(--border);">锁仓至少 30 天</td></tr>
+              <tr><td style="padding:10px;border:1px solid var(--border);color:var(--amber);font-weight:700;">L3</td><td style="padding:10px;border:1px solid var(--border);">内容创作者</td><td style="padding:10px;border:1px solid var(--border);">50</td><td style="padding:10px;border:1px solid var(--border);">10,000</td><td style="padding:10px;border:1px solid var(--border);">X 发帖+转发+关注</td></tr>
+              <tr><td style="padding:10px;border:1px solid var(--border);color:var(--purple);font-weight:700;">L4</td><td style="padding:10px;border:1px solid var(--border);">邀请达人</td><td style="padding:10px;border:1px solid var(--border);">200</td><td style="padding:10px;border:1px solid var(--border);">20,000</td><td style="padding:10px;border:1px solid var(--border);">推荐 ≥ 5 人</td></tr>
+              <tr><td style="padding:10px;border:1px solid var(--border);color:var(--magenta);font-weight:700;">L5</td><td style="padding:10px;border:1px solid var(--border);">社区大使</td><td style="padding:10px;border:1px solid var(--border);">1000</td><td style="padding:10px;border:1px solid var(--border);">50,000</td><td style="padding:10px;border:1px solid var(--border);">长期贡献+AI 精选</td></tr>
+            </tbody>
+          </table>
+          <br>
+
+          <p>每个任务只能完成一次，积分不可转让。这意味着<strong style="color:var(--cyan);">机器人无法通过批量操作刷分</strong>。而且每次升级时只发放差额奖励，不是重复领取。</p>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">3. 链上任务验证：不需要信任，只要验证</h3>
+
+          <p>传统的"关注推特+填表"空投方式有个致命缺陷：项目方无法真正验证用户是否完成了任务。AIGENT 忠诚合约使用 <strong style="color:var(--cyan);">ECDSA 链下签名 + 链上验证</strong> 的方式解决了这个问题：</p>
           <br>
 
           <div class="code-block" style="margin: 16px 0;">
 <pre>
-<span class="c">// Step 1: Agent signs a typed data message OFF-CHAIN (no gas)</span>
-<span class="k">const</span> typedData = {
-  types: { EIP712Domain: [
-    { name: <span class="s">'name'</span>,    type: <span class="s">'string'</span> },
-    { name: <span class="s">'version'</span>, type: <span class="s">'string'</span> },
-    { name: <span class="s">'chainId'</span>, type: <span class="s">'uint256'</span> },
-    { name: <span class="s">'verifyingContract'</span>, type: <span class="s">'address'</span> }
-  ], Permit: [
-    { name: <span class="s">'owner'</span>,    type: <span class="s">'address'</span> },
-    { name: <span class="s">'spender'</span>,  type: <span class="s">'address'</span> },
-    { name: <span class="s">'value'</span>,    type: <span class="s">'uint256'</span> },
-    { name: <span class="s">'nonce'</span>,    type: <span class="s">'uint256'</span> },
-    { name: <span class="s">'deadline'</span>, type: <span class="s">'uint256'</span> }
-  ]},
-  primaryType: <span class="s">'Permit'</span>,
-  domain: { name: <span class="s">'AIGENT'</span>, version: <span class="s">'1'</span>, chainId: 196,
-            verifyingContract: <span class="s">'0xE543...'</span> },
-  message: { owner, spender, value, nonce, deadline: MaxUint256 }
-};
+<span class="c">// 运营端 (Verifier): AI Agent 扫描社区，对真实完成任务的人签名</span>
+bytes32 hash = keccak256(abi.encodePacked(userAddress, taskType));
+bytes32 ethSignedHash = hash.toEthSignedMessageHash();
+(bytes32 r, bytes32 s, uint8 v) = verifierWallet.sign(ethSignedHash);
 
-<span class="k">const</span> sig = <span class="k">await</span> wallet.signTypedData(typedData);
-<span class="c">// Zero gas cost — this happens entirely off-chain</span>
-
-<span class="c">// Step 2: Relayer or agent submits permit + transfer in ONE tx</span>
-<span class="k">await</span> token.permit(owner, spender, value, deadline, v, r, s);
-<span class="k">await</span> token.transferFrom(owner, to, value);
-<span class="c">// Only this single transaction costs gas</span>
+<span class="c">// 用户端: 把签名提交到链上，合约验证后自动加分+升级</span>
+<span class="k">function</span> submitTask(Task task, bytes calldata signature) <span class="k">external</span> {
+    <span class="k">require</span>(ethSignedHash.recover(signature) == verifier, <span class="s">"Invalid"</span>);
+    p.points += taskPoints[task];    <span class="c">// 加分</span>
+    _checkTierUpgrade(msg.sender);   <span class="c">// 自动升级</span>
+}
 </pre>
           </div>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>3. Why This Matters for AI Agents</h3>
+          <p>关键设计：<strong style="color:var(--green);">只有 Verifier 能签发有效任务证明</strong>，其他人没法伪造。Verifier 的私钥由运营者掌握，AI Agent 用它来自动签发任务。</p>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">4. 锁仓机制：让用户陪你走远路</h3>
+
+          <p>领了空投就跑？AIGENT 的锁仓系统给愿意长期持有的用户额外奖励：</p>
+          <br>
+
+          <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:center;">
+            <thead>
+              <tr style="background:rgba(0,229,255,0.06);color:var(--text-bright);">
+                <th style="padding:10px;border:1px solid var(--border);">锁仓时长</th>
+                <th style="padding:10px;border:1px solid var(--border);">积分奖励</th>
+                <th style="padding:10px;border:1px solid var(--border);">额外代币奖励</th>
+                <th style="padding:10px;border:1px solid var(--border);">提前解锁</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:10px;border:1px solid var(--border);">30 天</td><td style="padding:10px;border:1px solid var(--border);">+5 分</td><td style="padding:10px;border:1px solid var(--border);">+10%</td><td style="padding:10px;border:1px solid var(--border);color:#ff4444;">罚没 50%</td></tr>
+              <tr><td style="padding:10px;border:1px solid var(--border);">90 天</td><td style="padding:10px;border:1px solid var(--border);">+20 分</td><td style="padding:10px;border:1px solid var(--border);">+30%</td><td style="padding:10px;border:1px solid var(--border);color:#ff4444;">罚没 50%</td></tr>
+              <tr><td style="padding:10px;border:1px solid var(--border);">180 天</td><td style="padding:10px;border:1px solid var(--border);">+50 分</td><td style="padding:10px;border:1px solid var(--border);">+80%</td><td style="padding:10px;border:1px solid var(--border);color:#ff4444;">罚没 50%</td></tr>
+            </tbody>
+          </table>
+          <br>
+
+          <p>锁仓积分直接计入升级体系。锁仓 180 天拿 50 积分 = 跳两级（L2→L4），用户有充分动力长期参与。</p>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">5. AI Agent 全自动运营：一个人的项目，一家公司的效果</h3>
+
+          <p>这是整个系统最核心的差异化。AIGENT 运营 Agent 不是概念，是已经在运行的代码：</p>
+          <br>
 
           <div class="feature-grid" style="margin: 16px 0;">
             <div class="feature-card" style="padding: 24px;">
-              <div class="fc-title" style="font-size:15px;" data-i18n>ZERO Gas Token Requirement</div>
-              <div class="fc-desc" style="font-size:12px;" data-i18n>AI agents approve spending without holding OKB, ETH, or any other native gas token. A single relayer can sponsor gas for thousands of agents.</div>
+              <div class="fc-title" style="font-size:15px;">🔍 社区扫描</div>
+              <div class="fc-desc" style="font-size:12px;">每 4 小时自动扫描 X (Twitter) 上讨论 AIGENT 的用户，提取粉丝数、互动量、内容质量</div>
             </div>
             <div class="feature-card" style="padding: 24px;">
-              <div class="fc-title" style="font-size:15px;" data-i18n>Atomic Execution</div>
-              <div class="fc-desc" style="font-size:12px;">The <code>permit()</code> and <code>transferFrom()</code> can be bundled in a single transaction. No two-step approval dance that can fail halfway.</div>
+              <div class="fc-title" style="font-size:15px;">🧠 AI 精选</div>
+              <div class="fc-desc" style="font-size:12px;">调用 Claude Sonnet 分析用户画像，排除机器人，选中 3-5 个最值得奖励的真实用户</div>
             </div>
             <div class="feature-card" style="padding: 24px;">
-              <div class="fc-title" style="font-size:15px;" data-i18n>Relayer Marketplace</div>
-              <div class="fc-desc" style="font-size:12px;" data-i18n>Third-party relayers compete to submit agent transactions for the lowest fee. Agents choose the cheapest or fastest submitter — a free market for gas sponsorship.</div>
+              <div class="fc-title" style="font-size:15px;">💰 批量发奖</div>
+              <div class="fc-desc" style="font-size:12px;">自动调用合约 <code>batchReward()</code>，一笔交易给多个用户发代币，Gas 最省</div>
             </div>
             <div class="feature-card" style="padding: 24px;">
-              <div class="fc-title" style="font-size:15px;" data-i18n>Full Self-Custody</div>
-              <div class="fc-desc" style="font-size:12px;" data-i18n>Agents retain complete control of their keys and tokens. No trusted third party, no multi-sig complexity, no delegation of asset custody.</div>
+              <div class="fc-title" style="font-size:15px;">📝 自动运营推文</div>
+              <div class="fc-desc" style="font-size:12px;">每一轮运营结束后自动生成数据报告推文，含今日领取量、获奖用户、剩余额度</div>
             </div>
           </div>
+          <br>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>4. Architecture: How It All Fits Together</h3>
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">6. 代币经济：400 天持续分发</h3>
+
+          <p>合约每天限额 100 万 AIGENT，总池子 4 亿枚。按 95% 日利用率计算，可持续运营约 <strong style="color:var(--cyan);">400 天</strong>。具体日消耗预估：</p>
+          <br>
+
+          <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:center;">
+            <thead>
+              <tr style="background:rgba(0,229,255,0.06);color:var(--text-bright);">
+                <th style="padding:10px;border:1px solid var(--border);">层级</th>
+                <th style="padding:10px;border:1px solid var(--border);">单次奖励</th>
+                <th style="padding:10px;border:1px solid var(--border);">预估日活</th>
+                <th style="padding:10px;border:1px solid var(--border);">日消耗</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:10px;border:1px solid var(--border);color:var(--cyan);">L1</td><td style="padding:10px;border:1px solid var(--border);">1,000</td><td style="padding:10px;border:1px solid var(--border);">500 人</td><td style="padding:10px;border:1px solid var(--border);">50 万</td></tr>
+              <tr><td style="padding:10px;border:1px solid var(--border);color:var(--green);">L2</td><td style="padding:10px;border:1px solid var(--border);">5,000</td><td style="padding:10px;border:1px solid var(--border);">50 人</td><td style="padding:10px;border:1px solid var(--border);">25 万</td></tr>
+              <tr><td style="padding:10px;border:1px solid var(--border);color:var(--amber);">L3-L5</td><td style="padding:10px;border:1px solid var(--border);">10,000-50,000</td><td style="padding:10px;border:1px solid var(--border);">10 人</td><td style="padding:10px;border:1px solid var(--border);">20 万</td></tr>
+              <tr style="background:rgba(0,229,255,0.04);"><td colspan="3" style="padding:10px;border:1px solid var(--border);font-weight:700;">合计日均</td><td style="padding:10px;border:1px solid var(--border);font-weight:700;color:var(--cyan);">≈ 95 万</td></tr>
+            </tbody>
+          </table>
+          <br>
+
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">7. 技术架构一览</h3>
 
           <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:24px;margin:16px 0;font-family:'SF Mono','Fira Code',monospace;font-size:12px;line-height:1.8;overflow-x:auto;">
 <pre style="color:var(--text);">
-  ┌─────────────┐     Off-chain Permit Signature      ┌──────────────┐
-  │             │ ──────────────────────────────────> │              │
-  │  AI Agent   │    signTypedData(domain, types,     │   Relayer    │
-  │  (no OKB)   │      { owner, spender, value,       │  (has OKB)   │
-  │             │        nonce, deadline })            │              │
-  └─────────────┘                                     └──────┬───────┘
-                                                            │
-                                              Single tx:     │
-                                              permit() +     │
-                                              transferFrom() │
-                                                            │
-                                                  ┌─────────▼───────┐
-                                                  │  AIGENT Token   │
-                                                  │  (X Layer)      │
-                                                  │  EIP-2612       │
-                                                  └─────────────────┘
+  ┌──────────────────────┐      每 4 小时       ┌──────────────────────┐
+  │  AI 运营 Agent        │ ──────────────────> │  X (Twitter) API      │
+  │  (TypeScript + Viem)  │    扫描社区         └──────────────────────┘
+  │                       │
+  │  ① 检查合约状态        │      调用 Claude     ┌──────────────────────┐
+  │  ② 扫描 X 社区         │ ──────────────────> │  AI 模型              │
+  │  ③ AI 精选用户         │    分析+筛选         └──────────────────────┘
+  │  ④ 批量发奖 (链上)     │
+  │  ⑤ 生成运营推文        │      ECDSA 签名      ┌──────────────────────┐
+  │  ⑥ 标记黑名单          │ ──────────────────> │  LoyaltyAirdrop       │
+  └──────────────────────┘    提交任务证明        │  合约 (X Layer)       │
+                                                  │                      │
+  用户 ──> airdrop.html ──> claimL1 / submitTask / stake / unstake      │
+              │                                    │                      │
+              └── MetaMask / OKX Wallet ──────────┘
 </pre>
           </div>
 
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>5. Real Implementation: AIGENT on X Layer</h3>
-
-          <p data-i18n>AIGENT implements the full EIP-2612 specification with the following interface:</p>
+          <p><strong style="color:var(--cyan);">合约地址:</strong> <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">0x2257Bf84abB0fa021e26E34a4002724411D0B1db</code> (X Layer Chain ID 196)</p>
           <br>
 
-          <div class="code-block" style="margin: 16px 0;">
-<pre>
-<span class="c">// EIP-2612 Permit interface (AIGENT Token)</span>
-<span class="k">function</span> <span class="f">permit</span>(
-    address owner,
-    address spender,
-    uint256 value,
-    uint256 deadline,
-    uint8 v,
-    bytes32 r,
-    bytes32 s
-) <span class="k">external</span>;
+          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;">8. 对个人创业者意味着什么</h3>
 
-<span class="k">function</span> <span class="f">nonces</span>(address owner) <span class="k">external</span> <span class="k">view</span> <span class="k">returns</span> (uint256);
-
-<span class="k">function</span> <span class="f">DOMAIN_SEPARATOR</span>() <span class="k">external</span> <span class="k">view</span> <span class="k">returns</span> (bytes32);
-
-<span class="c">// Standard ERC-20 + Burnable</span>
-<span class="k">function</span> <span class="f">transferFrom</span>(address from, address to, uint256 value) <span class="k">external</span>;
-<span class="k">function</span> <span class="f">burn</span>(uint256 value) <span class="k">external</span>;
-<span class="k">function</span> <span class="f">burnFrom</span>(address from, uint256 value) <span class="k">external</span>;
-</pre>
-          </div>
-
-          <p><strong style="color:var(--cyan);" data-i18n>Contract address:</strong> <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39</code> on X Layer mainnet (Chain ID 196).</p>
-          <br>
-
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>6. Integration Example: TypeScript SDK</h3>
-
-          <p data-i18n>The AIGENT SDK provides a one-line API for AI agents to execute gasless transfers:</p>
-          <br>
-
-          <div class="code-block" style="margin: 16px 0;">
-<pre>
-<span class="k">import</span> { createAgentContext } <span class="k">from</span> <span class="s">"./setup"</span>;
-<span class="k">import</span> { aigentTools } <span class="k">from</span> <span class="s">"@aigent/sdk"</span>;
-<span class="k">import</span> { generateText } <span class="k">from</span> <span class="s">"ai"</span>;
-
-<span class="c">// Create agent context with wallet + RPC</span>
-<span class="k">const</span> { account, wallet, publicClient } = createAgentContext();
-
-<span class="c">// Generate AI-compatible tools (Vercel AI SDK / LangChain)</span>
-<span class="k">const</span> tools = aigentTools(account, wallet, publicClient);
-
-<span class="c">// AI agent processes natural language commands</span>
-<span class="k">const</span> result = <span class="k">await</span> generateText({
-  model: anthropic(<span class="s">"claude-sonnet-4-6"</span>),
-  tools,
-  prompt: <span class="s">"Send 100 AIGENT to 0xAbC123... and check the balance"</span>
-});
-
-<span class="c">// Agent autonomously: signs Permit → submits tx → reports result</span>
-</pre>
-          </div>
-
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>7. Security Considerations</h3>
-
-          <div style="background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0;">
-            <p><strong style="color:var(--green);" data-i18n>Nonce replay protection</strong> — Each Permit uses an incrementing nonce, preventing signature replay attacks.</p>
-            <br>
-            <p><strong style="color:var(--green);" data-i18n>Deadline enforcement</strong> — Every Permit has a configurable deadline. After expiration, the signature is invalid. Agents should set reasonable time windows (e.g., 30 minutes) rather than MaxUint256 in production.</p>
-            <br>
-            <p><strong style="color:var(--green);" data-i18n>No proxy/upgradeability</strong> — AIGENT is an immutable deployment. The contract code cannot be changed, eliminating upgrade-based attack vectors.</p>
-            <br>
-            <p><strong style="color:var(--green);" data-i18n>OpenZeppelin v5 foundation</strong> — Built on audited, battle-tested contracts with ReentrancyGuard, Pausable, and SafeERC20.</p>
-            <br>
-            <p><strong style="color:#ff9100;" data-i18n>Signature front-running</strong> — A signed Permit could theoretically be front-run if broadcast publicly. In practice, relayers submit directly to miners/validators. For high-value transactions, use EIP-712 domain binding to a specific relayer address.</p>
-          </div>
-
-          <h3 style="color:var(--text-bright);font-size:20px;margin-bottom:16px;margin-top:32px;" data-i18n>8. The Bigger Picture</h3>
-
-          <p>EIP-2612 isn't just a gas optimization — it's a <strong style="color:var(--cyan);" data-i18n>fundamental enabler for the agent economy</strong>. When AI agents can transact without managing gas tokens, the design space opens up dramatically:</p>
+          <p>这个系统的设计哲学是<strong style="color:var(--cyan);">"一个人的项目，一套代码即团队"</strong>：</p>
           <br>
           <ul style="padding-left:20px;color:var(--dim);">
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Agent-to-agent micropayments</strong> — sub-cent transactions between autonomous services</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Programmatic distribution</strong> — protocol allocations are distributed automatically to participants</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Cross-chain agent coordination</strong> — one agent can operate across multiple chains without holding native gas on each</li>
-            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);" data-i18n>Autonomous organizations</strong> — DAOs operated entirely by AI agents with zero human gas management overhead</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">不需要运营团队</strong> — AI Agent 自动扫描、筛选、发奖、发推文</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">不需要反女巫工程师</strong> — 链上 ECDSA 验证 + 黑名单机制，5 级阶梯天然过滤机器人</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">不需要内容团队</strong> — Agent 每轮自动生成数据推文，保持社交媒体活跃</li>
+            <li style="margin-bottom:8px;"><strong style="color:var(--text-bright);">不需要 24 小时盯盘</strong> — 每天 100 万额度上限，最快也要 400 天发完，节奏可控</li>
           </ul>
           <br>
 
           <div style="border-left: 2px solid var(--cyan); padding: 12px 20px; margin: 20px 0; background: rgba(0,229,255,0.03);">
-            <p style="color:var(--text-bright);font-style:italic;" data-i18n>"The combination of EIP-2612 gasless approvals and AI agent autonomy is the missing piece for on-chain agent economies. Applications that were previously impossible due to the gas-token constraint are now feasible — we're at the beginning of a new paradigm in decentralized automation."</p>
+            <p style="color:var(--text-bright);font-style:italic;">"Web3 不需要更多基础设施层。需要的是让一个人也能跑起来的完整产品。AIGENT 五层忠诚空投是一次实验：能不能用 AI Agent + 智能合约，把传统需要 10 人团队的运营工作，压缩到一台服务器上？"</p>
           </div>
 
-          <p style="color:var(--dim);font-size:13px;margin-top:28px;">Try the <a href="#dapp" style="color:var(--cyan);" data-i18n>AI Agent Console</a> above to see EIP-2612 in action — or run the CLI demo: <code style="background:rgba(0,229,255,0.06);padding:2px 6px;border-radius:4px;">cd demo && npx tsx agent.ts --repl</code></p>
+          <p style="color:var(--dim);font-size:13px;margin-top:28px;">直接体验空投：<a href="/airdrop.html" style="color:var(--cyan);">airdrop.html</a> — 连接钱包即可领取 L1 基础空投。Agent 源码见 <a href="https://github.com/Mrxu6995/aigent/blob/gh-pages/agent/airdrop-agent.ts" target="_blank" style="color:var(--cyan);">agent/airdrop-agent.ts</a></p>
 
         </div>
       </div>
