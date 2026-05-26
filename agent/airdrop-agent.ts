@@ -559,7 +559,7 @@ const HELP_TEXT = `🤖 AIGENT 运营助手
 /help — 显示此帮助
 
 🌐 空投页面: https://www.aigent.ink/airdrop.html
-💬 Discord: https://discord.gg/待设置`;
+💬 Discord: https://discord.gg/EzSfdPKTK8`;
 
 async function handleCommand(cmd: string, reply: (text: string) => Promise<void>, userName: string) {
   const text = cmd.trim();
@@ -660,7 +660,7 @@ async function startDiscordBot(): Promise<void> {
     ],
   });
 
-  discordClient.on("ready", async () => {
+  discordClient.on("clientReady", async () => {
     console.log(`  ✅ Discord 已登录: ${discordClient!.user?.tag}`);
     // Send online notice
     if (DC_CHANNEL_ID) {
