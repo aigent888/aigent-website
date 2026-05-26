@@ -282,36 +282,70 @@ async function connectWallet() {
   }
 
   try {
+    // Step 1: Request account access first (most reliable across wallets)
+    let accounts;
+    try {
+      accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    } catch (e) {
+      btn.textContent = "连接钱包"; btn.disabled = false;
+      return toast("请在钱包中授权连接","error");
+    }
+    if (!accounts || accounts.length === 0) {
+      btn.textContent = "连接钱包"; btn.disabled = false;
+      return toast("未检测到钱包账户","error");
+    }
+
+    // Step 2: Switch to X Layer (non-fatal if already on chain)
     const chainIdHex = '0xc4';
     try {
       await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: chainIdHex }] });
     } catch (switchErr) {
       if (switchErr.code === 4902) {
-        await window.ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [{
-            chainId: chainIdHex, chainName: 'X Layer',
-            nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 },
-            rpcUrls: ['https://rpc.xlayer.tech'],
-            blockExplorerUrls: ['https://www.oklink.com/xlayer'],
-          }],
-        });
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: chainIdHex, chainName: 'X Layer',
+              nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 },
+              rpcUrls: ['https://rpc.xlayer.tech'],
+              blockExplorerUrls: ['https://www.oklink.com/xlayer'],
+            }],
+          });
+        } catch (addErr) {
+          btn.textContent = "连接钱包"; btn.disabled = false;
+          return toast("请手动在钱包中添加 X Layer 网络","error");
+        }
       }
+      // Other errors (already on chain, pending request, etc.) — proceed anyway
     }
 
+    // Step 3: Set up ethers
     provider = new ethers.BrowserProvider(window.ethereum);
     signer = await provider.getSigner();
-    userAddress = await signer.getAddress();
+    userAddress = accounts[0].toLowerCase();
+
+    // Step 4: Verify we got the signer's address
+    const signerAddr = await signer.getAddress();
+    if (!signerAddr) {
+      btn.textContent = "连接钱包"; btn.disabled = false;
+      return toast("无法获取钱包地址，请重试","error");
+    }
+    userAddress = signerAddr;
+
+    // Step 5: Set up contract
     loyaltyContract = new ethers.Contract(LOYALTY_ADDRESS, LOYALTY_ABI, signer);
+
+    // Step 6: Update UI
     btn.textContent = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
     btn.classList.add("connected"); btn.disabled = false;
     document.getElementById("claimBtn").disabled = false;
-    document.getElementById("refLink").textContent = `https://aigent.cc/airdrop.html?ref=${userAddress}`;
-    await refreshUI();
+    document.getElementById("refLink").textContent = "https://aigent.cc/airdrop.html?ref=" + userAddress;
     toast("钱包已连接","success");
+
+    await refreshUI();
   } catch(e) {
     btn.textContent = "连接钱包"; btn.disabled = false;
-    toast("连接失败: "+e.message,"error");
+    toast("连接失败: " + (e.reason || e.message || String(e)),"error");
   }
 }
 
@@ -457,23 +491,20 @@ function toast(msg, type) {
 
 // ── Daily Lottery ──
 async function enterLottery() {
-  if (!wallet) { showToast('请先连接钱包', 'error'); return; }
-  const addr = wallet.address;
+  if (!userAddress) { toast('请先连接钱包', 'error'); return; }
   const msg = document.getElementById('lotteryMsg');
   msg.textContent = '报名中...';
-  // Send lottery entry to agent backend (KV or API)
-  // For now, store in localStorage as demo
   const today = new Date().toISOString().slice(0, 10);
   const key = 'lottery_' + today;
   let entries = JSON.parse(localStorage.getItem(key) || '[]');
-  if (entries.includes(addr)) {
+  if (entries.includes(userAddress)) {
     msg.textContent = '今日已报名，明天再来!';
     return;
   }
-  entries.push(addr);
+  entries.push(userAddress);
   localStorage.setItem(key, JSON.stringify(entries));
   msg.textContent = '✅ 报名成功! 每日 00:00 UTC 开奖';
-  showToast('🎟 已报名今日抽奖', 'success');
+  toast('已报名今日抽奖', 'success');
 }
 
 // ── Load Weekly Leaderboard ──
