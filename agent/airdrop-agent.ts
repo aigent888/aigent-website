@@ -21,7 +21,7 @@ import { Client, GatewayIntentBits, TextChannel } from "discord.js";
 
 // ── 配置 ──
 const AIGENT = "0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39";
-const LOYALTY_AIRDROP = process.env.LOYALTY_AIRDROP_ADDRESS || "0x2257Bf84abB0fa021e26E34a4002724411D0B1db";
+const LOYALTY_AIRDROP = process.env.LOYALTY_AIRDROP_ADDRESS || "0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822";
 const VERIFIER_PK = process.env.VERIFIER_PRIVATE_KEY || "";
 
 // Platform configs
@@ -35,23 +35,24 @@ const USDT = process.env.USDT_ADDRESS || "";
 const BUYBACK_USDT_AMOUNT = 20;
 
 const LOYALTY_ABI = [
-  "function remainingToday() external view returns (uint256)",
-  "function dailyCap() external view returns (uint256)",
-  "function todayClaimed() external view returns (uint256)",
-  "function totalAllocated() external view returns (uint256)",
-  "function batchReward(address[] users, uint256[] amounts) external",
-  "function grantPoints(address user, uint256 amount) external",
-  "function blacklist(address user, bool blocked) external",
-  "function blacklisted(address) external view returns (bool)",
-  "function getPlayer(address) external view returns (tuple(uint8,uint256,uint256,uint256,address,uint256))",
-  "function tiers(uint8) external view returns (uint256,string)",
-] as const;
+  { type: "function", name: "remainingToday", inputs: [], outputs: [{ type: "uint256" }], stateMutability: "view" },
+  { type: "function", name: "dailyCap", inputs: [], outputs: [{ type: "uint256" }], stateMutability: "view" },
+  { type: "function", name: "todayClaimed", inputs: [], outputs: [{ type: "uint256" }], stateMutability: "view" },
+  { type: "function", name: "totalAllocated", inputs: [], outputs: [{ type: "uint256" }], stateMutability: "view" },
+  { type: "function", name: "addStake", inputs: [{ type: "uint256", name: "amount" }], outputs: [], stateMutability: "nonpayable" },
+  { type: "function", name: "batchReward", inputs: [{ type: "address[]", name: "users" }, { type: "uint256[]", name: "amounts" }], outputs: [], stateMutability: "nonpayable" },
+  { type: "function", name: "grantPoints", inputs: [{ type: "address", name: "user" }, { type: "uint256", name: "amount" }], outputs: [], stateMutability: "nonpayable" },
+  { type: "function", name: "blacklist", inputs: [{ type: "address", name: "user" }, { type: "bool", name: "blocked" }], outputs: [], stateMutability: "nonpayable" },
+  { type: "function", name: "blacklisted", inputs: [{ type: "address" }], outputs: [{ type: "bool" }], stateMutability: "view" },
+  { type: "function", name: "getPlayer", inputs: [{ type: "address" }], outputs: [{ type: "tuple", components: [{ type: "uint8" }, { type: "uint256" }, { type: "uint256" }, { type: "uint256" }, { type: "address" }, { type: "uint256" }] }], stateMutability: "view" },
+  { type: "function", name: "tiers", inputs: [{ type: "uint8" }], outputs: [{ type: "uint256" }, { type: "string" }], stateMutability: "view" },
+];
 
 const AIGENT_ABI = [
-  "function balanceOf(address) external view returns (uint256)",
-  "function burn(uint256) external",
-  "function transfer(address,uint256) external returns (bool)",
-] as const;
+  { type: "function", name: "balanceOf", inputs: [{ type: "address" }], outputs: [{ type: "uint256" }], stateMutability: "view" },
+  { type: "function", name: "burn", inputs: [{ type: "uint256" }], outputs: [], stateMutability: "nonpayable" },
+  { type: "function", name: "transfer", inputs: [{ type: "address" }, { type: "uint256" }], outputs: [{ type: "bool" }], stateMutability: "nonpayable" },
+];
 
 // ── RPC ──
 const publicClient = createPublicClient({
@@ -660,6 +661,10 @@ async function startDiscordBot(): Promise<void> {
     ],
   });
 
+  const readyPromise = new Promise<void>((resolve) => {
+    discordClient!.once("clientReady", () => resolve());
+  });
+
   discordClient.on("clientReady", async () => {
     console.log(`  ✅ Discord 已登录: ${discordClient!.user?.tag}`);
     // Send online notice
@@ -699,6 +704,7 @@ async function startDiscordBot(): Promise<void> {
   });
 
   await discordClient.login(DC_TOKEN);
+  await readyPromise; // Wait for clientReady event
 }
 
 // ═══════════════════════════════════════════
@@ -780,9 +786,9 @@ const mode = process.argv[2] || "--auto";
       await startAllBots();
       break;
     case "--auto":
+      // Start bots FIRST, then run main loop
+      await startAllBots();
       await mainLoop().catch(console.error);
-      console.log("\n🤖 启动 Bot (Discord + Telegram)...\n");
-      startAllBots().catch(console.error);
       setInterval(() => mainLoop().catch(console.error), 4 * 60 * 60 * 1000);
       break;
     case "--scan":

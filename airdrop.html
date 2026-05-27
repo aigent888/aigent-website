@@ -249,6 +249,14 @@ input:focus,select:focus{border-color:var(--cyan)}
             <span class="lbl">剩余锁仓时间</span>
           </div>
           <div class="lock-extra" id="lockBonus">已累计额外积分: +0</div>
+          <!-- Add Stake -->
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-top:12px">
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="number" id="addStakeAmount" placeholder="追加数量 (最少 1000)" min="1000" style="flex:1;font-size:.85em">
+              <button class="btn btn-claim" onclick="doAddStake()" style="width:auto;padding:8px 16px;font-size:.85em;white-space:nowrap">➕ 追加锁仓</button>
+            </div>
+            <p style="font-size:.68em;color:var(--muted);margin-top:6px">到期时间不变 · 积分按剩余时间折算 (保底 10%)</p>
+          </div>
           <div style="text-align:center;margin-top:10px">
             <button class="btn btn-outline" onclick="doUnstake()" style="width:auto;padding:8px 20px">📤 解除锁仓</button>
           </div>
@@ -519,13 +527,14 @@ bytes32 ethSignedHash = hash.toEthSignedMessageHash();
 <script>
 // ── Contract config ──
 const AIGENT_ADDRESS = "0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39";
-const LOYALTY_ADDRESS = "0x2257Bf84abB0fa021e26E34a4002724411D0B1db";
+const LOYALTY_ADDRESS = "0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822";
 
 const LOYALTY_ABI = [
   "function claimL1(address referrer) external",
   "function submitTask(uint8 task, bytes signature) external",
   "function stake(uint256 amount, uint256 durationDays) external",
   "function unstake() external",
+  "function addStake(uint256 amount) external",
   "function emergencyUnstake() external",
   "function getPlayer(address) view returns (uint8 tier, uint256 totalClaimed, uint256 points, uint256 lastClaimTime, address referrer, uint256 referralCount)",
   "function getStake(address) view returns (tuple(uint256 amount, uint256 startTime, uint256 duration, bool active))",
@@ -539,10 +548,10 @@ const ERC20_ABI = ["function approve(address spender, uint256 amount) returns (b
 
 // Tasks
 const TASKS = [
-  { id: 0, name: "加入 Discord 或 Telegram", pts: 1, url: "https://discord.gg/EzSfdPKTK8" },
-  { id: 1, name: "邀请好友进群", pts: 2, url: null },
-  { id: 2, name: "原创推文带 #AIGENT", pts: 10, url: null },
-  { id: 4, name: "创作内容 (视频/文章)", pts: 20, url: null },
+  { id: 0, name: "加入 Discord 或 Telegram", pts: 1, url: "https://discord.gg/EzSfdPKTK8", btn: "去做" },
+  { id: 1, name: "邀请好友进群", pts: 2, url: null, btn: "复制链接", action: "copyRef" },
+  { id: 2, name: "原创推文带 #AIGENT", pts: 10, url: "https://x.com/intent/post?hashtags=AIGENT", btn: "去发推" },
+  { id: 4, name: "创作内容 (视频/文章)", pts: 20, url: null, btn: "去创作", action: "createContent" },
 ];
 
 const TIER_NAMES = ["无","L1 基础","L2 锁仓","L3 创作者","L4 邀请者","L5 大使"];
@@ -721,14 +730,21 @@ async function renderTasks(tier) {
     if (loyaltyContract && userAddress) {
       try { done = await loyaltyContract.hasCompletedTask(userAddress, t.id); } catch(e) {}
     }
+    let btnHtml;
+    if (done) {
+      btnHtml = '<button class="btn-done">✅ 已完成</button>';
+    } else if (t.url) {
+      btnHtml = `<button class="btn-do" onclick="window.open('${t.url}')">${t.btn || '去做'}</button>`;
+    } else if (t.action === "copyRef") {
+      btnHtml = `<button class="btn-do" onclick="copyRefForTask()">${t.btn}</button>`;
+    } else if (t.action === "createContent") {
+      btnHtml = `<button class="btn-do" onclick="toast('发布视频/文章后联系管理员验证即可','info')">${t.btn}</button>`;
+    } else {
+      btnHtml = `<button class="btn-do" onclick="toast('完成后联系管理员验证','info')">${t.btn || '去做'}</button>`;
+    }
     html += `<div class="task ${done ? 'done' : ''}">
       <div class="task-info"><div class="task-name">${t.name}</div><div class="task-pts">+${t.pts} 积分</div></div>
-      ${done
-        ? '<button class="btn-done">✅ 已完成</button>'
-        : (t.url
-          ? `<button class="btn-do" onclick="window.open('${t.url}')">去做</button>`
-          : '<button class="btn-do" onclick="toast(\'完成后联系管理员验证\',\'info\')">去创作</button>')
-      }
+      ${btnHtml}
     </div>`;
   }
   container.innerHTML = html || "<p style='color:var(--muted)'>连接钱包查看任务</p>";
@@ -776,6 +792,32 @@ async function doStake() {
   } catch(e) { toast("锁仓失败: " + (e.reason || e.message || String(e)),"error"); }
 }
 
+async function doAddStake() {
+  if (!signer) return toast("请先连接钱包","error");
+  const amt = document.getElementById("addStakeAmount").value;
+  if (!amt || Number(amt) < 1000) return toast("最少追加 1000 AIGENT","error");
+
+  try {
+    const amtWei = ethers.parseUnits(amt, 18);
+    // Check active stake exists
+    const currentStake = await loyaltyContract.getStake(userAddress);
+    if (!currentStake[3]) return toast("请先创建锁仓","error");
+    // Approve
+    const token = new ethers.Contract(AIGENT_ADDRESS, ERC20_ABI, signer);
+    const allowance = await token.allowance(userAddress, LOYALTY_ADDRESS);
+    if (allowance < amtWei) {
+      const approveTx = await token.approve(LOYALTY_ADDRESS, amtWei);
+      await approveTx.wait();
+    }
+    const tx = await loyaltyContract.addStake(amtWei);
+    toast("追加中...","info");
+    await tx.wait();
+    toast("✅ 已追加 " + amt + " AIGENT，到期时间不变！","success");
+    document.getElementById("addStakeAmount").value = "";
+    await refreshUI();
+  } catch(e) { toast("追加失败: " + (e.reason || e.message || String(e)),"error"); }
+}
+
 async function doUnstake() {
   if (!signer) return toast("请先连接钱包","error");
   try {
@@ -821,6 +863,12 @@ function switchLB(type) {
 })();
 
 // ── Referral ──
+function copyRefForTask() {
+  const link = document.getElementById("refLink").textContent;
+  if (!link || link.includes("连接")) return toast("请先连接钱包","error");
+  navigator.clipboard.writeText(link);
+  toast("📋 推荐链接已复制！分享给好友加入即可获得积分","success");
+}
 function copyRefLink() {
   const link = document.getElementById("refLink").textContent;
   if (!link || link.includes("连接")) return toast("请先连接钱包","error");

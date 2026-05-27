@@ -228,6 +228,33 @@ contract AIGENTLoyaltyAirdrop is Ownable, ReentrancyGuard {
         emit Staked(msg.sender, amount, durationDays);
     }
 
+    /// @notice 追加锁仓 — 已有锁仓时增加金额，到期时间不变
+    function addStake(uint256 amount) external nonReentrant {
+        Stake storage s = stakes[msg.sender];
+        require(s.active, "No active stake");
+        require(!blacklisted[msg.sender], "Blacklisted");
+        require(aigent.balanceOf(msg.sender) >= amount, "Insufficient balance");
+        require(amount >= 1000 * 1e18, "Min 1000 AIGENT");
+
+        aigent.transferFrom(msg.sender, address(this), amount);
+        s.amount += amount;
+
+        // 积分奖励按剩余时间比例折算
+        uint256 remaining = (s.startTime + s.duration) - block.timestamp;
+        uint256 basePts;
+        if (s.duration == 30 days) basePts = 5;
+        else if (s.duration == 90 days) basePts = 20;
+        else basePts = 50;
+        // 至少给 10% 积分，鼓励追加
+        uint256 ratio = remaining * 1e18 / s.duration;
+        if (ratio < 1e17) ratio = 1e17; // floor 10%
+        uint256 pointsGain = basePts * amount * ratio / (1000 * 1e18 * 1e18);
+        players[msg.sender].points += pointsGain;
+        _checkTierUpgrade(msg.sender);
+
+        emit Staked(msg.sender, amount, s.duration / 1 days);
+    }
+
     function unstake() external nonReentrant {
         Stake storage s = stakes[msg.sender];
         require(s.active, "No active stake");
@@ -343,5 +370,12 @@ contract AIGENTLoyaltyAirdrop is Ownable, ReentrancyGuard {
     function withdrawETH() external onlyOwner {
         (bool ok, ) = payable(owner()).call{value: address(this).balance}("");
         require(ok, "ETH transfer failed");
+    }
+
+    /// @notice Owner 可提取 AIGENT 代币（应急处置）
+    function recoverToken(address to, uint256 amount) external onlyOwner {
+        uint256 bal = aigent.balanceOf(address(this));
+        require(amount <= bal, "Exceeds balance");
+        aigent.transfer(to, amount);
     }
 }
