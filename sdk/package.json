@@ -1,0 +1,28 @@
+{
+  "name": "@aigent/sdk",
+  "version": "2.0.0",
+  "description": "AIGENT 5-Tier Loyalty SDK — stake, earn, and interact with the AIGENT ecosystem",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": ["aigent", "loyalty", "staking", "airdrop", "x-layer", "web3"],
+  "license": "MIT",
+  "peerDependencies": {
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

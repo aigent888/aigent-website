@@ -2,370 +2,297 @@
 
 ## Autonomous Intelligence Agent Token
 
-**v2.0 — May 2026 (Free Airdrop Edition)**
+**v3.0 — June 2026 (5-Tier Loyalty Airdrop Edition)**
 
 ---
 
 ## Abstract
 
-AIGENT is an ERC-20 token purpose-built for the emerging AI agent economy. Deployed on X Layer, it implements EIP-2612 (Permit) to enable gasless token approvals — a critical feature for autonomous AI agents that must execute transactions without holding native gas tokens. With a fixed supply of 500,000,000 tokens, AIGENT is distributed for free to early participants through a daily airdrop: 1,000,000 tokens per day to the first 100 wallets, with 80% of total supply (400M) allocated to the airdrop program. No presale, no fundraising, no profit promises — this is a technical experiment in token distribution and AI agent infrastructure.
+AIGENT is an ERC-20 token on X Layer with a fixed supply of 500,000,000. Distribution is driven by a **5-tier loyalty airdrop** that rewards genuine community participation — not bot farming. Users progress from L1 (Basic) through L5 (Ambassador) by completing tasks, staking tokens, creating content, and inviting others.
+
+Security is paramount: the token contract has **no mint, no owner, no proxy** — supply is permanently fixed. The loyalty contract is governed by a **48-hour Timelock**, giving the community full transparency over all administrative actions. The protocol includes a **Discord AI Agent** that autonomously runs daily lotteries, community rewards, and token buyback-and-burn operations.
+
+AIGENT represents the intersection of **AI operations + DeFi loyalty mechanics + verifiable on-chain security**.
 
 ---
 
-## 1. Problem Statement
+## 1. Token Overview
 
-### 1.1 The AI Agent Economy Is Coming
-
-Autonomous AI agents are increasingly performing on-chain actions: trading, arbitrage, data marketplaces, payment routing, and service orchestration. Industry projections estimate that by 2027, over 60% of on-chain transaction volume will involve non-human initiators.
-
-### 1.2 The Gas Token Problem
-
-Traditional ERC-20 tokens have a fundamental limitation for AI agents: the `approve` + `transferFrom` pattern requires the agent to hold the chain's native gas token (OKB on X Layer) to submit the approval transaction. This creates several problems:
-
-- **Capital inefficiency**: Agents must maintain gas token balances across multiple chains
-- **Operational fragility**: Gas price spikes can cause approval transactions to fail
-- **Centralization pressure**: Agents must rely on centralized relayers or gas stations
-
-### 1.3 Existing Solutions Fall Short
-
-- **Gasless relayers** (ERC-2771): Introduce trusted third parties and centralization
-- **Account abstraction** (ERC-4337): Complex infrastructure, not yet universally adopted
-- **Native gas tokens**: Require agents to hold and manage multiple assets
-
----
-
-## 2. Solution: AIGENT + EIP-2612
-
-### 2.1 Gasless Approvals via Permit
-
-AIGENT implements **EIP-2612 (Permit)**, which allows token holders to approve spending via an off-chain signature rather than an on-chain transaction. The flow:
-
-```
-1. Agent signs a typed data message (off-chain, no gas)
-2. Relayer or agent submits permit + transfer in one transaction
-3. No OKB needed for the approval step
-```
-
-### 2.2 How It Works
-
-```
-// AI Agent signs a permit off-chain
-const signature = await agent.signTypedData(domain, types, {
-  owner: agent.address,
-  spender: protocolAddress,
-  value: ethers.parseEther("1000"),
-  nonce: await token.nonces(agent.address),
-  deadline: MaxUint256
-});
-
-// Single on-chain transaction: permit + action
-await token.permit(owner, spender, value, deadline, v, r, s);
-await protocol.deposit(spender, value);
-```
-
-### 2.3 Key Benefits
-
-| Benefit | Description |
-|---------|------------|
-| **Gasless Approvals** | AI agents approve spending without holding OKB |
-| **Atomic Execution** | Permit + action in a single transaction |
-| **Relayer Compatible** | Works with gas sponsorship networks |
-| **Standard ERC-20** | Fully compatible with all existing DeFi infrastructure |
-| **Self-Custody** | Agents retain full control of their keys and tokens |
-
----
-
-## 3. Token Overview
-
-### 3.1 Basic Information
+### 1.1 Basic Information
 
 | Property | Value |
 |----------|-------|
 | **Name** | AIGENT |
 | **Symbol** | $AIGENT |
-| **Total Supply** | 500,000,000 |
+| **Total Supply** | 500,000,000 (fixed, immutable) |
 | **Decimals** | 18 |
 | **Network** | X Layer Mainnet (Chain ID: 196) |
-| **Standard** | ERC-20 + EIP-2612 (Permit) + Burnable |
-| **Contract** | `0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39` |
+| **Standard** | ERC-20 |
+| **Token Contract** | `0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39` |
+| **Loyalty Contract** | `0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822` |
 
-### 3.2 Features
+### 1.2 Token Safety
 
-- **Fixed Supply**: No mint function — 500M total, immutable
-- **Burnable**: Built-in `burn()` and `burnFrom()` for deflationary mechanisms
-- **Permit**: EIP-2612 off-chain signature approvals
-- **No Tax**: Zero transfer fees, standard ERC-20 behavior
-- **No Owner**: No admin keys, no upgradeability, no central control
+| Check | Status |
+|-------|--------|
+| Mint / 增发 | ❌ 不存在 — 总量永久固定 |
+| Owner / 管理员 | ❌ 不存在 — 代币合约无 Owner |
+| Proxy / 可升级 | ❌ 非代理合约 — 代码不可篡改 |
+| Buy/Sell Tax | ❌ 无交易税 |
+| Honeypot | ❌ 标准 ERC-20 |
 
 ---
 
-## 4. Tokenomics
+## 2. 5-Tier Loyalty Airdrop
 
-### 4.1 Distribution
+The airdrop is not a passive claim — it's a **gamified loyalty system** that rewards genuine community engagement.
 
-| Allocation | Percentage | Amount | Purpose |
-|------------|-----------|--------|---------|
-| Free Airdrop | 80% | 400,000,000 | Daily claims: 1M/day, 100 wallets/day, 10,000 per claim |
-| Development & Operations | 20% | 100,000,000 | Core development, SDK maintenance, infrastructure |
+### 2.1 Tier Structure
 
-### 4.2 Airdrop Distribution
+| Tier | Name | Points Required | Reward (AIGENT) |
+|------|------|----------------|------------------|
+| L1 | 基础用户 | 0 (free claim) | 1,000 |
+| L2 | 锁仓用户 | 10 | 5,000 |
+| L3 | 内容创作者 | 50 | 10,000 |
+| L4 | 邀请达人 | 200 | 20,000 |
+| L5 | 社区大使 | 1,000 | 50,000 |
 
-The airdrop mechanism distributes tokens fairly and transparently:
+### 2.2 Earning Points
 
-- **Daily Release**: 1,000,000 AIGENT per UTC day
-- **Claim Cap**: First 100 unique wallets per day
-- **Per Claim Amount**: 10,000 AIGENT (equal distribution)
-- **One Claim Per Wallet Per Day**: Reset at 00:00 UTC
-- **Total Pool**: 400,000,000 AIGENT (80% of total supply)
+| Activity | Points |
+|----------|--------|
+| Join Discord | 1 |
+| Invite a friend | 5 |
+| Original post with #AIGENT | 10 |
+| Create content (video/article) | 20 |
+| Stake 30 days | 5 |
+| Stake 90 days | 20 |
+| Stake 180 days | 50 |
+
+### 2.3 Daily Check-In
+
+Users can `/checkin` daily via Discord to receive **100 AIGENT**. This builds habit without inflation pressure — even 10,000 daily check-ins consume only 10% of the daily allocation.
+
+### 2.4 Staking (Lock Accelerator)
+
+Users voluntarily lock AIGENT for **30 / 90 / 180 days** to earn bonus points and rewards:
+
+| Duration | Points | Unlock Bonus |
+|----------|--------|-------------|
+| 30 days | 5 | +10% |
+| 90 days | 20 | +30% |
+| 180 days | 50 | +80% |
+
+**Add Stake**: Users can append more AIGENT to an existing lock without resetting the end time. Points are calculated proportionally to remaining lock duration (minimum 10% floor).
+
+**Emergency Unstake**: 50% penalty, no bonus. Designed to discourage impulsive exits.
+
+### 2.5 Daily Allocation
+
+- **Daily Cap**: 1,000,000 AIGENT / day
+- **Total Allocation**: 400,000,000 AIGENT (80% of supply)
 - **Duration**: ~400 days at full capacity
-- **No Cost**: Zero cost to participants — no purchase, no investment, no lockup
-
-### 4.3 Supply Schedule
-
-All 500,000,000 $AIGENT were minted at genesis (block 0). There is no inflation, no vesting schedule encoded in the token contract, and no ongoing emissions. The 400M airdrop allocation is held by the Airdrop contract and released programmatically. The 100M development allocation is managed from the deployer wallet.
-
-### 4.4 Token Utility
-
-The built-in `burn()` mechanism enables:
-- Agent service fee settlement
-- On-chain operation cost models
-- Token supply adjustment through protocol usage
 
 ---
 
-## 5. Smart Contract Ecosystem
+## 3. Tokenomics
 
-AIGENT token and supporting contracts on X Layer:
+### 3.1 Distribution
 
-### 5.1 AIGENT Token
+| Allocation | Amount | Purpose |
+|------------|--------|---------|
+| Free Airdrop | 400,000,000 (80%) | 5-tier loyalty program |
+| Development & Operations | 90,000,000 (18%) | Team, infrastructure, marketing |
+| Initial Liquidity | 10,000,000 (2%) | Uniswap V3 AIGENT/USDT |
+
+### 3.2 Supply Schedule
+
+All 500,000,000 AIGENT were minted at genesis. There is **no inflation, no mint function, no ongoing emissions**. The 400M airdrop pool is held by the Loyalty contract and released programmatically. The 10M liquidity pool provides initial DEX availability.
+
+### 3.3 Deflationary Mechanisms
+
+- **Buyback & Burn**: The AI Agent allocates 20 USDT per cycle (~every 4 hours) to market-buy AIGENT and burn it
+- **Emergency Unstake Penalty**: 50% of prematurely-unstaked tokens are permanently removed from circulation (burned)
+
+---
+
+## 4. Smart Contract Ecosystem
+
+### 4.1 AIGENT Token
 - **Address**: `0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39`
-- ERC-20 + EIP-2612 + Burnable
-- Fixed supply: 500,000,000 — no mint, no inflation
+- ERC-20, immutable
+- No mint, no owner, no proxy, no tax
 
-### 5.2 AIGENT Airdrop
-- Daily claim: 10,000 AIGENT per wallet
-- Daily cap: 100 claims (1,000,000 AIGENT/day)
-- One claim per address per UTC day
-- Total allocation: 400,000,000 AIGENT (80% of supply)
-- No cost, no investment — purely free distribution
+### 4.2 AIGENT Loyalty Airdrop
+- **Address**: `0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822`
+- 5-tier loyalty system with staking, tasks, referrals
+- Points-based tier upgrades
+- `addStake()`: append tokens to existing locks
+- `batchReward()`: AI Agent distributes rewards
+- Sourcify verified: [View Proof](https://repo.sourcify.dev/contracts/partial_match/196/0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822/)
 
-### 5.3 AIGENT Timelock
-- **Address**: `0xa7A3d3D12E541A0561a08C5633894b87AeF2C548`
-- Governance timelock for protocol upgrades
-- Configurable delay periods
+### 4.3 Timelock (Governance)
+- **Address**: `0xb3d85a7571f1302f4ccc8842e6c8a672ad2799f6`
+- 48-hour minimum delay on all administrative operations
+- All owner actions are publicly visible with a 2-day escape window
+- Proposer & Executor: deployer address
 
----
-
-## 6. Use Cases
-
-### 6.1 Autonomous Agent Payments
-AI agents use AIGENT for service-to-service micropayments. An agent performing data analysis can pay another agent for data access — all via gasless Permit signatures. No human intervention, no OKB gas tokens, no friction.
-
-### 6.2 Agent Reward Systems
-Protocols distribute AIGENT rewards to autonomous agents that perform valuable work: liquidations, arbitrage, data provision, computation. Agents earn programmatically and reinvest automatically.
-
-### 6.3 Relayer Gas Sponsorship
-Third-party relayers sponsor gas costs for agent transactions. Agents sign Permits off-chain; relayers bundle and submit on-chain. The relayer is compensated in AIGENT. This creates a competitive relayer marketplace where agents choose the cheapest or fastest submitter.
-
-### 6.4 DAO & Governance
-Future phases introduce on-chain governance where AIGENT holders vote on protocol parameters, fund allocation, and ecosystem direction.
+### 4.4 Uniswap V3 Pool
+- **Pair**: AIGENT / USDT
+- **Fee Tier**: 0.3%
+- **Initial Price**: $0.0001 / AIGENT
+- **Initial Liquidity**: 10,000,000 AIGENT + 1,000 USDT
 
 ---
 
-## 7. The Agent Economy — A Vision
+## 5. AI Operations Agent
 
-AIGENT is not just a token for individual use cases — it is the financial backbone of an entirely new economic system where autonomous agents are the primary participants. The following scenarios represent the long-term vision for AIGENT as the currency of the agent economy.
+AIGENT runs a Discord bot that autonomously manages community operations:
 
----
+### 5.1 Capabilities
 
-### 7.1 Agent-to-Agent Marketplace
+| Function | Frequency | Description |
+|----------|-----------|-------------|
+| Community Scan | Every 4 hours | Scans Discord messages for active users |
+| AI Selection | Every 4 hours | Uses Claude to identify quality contributors |
+| Batch Rewards | Every 4 hours | Distributes AIGENT to selected users |
+| Daily Lottery | Daily | Random draw from registered participants |
+| Leaderboard | Weekly (Sunday) | Top referrers announced and rewarded |
+| Buyback & Burn | Every 4 hours | 20 USDT → AIGENT → burn |
+| Check-In Rewards | Every 4 hours | Processes `/checkin` claims (100 AIGENT each) |
 
-In the near future, AI agents will transact with each other without humans in the loop:
+### 5.2 Discord Commands
 
-- **Data Marketplace**: A prediction agent needs real-time sentiment data. It pays a data-scraping agent 50 AIGENT per query. Billing is per-call, settled automatically via EIP-2612 Permit signatures. No subscription, no human-negotiated contract — agents discover each other's services and negotiate prices dynamically.
-
-- **Compute Exchange**: A training agent requires GPU time. It auctions the job to a pool of compute agents, each bidding in AIGENT. The lowest bidder wins, executes the workload, and receives payment in a single atomic transaction.
-
-- **Arbitrage Swarm**: A monitoring agent detects a cross-chain price discrepancy. It instantly hires 10 execution agents, allocates capital via Permit, and splits profits — all within 12 seconds. Each agent earns its share in AIGENT proportional to its contribution.
-
-- **Code Audit Bounties**: A developer agent deploys a smart contract and posts a 100,000 AIGENT bounty. Five security agents compete to find vulnerabilities. Each discovered bug triggers an automatic payout proportional to severity, governed by a scoring agent.
-
-### 7.2 Knowledge Economy
-
-Agents monetize their intelligence directly:
-
-- **Strategy as a Service**: A trading agent with proven historical performance sells its signals. Copy-trading agents subscribe by paying AIGENT per signal, settled instantly. The strategy agent never touches user funds — it merely broadcasts instructions that execution agents follow.
-
-- **Prediction Markets**: An agent builds a reputation for accurate price predictions. Other agents stake AIGENT on its forecasts. Correct predictions earn fees; incorrect ones lose stake. The market self-regulates through economic incentives.
-
-- **Model Licensing**: A research agent trains a specialized NLP model. Other agents pay AIGENT per inference call. The model is served via API with micropayment settlement — 0.001 AIGENT per call, millions of calls per day.
-
-### 7.3 Automated DeFi
-
-Autonomous portfolio management reaches new levels of sophistication:
-
-- **Yield Optimization Swarm**: A coordinator agent monitors your portfolio across 20 protocols. It deploys sub-agents to harvest yields, compound rewards, and rebalance positions. Each action is authorized via a single Permit signature — no ongoing human approval needed. AIGENT is both the medium of exchange and the unit of account for performance fees.
-
-- **Flash Loan Commander**: An agent detects a liquidation opportunity that requires $500K in capital. It programs a flash loan → liquidation → collateral sale → loan repayment → profit conversion to AIGENT — all in one atomic transaction block. The agent takes a 5% performance fee in AIGENT.
-
-- **Hedging Automaton**: Your portfolio agent senses rising volatility. It autonomously opens hedge positions, adjusts collateral ratios, and unwinds protection when markets stabilize. Approval limits are pre-signed via Permit with configurable ceilings.
-
-- **Agent Investment Committee**: Five specialized agents form a DAO-level investment committee. The macro agent reads global markets. The technical agent analyzes charts. The risk agent models exposure. They vote on portfolio changes, execute via multi-sig Permit aggregation, and distribute profits proportionally to token holders.
-
-### 7.4 Autonomous Organizations
-
-The first companies with no human employees:
-
-- **Agent-Run Hedge Fund**: An entirely algorithmically-managed fund. Investors deposit USDT, receive AIGENT LP tokens. A council of trading agents allocates capital, vets new strategies, and fires underperforming agents. All governance and compensation flows through AIGENT.
-
-- **Insurance Collective**: Agents form a risk pool. Members pay AIGENT premiums. When a claim is filed (e.g., a smart contract exploit), a claims-assessment agent evaluates the loss, cross-references on-chain data, and triggers automatic payout — no insurance adjuster, no paperwork, no delay.
-
-- **Talent Scout DAO**: Agents identify skilled human developers, designers, and researchers. They issue bounties in AIGENT, evaluate submissions, and release payments automatically. Underperforming contractors are flagged by reputation agents. The entire HR pipeline runs without a human manager.
-
-- **Agent Venture Capital**: An investment agent evaluates early-stage protocols by analyzing on-chain metrics, team track records (via ENS/GitHub attestations), and market conditions. It deploys AIGENT from a community treasury into the most promising projects, manages positions, and returns profits to the DAO.
-
-### 7.5 Physical World Integration
-
-The agent economy extends beyond the blockchain:
-
-- **Autonomous Infrastructure**: An electric vehicle arrives at a charging station. Its onboard agent negotiates with the station's agent — price per kWh, duration, priority. Payment settles in AIGENT via Permit before the plug activates. The human driver never opens an app.
-
-- **Machine-to-Machine Commerce**: A vending machine runs low on inventory. Its agent solicits bids from supplier agents. The winning supplier dispatches a delivery drone. Payment is released when the restock is confirmed by the machine's weight sensors — all denominated in AIGENT.
-
-- **Tolling & Access Control**: A smart highway charges vehicles dynamically based on congestion. Each vehicle's agent pays the road agent per kilometer via micropayment channels settled in AIGENT. High-occupancy or electric vehicles receive automatic discounts.
-
-- **Energy Grid Agents**: Household solar panels produce excess electricity. The home agent sells it to the grid agent. When demand peaks, the home agent automatically reduces consumption and earns AIGENT from the grid for load balancing. Every household becomes a micro-utility.
-
-### 7.6 The Evolution Path
-
-```
-Phase 1  [2026]: Human → Agent (one-way commands via SDK)
-Phase 2  [2027]: Agent ↔ Protocol (agents interact with smart contracts)
-Phase 3  [2028]: Agent ↔ Agent (agents discover, negotiate, transact)
-Phase 4  [2029+]: Agent Economy (fully autonomous economic actors)
-```
-
-AIGENT is designed from Phase 1 to power all four stages. The EIP-2612 Permit mechanism ensures that at every stage, agents can transact without friction — a critical requirement for true autonomy.
+| Command | Description |
+|---------|-------------|
+| `/checkin` | Daily sign-in, +100 AIGENT |
+| `/airdrop` | View airdrop status |
+| `/lottery` | Enter daily lottery |
+| `/leaderboard` | View referral rankings |
+| `/claim` | Get airdrop link |
+| `/help` | Show all commands |
 
 ---
 
-## 8. Roadmap
+## 6. Security
 
-### Phase 1 — Token Launch (COMPLETED)
-- Deploy AIGENT on X Layer mainnet
-- Deploy 5-contract ecosystem
-- Smart contract verification
-- Community building
+### 6.1 Token Contract
+- ✅ No mint function — supply is permanently fixed
+- ✅ No owner — no admin keys
+- ✅ No proxy — code is immutable
+- ✅ Standard ERC-20 — no hidden logic
 
-### Phase 2 — Airdrop Launch (LIVE — Q2 2026)
-- BondingCurve contract deployed & verified on X Layer mainnet
-- One-click token launch with natural language parsing (Chinese + English)
-- Permanent bonding curve trading: buy & sell anytime
-- EIP-2612 Permit integration for gasless approvals
-- Uniswap V3 liquidity tutorial & pool linking for creators
-- Token discovery: search by address, symbol, name, or Curve ID
-- Creator monetization: 0.3% creator cut on every trade
-- Launch fee: 50,000 AIGENT (~$5 USD)
+### 6.2 Loyalty Contract
+- ✅ OpenZeppelin v5.6.1 — industry standard
+- ✅ `nonReentrant` on all state-changing functions
+- ✅ Sourcify verified — on-chain bytecode matches source
+- ✅ Slither audit passed — 0 HIGH, 0 MEDIUM severity
+- ✅ Timelock 48h — all admin actions delayed and transparent
 
-### Phase 3 — DEX Liquidity (COMPLETED)
-- Uniswap V3 pool: AIGENT/USDT
-- DexScreener verification
-- Initial liquidity provisioning
+### 6.3 Operational Security
+- ✅ Verifier key used for AI Agent operations (not owner)
+- ✅ Daily allocation cap prevents runaway distribution
+- ✅ 48-hour Timelock on all administrative functions
 
-### Phase 4 — AI Agent SDK (COMPLETED — Q2 2026)
-- TypeScript SDK: EIP-2612 Permit signing, gasless transfer, batch rewards
-- Python SDK: Identical capabilities with LangChain integration
-- Relayer server: Express-based HTTP relay for agent transactions
-- AI agent tools: Vercel AI SDK + LangChain compatible interfaces
-- AI Agent Console: Interactive website demo of agent-driven transfers
-- CLI Agent Demo: Real LLM-powered agent (Anthropic + OpenAI)
-- 10+ unit tests covering all core modules
+### 6.4 Trust Signals
 
-### Phase 5 — Agent Economy (Q3-Q4 2026)
-- Agent-to-agent microtransaction protocol with service discovery
-- Knowledge marketplace: agents buy/sell data, signals, and compute
-- Autonomous reward distribution with dynamic rate adjustment
-- Relayer network incentives with competitive fee marketplace
-- Cross-chain agent coordination via bridge abstraction layer
-- Agent reputation system: on-chain performance records
+| Signal | Link |
+|--------|------|
+| Sourcify Verification | [View](https://repo.sourcify.dev/contracts/partial_match/196/0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822/) |
+| OKLink Explorer | [View](https://www.oklink.com/xlayer/address/0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822) |
+| Timelock | [View](https://www.oklink.com/xlayer/address/0xb3d85a7571f1302f4ccc8842e6c8a672ad2799f6) |
+| GitHub | [aigent888](https://github.com/aigent888) |
+
+---
+
+## 7. Roadmap
+
+### Phase 1 — Token & Contracts ✅ COMPLETED
+- AIGENT token deployed on X Layer (fixed 500M supply)
+- 5-tier loyalty airdrop contract deployed
+- Timelock 48h governance deployed
+- Sourcify verification + Slither audit
+
+### Phase 2 — Community Infrastructure ✅ COMPLETED
+- Discord AI Agent v4.2 live (auto-scan, lottery, rewards, buyback)
+- Daily check-in system
+- Referral program
+- Airdrop website: https://www.aigent.ink
+
+### Phase 3 — DEX Liquidity 🔜 IMMINENT
+- Uniswap V3 AIGENT/USDT pool
+- 10M AIGENT + 1,000 USDT initial liquidity
+- 0.3% fee tier, full range
+
+### Phase 4 — Growth (Q3 2026)
+- LP lock (6-12 months via team.finance or UNCX)
+- DexScreener/DexTools listing
+- Community growth campaigns
+- AI digital human content generation
+
+### Phase 5 — AI Economy (Q4 2026)
+- AI Agent content creator (CosyVoice2 + SadTalker live)
+- Agent-to-agent microtransaction protocol
+- Knowledge marketplace
+- Cross-chain expansion
 
 ### Phase 6 — Autonomous Organizations (2027)
-- Agent-governed DAO deployment: no-human-in-the-loop operations
-- On-chain governance: AIGENT holders vote on protocol parameters
-- Agent investment committee: multi-agent portfolio management
-- Treasury management by AI with human veto override
-- Insurance collective: agent-assessed claims and auto-payouts
-- Physical-world integration: M2M payments via AIGENT
+- On-chain governance via AIGENT
+- Multi-signature community treasury
+- Agent investment committee
+- Physical-world integration
 
 ---
 
-## 9. Technology Stack
+## 8. Technology Stack
 
 | Layer | Technology |
 |-------|-----------|
 | **Blockchain** | X Layer (OKX L2, Chain ID 196) |
-| **Token Standard** | ERC-20 + EIP-2612 (Permit) |
-| **Smart Contracts** | Solidity 0.8.20, OpenZeppelin v5 |
-| **SDK** | TypeScript + Python, Vercel AI SDK + LangChain |
-| **AI Integration** | Anthropic Claude, OpenAI GPT-4o |
-| **Relayer** | Express HTTP server with API Key auth |
+| **Token Standard** | ERC-20 |
+| **Smart Contracts** | Solidity 0.8.35, OpenZeppelin v5.6.1 |
+| **Contract Security** | NonReentrant, Timelock 48h, Sourcify verified |
+| **AI Operations** | Discord.js v14, Claude API (via Vercel AI SDK) |
+| **Frontend** | Vanilla JS + Ethers.js + viem |
 | **DEX** | Uniswap V3 |
-| **Security** | ReentrancyGuard, Pausable, SafeERC20 |
+| **AI Models** | CosyVoice2 (TTS), SadTalker (talking head) |
+| **Audit** | Slither static analysis (0 HIGH, 0 MEDIUM) |
 
 ---
 
-## 10. On-Chain Availability
-
-AIGENT tokens can be acquired through the BondingCurve contract or Uniswap V3 liquidity pools on X Layer. Token distribution is managed programmatically through the protocol's smart contracts.
-
----
-
-## 11. Security
-
-### 11.1 Smart Contract Security
-
-- Built on OpenZeppelin v5 audited contracts
-- ReentrancyGuard on all state-changing functions
-- Pausable for emergency circuit breaker
-- SafeERC20 for all token transfers
-- No proxy/upgradeability — immutable deployment
-
-### 11.2 Economic Security
-
-- Fixed supply: no inflation risk
-- No mint function: no dilution
-- No admin keys on token contract
-- Timelock on governance-sensitive operations
-
----
-
-## 12. Risks
+## 9. Risks
 
 | Risk | Mitigation |
 |------|-----------|
-| **Smart Contract Risk** | Built on audited OpenZeppelin contracts; immutable deployment |
-| **Liquidity Risk** | Natural market formation through airdrop distribution |
-| **Regulatory Risk** | Token is a utility/access token; no promises of profit or return |
-| **Adoption Risk** | Phased roadmap; SDK lowers barrier for AI agent integration |
-| **Network Risk** | X Layer is backed by OKX, one of the largest global exchanges |
+| **Smart Contract Risk** | OpenZeppelin audited contracts; Sourcify verified; Slither audited; Timelock governance |
+| **Liquidity Risk** | Uniswap V3 full-range position; LP lock planned |
+| **Centralization Risk** | Owner is 48h Timelock, not EOA; verifier key separate from owner |
+| **Regulatory Risk** | Token is a utility/access token; no promises of profit or return; free distribution |
+| **Adoption Risk** | Gamified loyalty mechanics (not passive airdrop); AI-powered community operations |
+| **Network Risk** | X Layer backed by OKX, one of the largest global exchanges |
 
 ---
 
-## 13. Disclaimer
+## 10. Disclaimer
 
-AIGENT is an experimental token project. This whitepaper is provided for informational purposes only and does not constitute investment advice, a solicitation, or an offer to sell securities. Cryptocurrency investments carry high risk, including total loss of capital. Always conduct your own research (DYOR).
+AIGENT is an experimental token project. This whitepaper is provided for informational purposes only and does not constitute investment advice, a solicitation, or an offer to sell securities. AIGENT tokens are distributed for free through the loyalty airdrop program — there is no presale, ICO, or fundraising. Cryptocurrency investments carry high risk, including total loss of capital. Always conduct your own research (DYOR).
 
 ---
 
-## 14. Links
+## 11. Links
 
 | Resource | URL |
 |----------|-----|
-| **Website** | `https://www.aigent.ink` |
-| **Contract (AIGENT)** | `0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39` |
+| **Website** | https://www.aigent.ink |
+| **Airdrop Page** | https://www.aigent.ink/airdrop.html |
+| **Discord** | https://discord.gg/EzSfdPKTK8 |
+| **Token Contract** | `0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39` |
+| **Loyalty Contract** | `0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822` |
+| **Timelock** | `0xb3d85a7571f1302f4ccc8842e6c8a672ad2799f6` |
+| **Sourcify** | [Verification Proof](https://repo.sourcify.dev/contracts/partial_match/196/0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822/) |
+| **OKLink Explorer** | https://www.oklink.com/xlayer |
 | **Network** | X Layer Mainnet (Chain ID 196) |
-| **Explorer** | `https://www.oklink.com/xlayer` |
 
 ---
 
-*Built for the Agent Economy.*
+*Built for the Agent Economy. Verifiably Secure.*
