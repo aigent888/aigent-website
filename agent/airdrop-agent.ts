@@ -1,5 +1,5 @@
 /**
- * AIGENT AI 运营 Agent v4.0 — Discord + Telegram 双平台
+ * AIGENT AI 运营 Agent v4.1 — Discord 平台
  *
  * 用法:
  *   npx tsx agent/airdrop-agent.ts --auto        # 全自动模式
@@ -25,8 +25,6 @@ const LOYALTY_AIRDROP = process.env.LOYALTY_AIRDROP_ADDRESS || "0x021B4D1C57c8Ca
 const VERIFIER_PK = process.env.VERIFIER_PRIVATE_KEY || "";
 
 // Platform configs
-const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
-const TG_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "";
 const DC_TOKEN = process.env.DISCORD_BOT_TOKEN || "";
 const DC_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID || "";
 
@@ -69,18 +67,8 @@ const verifierWallet = verifierAccount
   : null;
 
 // ═══════════════════════════════════════════
-//  平台抽象层: 统一消息发送
+//  消息发送
 // ═══════════════════════════════════════════
-
-async function tgApi(method: string, body: Record<string, any> = {}) {
-  const url = `https://api.telegram.org/bot${TG_TOKEN}/${method}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  return res.json();
-}
 
 let discordClient: Client | null = null;
 let discordChannel: TextChannel | null = null;
@@ -100,47 +88,24 @@ async function getDiscordChannel(): Promise<TextChannel | null> {
 }
 
 async function sendMessage(text: string): Promise<void> {
-  let sent = 0;
-
-  // Telegram
-  if (TG_TOKEN && TG_CHAT_ID) {
-    try {
-      await tgApi("sendMessage", {
-        chat_id: TG_CHAT_ID,
-        text,
-        parse_mode: "HTML",
-        disable_web_page_preview: true,
-      });
-      console.log("  📤 Telegram 已发送");
-      sent++;
-    } catch (e: any) {
-      console.log(`  ❌ Telegram 发送失败: ${e.message}`);
-    }
-  }
-
   // Discord
   const ch = await getDiscordChannel();
   if (ch) {
     try {
-      // Discord has a 2000-char limit; split if needed
       const clean = text.replace(/<[^>]*>/g, ""); // strip HTML for Discord
       if (clean.length <= 2000) {
         await ch.send(clean);
       } else {
-        // Split into chunks
         for (let i = 0; i < clean.length; i += 1900) {
           await ch.send(clean.slice(i, i + 1900));
         }
       }
       console.log("  📤 Discord 已发送");
-      sent++;
     } catch (e: any) {
       console.log(`  ❌ Discord 发送失败: ${e.message}`);
     }
-  }
-
-  if (sent === 0) {
-    console.log("  ⚠ 无可用平台 (Telegram/Discord 均未配置)");
+  } else {
+    console.log("  ⚠ Discord 未配置");
   }
 }
 
@@ -150,68 +115,11 @@ async function sendMessage(text: string): Promise<void> {
 
 interface CommunityUser {
   handle: string;
-  platform: "telegram" | "discord";
+  platform: "discord";
   userId: string;
   address: string;
   messageCount: number;
   content: string;
-}
-
-// ═══════════════════════════════════════════
-//  扫描: Telegram
-// ═══════════════════════════════════════════
-
-async function scanTelegram(): Promise<CommunityUser[]> {
-  if (!TG_TOKEN) return [];
-  console.log("📡 扫描 Telegram...");
-
-  try {
-    const result = await tgApi("getUpdates", { limit: 100, timeout: 5 });
-    if (!result.ok || !result.result) {
-      console.log("  ⚠ 获取消息失败");
-      return [];
-    }
-
-    const updates = result.result;
-    console.log(`  获取到 ${updates.length} 条更新`);
-
-    const userMap = new Map<number, { handle: string; messages: string[] }>();
-    const addressRegex = /0x[a-fA-F0-9]{40}/g;
-
-    for (const upd of updates) {
-      const msg = upd.message || upd.channel_post;
-      if (!msg || !msg.from) continue;
-      const from = msg.from;
-      const name = from.username ? `@${from.username}` : (from.first_name || `user_${from.id}`);
-      const text = msg.text || msg.caption || "";
-      const addrs = text.match(addressRegex);
-      if (addrs || text.toLowerCase().includes("aigent")) {
-        if (!userMap.has(from.id)) {
-          userMap.set(from.id, { handle: name, messages: [] });
-        }
-        userMap.get(from.id)!.messages.push(text);
-      }
-    }
-
-    const users: CommunityUser[] = [];
-    for (const [uid, data] of userMap) {
-      const allText = data.messages.join(" | ");
-      const addrs = allText.match(addressRegex) || [];
-      users.push({
-        handle: data.handle,
-        platform: "telegram",
-        userId: String(uid),
-        address: addrs[0] || "",
-        messageCount: data.messages.length,
-        content: allText.slice(0, 200),
-      });
-    }
-    console.log(`  Telegram: ${users.length} 个活跃用户`);
-    return users;
-  } catch (e: any) {
-    console.log(`  ❌ Telegram 扫描失败: ${e.message}`);
-    return [];
-  }
 }
 
 // ═══════════════════════════════════════════
@@ -271,26 +179,13 @@ async function scanDiscord(): Promise<CommunityUser[]> {
 }
 
 // ═══════════════════════════════════════════
-//  统一扫描: 合并两个平台
+//  社区扫描
 // ═══════════════════════════════════════════
 
 async function scanCommunity(): Promise<CommunityUser[]> {
-  const [tgUsers, dcUsers] = await Promise.all([
-    scanTelegram(),
-    scanDiscord(),
-  ]);
-  // Dedupe by address
-  const seen = new Set<string>();
-  const merged: CommunityUser[] = [];
-  for (const u of [...tgUsers, ...dcUsers]) {
-    const key = u.address || u.userId;
-    if (!seen.has(key)) {
-      seen.add(key);
-      merged.push(u);
-    }
-  }
-  console.log(`\n📊 社区总计: ${merged.length} 个去重用户 (TG:${tgUsers.length} + DC:${dcUsers.length})`);
-  return merged;
+  const dcUsers = await scanDiscord();
+  console.log(`\n📊 社区总计: ${dcUsers.length} 个 Discord 用户`);
+  return dcUsers;
 }
 
 // ═══════════════════════════════════════════
@@ -589,59 +484,6 @@ async function handleCommand(cmd: string, reply: (text: string) => Promise<void>
 }
 
 // ═══════════════════════════════════════════
-//  Telegram Bot (轮询)
-// ═══════════════════════════════════════════
-
-let tgLastUpdateId = 0;
-
-async function startTelegramBot(): Promise<void> {
-  if (!TG_TOKEN) {
-    console.log("⚠ Telegram 未配置 (TELEGRAM_BOT_TOKEN 为空)");
-    return;
-  }
-
-  console.log("🤖 Telegram Bot 启动 (轮询模式)...");
-  if (TG_CHAT_ID) {
-    await sendMessage("🤖 AIGENT 运营 Agent 已上线!\n\n命令:\n/airdrop — 查看空投状态\n/lottery — 报名每日抽奖\n/leaderboard — 查看排行榜\n/help — 帮助");
-  }
-
-  while (true) {
-    try {
-      const result = await tgApi("getUpdates", { offset: tgLastUpdateId + 1, timeout: 30 });
-      if (result.ok && result.result) {
-        for (const upd of result.result) {
-          tgLastUpdateId = upd.update_id;
-          const msg = upd.message || upd.channel_post;
-          if (!msg || !msg.text) continue;
-
-          const chatId = msg.chat.id;
-          const from = msg.from;
-          const name = from?.username ? `@${from.username}` : (from?.first_name || "用户");
-
-          await handleCommand(
-            msg.text,
-            async (replyText) => {
-              await tgApi("sendMessage", {
-                chat_id: chatId,
-                text: replyText,
-                parse_mode: "HTML",
-                disable_web_page_preview: true,
-              });
-            },
-            name,
-          );
-        }
-      }
-    } catch (e: any) {
-      if (!e.message?.includes("timeout")) {
-        console.log(`  TG Bot 错误: ${e.message}`);
-        await new Promise(r => setTimeout(r, 5000));
-      }
-    }
-  }
-}
-
-// ═══════════════════════════════════════════
 //  Discord Bot (Gateway WebSocket)
 // ═══════════════════════════════════════════
 
@@ -712,11 +554,7 @@ async function startDiscordBot(): Promise<void> {
 // ═══════════════════════════════════════════
 
 async function startAllBots(): Promise<void> {
-  // Run both bots concurrently
-  await Promise.all([
-    startDiscordBot(),
-    startTelegramBot(),
-  ]);
+  await startDiscordBot();
 }
 
 // ═══════════════════════════════════════════
@@ -725,8 +563,8 @@ async function startAllBots(): Promise<void> {
 
 async function mainLoop() {
   console.log("╔══════════════════════════════════╗");
-  console.log("║  🤖 AIGENT 运营 Agent v4.0      ║");
-  console.log("║  Discord + Telegram 双平台      ║");
+  console.log("║  🤖 AIGENT 运营 Agent v4.1      ║");
+  console.log("║  Discord 平台                   ║");
   console.log("╚══════════════════════════════════╝\n");
 
   // 1. 检查合约
