@@ -451,6 +451,7 @@ const HELP_TEXT = `🤖 AIGENT 运营助手
 /airdrop — 查看空投状态
 /lottery — 报名每日抽奖 (需附带钱包地址)
 /leaderboard — 查看邀请排行榜
+/checkin — 每日签到领 100 AIGENT
 /claim — 获取空投领取链接
 /help — 显示此帮助
 
@@ -478,9 +479,60 @@ async function handleCommand(cmd: string, reply: (text: string) => Promise<void>
     }
   } else if (text.startsWith("/leaderboard")) {
     await reply("🏆 排行榜每周日结算\n数据从链上读取，按邀请人数排名\n\n🥇 第1名: 50,000 AIGENT\n🥈 第2-3名: 20,000 AIGENT\n🥉 第4-10名: 5,000 AIGENT\n\n邀请链接: https://www.aigent.ink/airdrop.html?ref=你的地址");
+  } else if (text.startsWith("/checkin")) {
+    const addrMatch = text.match(/0x[a-fA-F0-9]{40}/);
+    if (!addrMatch) {
+      await reply("📅 请提供你的钱包地址:\n/checkin 0x你的地址");
+    } else {
+      const addr = addrMatch[0].toLowerCase();
+      const today = new Date().toISOString().slice(0, 10);
+      const key = `checkin_${today}_${addr}`;
+      if (checkinSet.has(key)) {
+        await reply(`⏳ ${userName} 今日已签到，明天再来！`);
+      } else {
+        checkinSet.add(key);
+        checkinQueue.push({ address: addr, name: userName });
+        await reply(`✅ ${userName} 签到成功！\n🎁 +100 AIGENT 将于下次 Agent 循环发放\n📅 每日可签到一次\n\n明日继续! /checkin 0x...`);
+        console.log(`  签到: ${userName} (${addr.slice(0, 10)}...)`);
+      }
+    }
   } else if (text.startsWith("/claim")) {
     await reply(`🎁 领取 AIGENT 空投\n\n1. 打开 https://www.aigent.ink/airdrop.html\n2. 连接钱包\n3. 点击"领取 1,000 AIGENT"\n\n🏆 完成任务升级，最高拿 50,000 AIGENT!`);
   }
+}
+
+// ── 签到系统 ──
+const checkinSet = new Set<string>();
+const checkinQueue: { address: string; name: string }[] = [];
+
+async function processCheckins() {
+  if (checkinQueue.length === 0) return;
+  console.log(`\n📅 处理签到 (${checkinQueue.length} 人)...`);
+
+  // Dedupe
+  const seen = new Set<string>();
+  const unique = checkinQueue.filter(c => {
+    if (seen.has(c.address)) return false;
+    seen.add(c.address);
+    return true;
+  });
+  checkinQueue.length = 0;
+
+  const CHECKIN_REWARD = 100; // AIGENT
+  const addresses = unique.map(c => c.address as `0x${string}`);
+  const amounts = unique.map(() => BigInt(CHECKIN_REWARD) * BigInt(1e18));
+
+  try {
+    const hash = await verifierWallet!.writeContract({
+      address: LOYALTY_AIRDROP as `0x${string}`, abi: LOYALTY_ABI,
+      functionName: "batchReward", args: [addresses, amounts],
+      account: verifierAccount!, chain: xLayer,
+    });
+    console.log(`  ✅ 签到发奖: ${hash}`);
+    for (const c of unique) {
+      console.log(`    ${c.name} +${CHECKIN_REWARD} AIGENT`);
+    }
+  } catch (e: any) { console.log(`  ❌ 签到发奖失败: ${e.message}`); }
 }
 
 // ═══════════════════════════════════════════
@@ -513,7 +565,7 @@ async function startDiscordBot(): Promise<void> {
     if (DC_CHANNEL_ID) {
       const ch = await getDiscordChannel();
       if (ch) {
-        await ch.send("🤖 AIGENT 运营 Agent 已上线!\n\n命令:\n/airdrop /lottery /leaderboard /claim /help");
+        await ch.send("🤖 AIGENT 运营 Agent 已上线!\n\n命令:\n/checkin /airdrop /lottery /leaderboard /claim /help");
       }
     }
   });
@@ -597,6 +649,10 @@ async function mainLoop() {
     const msg = `📊 AIGENT 空投日报\n\n今日已领: ${(Number(status.todayClaimed)/1e18).toLocaleString()} AIGENT\n剩余: ${status.remainingPercent}%\n累计: ${(Number(status.totalAllocated)/1e18).toLocaleString()} AIGENT\n\n🔗 https://www.aigent.ink/airdrop.html`;
     await sendMessage(msg);
   }
+
+  // 5.5. 签到发奖
+  console.log("\n📅 Step 5.5: 签到发奖");
+  await processCheckins();
 
   // 6. 抽奖
   console.log("\n🎰 Step 6: 每日抽奖");
