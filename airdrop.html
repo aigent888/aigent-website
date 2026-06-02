@@ -155,6 +155,13 @@ input:focus,select:focus{border-color:var(--cyan)}
 	.lb-row:last-child{border-bottom:none}
 	.lb-list .lb-item{display:flex;justify-content:space-between;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.04)}
 	.lb-list .lb-item:last-child{border-bottom:none}
+/* Trust section */
+#trust-sec{margin-top:40px;padding:20px 16px}
+.trust-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center}
+.trust-card .trust-icon{font-size:1.8em;margin-bottom:8px}
+.trust-card .trust-title{font-weight:600;font-size:.9em;margin-bottom:6px}
+.trust-card .trust-status.ok{color:var(--green);font-size:.85em;font-weight:700}
+.trust-card .trust-desc{color:var(--muted);font-size:.72em;margin-top:6px;line-height:1.4}
 </style>
 </head>
 <body>
@@ -937,5 +944,43 @@ if (window.ethereum) {
 }
 
 </script>
+
+<!-- ── Trust & Security ── -->
+<section id="trust-sec" style="max-width:720px;margin:60px auto 20px;padding:0 16px">
+  <h2 style="font-size:1.3em;margin-bottom:16px;text-align:center">🔒 安全 & 信任</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px">
+    <div class="trust-card">
+      <div class="trust-icon">🛡️</div>
+      <div class="trust-title">Slither 自动审计</div>
+      <div class="trust-status ok">0 HIGH · 0 MEDIUM</div>
+      <div class="trust-desc">通过 Trail of Bits Slither 安全分析，无严重/中等漏洞</div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">🔍</div>
+      <div class="trust-title">Sourcify 验证</div>
+      <div class="trust-status ok">已验签 ✓</div>
+      <div class="trust-desc"><a href="https://repo.sourcify.dev/contracts/partial_match/196/0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822/" target="_blank" style="color:var(--cyan)">查看验证记录 →</a></div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">📦</div>
+      <div class="trust-title">OpenZeppelin 标准</div>
+      <div class="trust-status ok">v5.6.1</div>
+      <div class="trust-desc">使用行业标准合约库，NonReentrant 全面防护</div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">🚫</div>
+      <div class="trust-title">无后门</div>
+      <div class="trust-status ok">安全</div>
+      <div class="trust-desc">无 Mint 增发 · 无交易税 · 无 Honeypot · 标准 Uniswap V3</div>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:.75em;color:var(--muted)">
+    📜 合约地址: <a href="https://www.oklink.com/xlayer/address/0x021B4D1C57c8Ca7e1bafdc5da2bE21c3c2400822" target="_blank" style="color:var(--cyan)">0x021B...0822</a> ·
+    开源协议: MIT ·
+    <a href="https://github.com/aigent888" target="_blank" style="color:var(--cyan)">GitHub</a>
+    <br>⚠️ Owner 权限: <code>recoverToken</code> 应急恢复 · 建议上线后转多签
+  </div>
+</section>
+
 </body>
 </html>
