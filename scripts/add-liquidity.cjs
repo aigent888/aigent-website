@@ -26,9 +26,9 @@ const UNI_V3_ROUTER = "0x4f0c28f5926afda16bf2506d5d9e57ea190f9bca";
 // USDT on X Layer (verified on-chain, OKX bridged)
 const USDT = "0x1E4a5963aBFD975d8c9021ce480b42188849D41d";
 
-// Pool config (adjusted to wallet balance)
-const AIGENT_AMOUNT = "9950000";  // 9.95M AIGENT (wallet: 9,954,663)
-const USDT_AMOUNT = "995";        // 995 USDT
+// Pool config
+const AIGENT_AMOUNT = "10000000"; // 10M AIGENT
+const USDT_AMOUNT = "1000";       // 1000 USDT
 const AIGENT_PRICE = 0.0001;      // $0.0001 per AIGENT
 
 // ERC20 ABI (minimal)
