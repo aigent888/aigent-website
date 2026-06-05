@@ -71,6 +71,9 @@
   .tabs{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:24px}
   .tab{padding:14px 8px;text-align:center;border:1px solid rgba(212,168,67,0.15);border-radius:12px;cursor:pointer;font-size:13px;color:var(--text-dim);transition:all 0.4s;font-family:inherit;background:transparent;letter-spacing:2px}
   .tab .tab-icon{font-size:24px;display:block;margin-bottom:4px}
+  .tab-img{width:48px;height:48px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 4px;border:2px solid rgba(212,168,67,0.2);transition:all 0.4s}
+  .tab.active .tab-img{border-color:var(--gold);box-shadow:0 0 16px rgba(212,168,67,0.4)}
+  .tab:hover .tab-img{border-color:var(--gold)}
   .tab:hover{border-color:var(--gold);color:var(--gold)}
   .tab.active{border-color:var(--gold);color:var(--gold);background:linear-gradient(180deg,rgba(212,168,67,0.08),rgba(212,168,67,0.02));box-shadow:0 4px 20px rgba(212,168,67,0.08)}
 
@@ -183,10 +186,10 @@
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active" onclick="switchService('fortune')"><span class="tab-icon">🔮</span>算命</button>
-    <button class="tab" onclick="switchService('naming')"><span class="tab-icon">📛</span>起名</button>
-    <button class="tab" onclick="switchService('tarot')"><span class="tab-icon">🃏</span>塔罗</button>
-    <button class="tab" onclick="switchService('dream')"><span class="tab-icon">🌙</span>解梦</button>
+    <button class="tab active" onclick="switchService('fortune')"><img src="/assets/icon-fortune.png" class="tab-img" alt="算命">算命</button>
+    <button class="tab" onclick="switchService('naming')"><img src="/assets/icon-naming.png" class="tab-img" alt="起名">起名</button>
+    <button class="tab" onclick="switchService('tarot')"><img src="/assets/icon-tarot.png" class="tab-img" alt="塔罗">塔罗</button>
+    <button class="tab" onclick="switchService('dream')"><img src="/assets/icon-dream.png" class="tab-img" alt="解梦">解梦</button>
   </div>
 
   <!-- Content Area -->
