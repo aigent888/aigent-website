@@ -688,7 +688,11 @@ async function fetchFortune(wallet, year, month, day, hour, gender, question, is
 
   // Call AI
   const apiKey = localStorage.getItem('anthropic_key') || '';
-  const systemPrompt = `你是一位精通东方玄学的命理大师，融合易经、五行、星座和区块链数据为用户推算运势。风格：文雅古典，半文半白，有禅意。每次给出不同的独特解读。回复JSON格式：{"score":85,"fortune":"运势总结20字内","love":"姻缘解读","wealth":"财运解读","career":"事业解读","lucky":"幸运物/颜色/数字","advice":"禅意建议50字"}。score是0-100的综合运势分数。`;
+  const AGENT_API = 'http://localhost:3456';
+
+  const systemPrompt = isPremium
+    ? `你是一位精通东西方玄学的命理大师。用${tier==='master'?'深度分析、文雅古典、半文半白的风格，包含八字五行、星座命盘、流年大运的详细解读':'简洁有力的风格，给出今日运势解读'}。回复JSON：{"score":55-98的整数,"fortune":"运势总结20字","love":"姻缘解读","wealth":"财运解读","career":"事业解读","lucky":"幸运物/颜色/数字","advice":"建议50字"}`
+    : `你是一位精通东方玄学的命理大师，融合易经、五行、星座和区块链数据为用户推算运势。风格：文雅古典，半文半白，有禅意。每次给出不同的独特解读。回复JSON格式：{"score":85,"fortune":"运势总结20字内","love":"姻缘解读","wealth":"财运解读","career":"事业解读","lucky":"幸运物/颜色/数字","advice":"禅意建议50字"}。score是0-100的综合运势分数。`;
 
   const userPrompt = `请为以下人士推算运势：
 - 性别：${genderText}
@@ -701,28 +705,31 @@ async function fetchFortune(wallet, year, month, day, hour, gender, question, is
 
 请给出今日运势解读。`;
 
-  // Try AI first (always for premium, optional for free)
+  // Try AI: 1) Agent API (local) 2) Direct Claude 3) Local fallback
   const useAI = isPremium || !!apiKey;
   try {
-    if (useAI && apiKey) {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 500,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userPrompt }],
-        }),
-      });
-      const data = await res.json();
-      const text = data.content[0].text;
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) return JSON.parse(jsonMatch[0]);
+    if (useAI) {
+      let text = '';
+      // Try Agent API first (for premium users)
+      if (isPremium) {
+        try {
+          const agentRes = await fetch(`${AGENT_API}/api/fortune`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: userPrompt, tier: currentTier }),
+          });
+          if (agentRes.ok) text = (await agentRes.json()).text || await agentRes.text();
+        } catch {}
+      }
+      // Fallback to direct Claude API
+      if (!text && apiKey) {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+          body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 600, system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] }),
+        });
+        if (res.ok) { const data = await res.json(); text = data.content[0].text; }
+      }
+      if (text) { const m = text.match(/\{[\s\S]*\}/); if (m) return JSON.parse(m[0]); }
     }
   } catch {}
 

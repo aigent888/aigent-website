@@ -671,6 +671,46 @@ async function mainLoop() {
   console.log("\n✅ 本轮运营完成\n");
 }
 
+// ═══════════════════════════════════════════
+//  Fortune API (for website paid tiers)
+// ═══════════════════════════════════════════
+
+import { createServer } from "http";
+const FORTUNE_PORT = 3456;
+
+function startFortuneAPI() {
+  const server = createServer(async (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    if (req.method === "OPTIONS") { res.writeHead(204); res.end(); return; }
+
+    if (req.method === "POST" && req.url === "/api/fortune") {
+      let body = "";
+      req.on("data", d => body += d);
+      req.on("end", async () => {
+        try {
+          const { prompt, tier } = JSON.parse(body);
+          const systemPrompt = `你是一位精通东西方玄学的命理大师。用${tier==='master'?'深度分析、文雅古典、半文半白的风格，包含八字五行、星座命盘、流年大运的详细解读':'简洁有力的风格，给出今日运势解读'}。回复JSON：{"score":55-98的整数,"fortune":"运势总结20字","love":"姻缘解读","wealth":"财运解读","career":"事业解读","lucky":"幸运物/颜色/数字","advice":"建议50字"}`;
+
+          const model = anthropic("claude-sonnet-4-6");
+          const result = await generateText({ model, system: systemPrompt, prompt, maxTokens: 600 });
+          const json = result.text.match(/\{[\s\S]*\}/)?.[0] || '{"score":88,"fortune":"吉星高照","love":"良缘可期","wealth":"宜守财","career":"稳步前进","lucky":"金色·8","advice":"心静自然明"}';
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(json);
+        } catch(e) {
+          res.writeHead(500);
+          res.end(JSON.stringify({ error: "Fortune API error" }));
+        }
+      });
+    } else {
+      res.writeHead(404);
+      res.end("Not Found");
+    }
+  });
+  server.listen(FORTUNE_PORT, () => console.log(`  🔮 Fortune API: http://localhost:${FORTUNE_PORT}`));
+}
+
 // ── CLI ──
 const mode = process.argv[2] || "--auto";
 
@@ -680,8 +720,8 @@ const mode = process.argv[2] || "--auto";
       await startAllBots();
       break;
     case "--auto":
-      // Start bots FIRST, then run main loop
       await startAllBots();
+      startFortuneAPI();
       await mainLoop().catch(console.error);
       setInterval(() => mainLoop().catch(console.error), 4 * 60 * 60 * 1000);
       break;
