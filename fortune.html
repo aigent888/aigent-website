@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>玄机 · 链上命理 | AIGENT</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Ma+Shan+Zheng&display=swap');
+
+  :root {
+    --gold: #c9a96e;
+    --gold-light: #e0c88a;
+    --gold-dark: #8b6914;
+    --ink: #1a1410;
+    --ink-light: #2a2218;
+    --paper: #f5f0e8;
+    --red: #8b1a1a;
+    --red-bright: #c41e3a;
+    --text: #d4c5b2;
+    --text-dim: #8a7a6a;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+    background: var(--ink);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Particles Background ── */
+  #particles {
+    position: fixed; inset:0; z-index:0; pointer-events:none;
+    opacity: 0.4;
+  }
+  .particle {
+    position: absolute;
+    color: var(--gold);
+    font-size: 16px;
+    animation: floatUp 8s linear infinite;
+    opacity: 0;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(105vh) rotate(0deg) scale(0); opacity:0; }
+    10% { opacity:0.6; }
+    90% { opacity:0.1; }
+    100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity:0; }
+  }
+
+  /* ── Main Container ── */
+  .main {
+    position: relative; z-index: 1;
+    max-width: 520px; margin: 0 auto; padding: 40px 20px 80px;
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center; margin-bottom: 48px; padding-top: 30px;
+  }
+  .header-icon {
+    width: 80px; height: 80px; margin: 0 auto 20px;
+    border: 2px solid var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+    background: radial-gradient(circle, rgba(201,169,110,0.12) 0%, transparent 70%);
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 20px rgba(201,169,110,0.15); }
+    50% { box-shadow: 0 0 40px rgba(201,169,110,0.35); }
+  }
+  .header h1 {
+    font-family: 'Ma Shan Zheng', 'Noto Serif SC', cursive;
+    font-size: 42px; color: var(--gold); font-weight: 400;
+    letter-spacing: 4px; margin-bottom: 6px;
+  }
+  .header .subtitle {
+    font-size: 13px; color: var(--text-dim); letter-spacing: 6px;
+    text-transform: uppercase;
+  }
+
+  /* ── Decorative Line ── */
+  .divider {
+    text-align: center; margin: 20px 0 32px;
+    color: var(--gold-dark); font-size: 8px; letter-spacing: 8px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--ink-light);
+    border: 1px solid rgba(201,169,110,0.15);
+    border-radius: 16px; padding: 32px 28px;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s ease;
+  }
+  .card.active { border-color: rgba(201,169,110,0.4); box-shadow: 0 0 30px rgba(201,169,110,0.08); }
+
+  /* ── Steps ── */
+  .step-indicator {
+    display: flex; justify-content: center; gap: 12px; margin-bottom: 32px;
+  }
+  .step-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold-dark); transition: all 0.4s;
+  }
+  .step-dot.done { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+  .step-dot.active { background: var(--gold-light); box-shadow: 0 0 12px var(--gold-light); animation: pulse 1.5s infinite; }
+
+  /* ── Form ── */
+  label {
+    display: block; font-size: 12px; color: var(--text-dim);
+    letter-spacing: 3px; margin-bottom: 8px; text-transform: uppercase;
+  }
+  .input-group {
+    margin-bottom: 20px;
+  }
+  input, select {
+    width: 100%; padding: 14px 18px;
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(201,169,110,0.2);
+    border-radius: 10px; color: var(--paper); font-size: 15px;
+    font-family: inherit; outline: none; transition: all 0.3s;
+  }
+  input:focus, select:focus {
+    border-color: var(--gold); box-shadow: 0 0 16px rgba(201,169,110,0.1);
+  }
+  input::placeholder { color: rgba(180,160,140,0.3); }
+  select { appearance: none; cursor: pointer; }
+  select option { background: var(--ink-light); color: var(--paper); }
+
+  .form-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .radio-group {
+    display: flex; gap: 8px;
+  }
+  .radio-btn {
+    flex:1; padding:12px; text-align:center;
+    border:1px solid rgba(201,169,110,0.2); border-radius:10px;
+    cursor:pointer; transition:all 0.3s; font-size:14px; color:var(--text-dim);
+  }
+  .radio-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .radio-btn.selected { border-color: var(--gold); background: rgba(201,169,110,0.1); color: var(--gold); }
+
+  /* ── Button ── */
+  .btn-primary {
+    width: 100%; padding: 16px; margin-top: 12px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark));
+    border: none; border-radius: 12px;
+    color: #1a1410; font-size: 17px; font-weight: 700;
+    font-family: inherit; letter-spacing: 3px; cursor: pointer;
+    transition: all 0.4s; position: relative; overflow: hidden;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 30px rgba(201,169,110,0.3);
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled {
+    opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none;
+  }
+  .btn-outline {
+    width: 100%; padding: 14px; margin-top: 8px;
+    background: transparent; border: 1px solid var(--gold);
+    border-radius: 12px; color: var(--gold); font-size: 14px;
+    font-family: inherit; letter-spacing: 2px; cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover { background: rgba(201,169,110,0.05); }
+
+  /* ── Loading ── */
+  .loading-container {
+    text-align: center; padding: 48px 20px;
+  }
+  .bagua {
+    width: 100px; height: 100px; margin: 0 auto 24px;
+    border: 3px solid var(--gold); border-radius: 50%;
+    position: relative; animation: spin 3s linear infinite;
+  }
+  .bagua::before {
+    content:''; position:absolute; top:50%; left:0; right:0; height:3px;
+    background: var(--gold); transform:translateY(-50%);
+  }
+  .bagua::after {
+    content:'☯'; position:absolute; inset:8px; display:flex;
+    align-items:center; justify-content:center;
+    font-size:36px; color:var(--gold);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-size: 15px; color: var(--gold); letter-spacing: 4px;
+    animation: fadeText 2s ease-in-out infinite;
+  }
+  @keyframes fadeText { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+
+  /* ── Result Card ── */
+  .result-header {
+    text-align: center; margin-bottom: 24px;
+  }
+  .result-score {
+    font-size: 72px; font-weight: 900; color: var(--gold);
+    line-height: 1; letter-spacing: -2px;
+    text-shadow: 0 0 40px rgba(201,169,110,0.4);
+  }
+  .result-score-label {
+    font-size: 13px; color: var(--text-dim); letter-spacing: 4px; margin-top: 4px;
+  }
+  .result-item {
+    padding: 16px 0; border-bottom: 1px solid rgba(201,169,110,0.08);
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-item .label {
+    font-size: 11px; color: var(--gold-dark); letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .result-item .value {
+    font-size: 15px; color: var(--paper); line-height: 1.7;
+  }
+  .result-highlight {
+    margin-top: 24px; padding: 20px;
+    background: rgba(201,169,110,0.05); border-radius: 12px;
+    text-align: center;
+  }
+  .result-highlight .big {
+    font-size: 20px; color: var(--gold); font-weight: 700; letter-spacing: 2px;
+  }
+  .result-highlight .small {
+    font-size: 12px; color: var(--text-dim); margin-top: 6px;
+  }
+
+  /* ── Share Buttons ── */
+  .share-row {
+    display: flex; gap: 8px; margin-top: 20px;
+  }
+  .share-btn {
+    flex:1; padding:12px; text-align:center; border-radius:10px;
+    font-size:12px; font-family:inherit; letter-spacing:1px;
+    cursor:pointer; border:none; transition:all 0.3s;
+    color:#fff;
+  }
+  .share-btn.x { background:#1da1f2; }
+  .share-btn.dc { background:#5865f2; }
+  .share-btn.copy { background:var(--gold-dark); }
+  .share-btn:hover { filter:brightness(1.2); transform:translateY(-1px); }
+
+  /* ── Hidden ── */
+  .hidden { display: none !important; }
+  .fade-in { animation: fadeIn 0.6s ease-out; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+
+  /* ── Toast ── */
+  .toast {
+    position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+    background:var(--gold-dark);color:#fff;padding:12px 24px;
+    border-radius:20px;font-size:13px;z-index:99;letter-spacing:1px;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center; margin-top: auto; padding-top: 40px;
+    font-size: 11px; color: var(--text-dim); letter-spacing: 2px;
+  }
+  .footer a { color: var(--gold); text-decoration: none; }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    .main { padding: 20px 16px 60px; }
+    .header h1 { font-size: 34px; }
+    .card { padding: 24px 18px; }
+    .form-row { grid-template-columns: 1fr; }
+    .result-score { font-size: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<div class="main">
+  <div class="header">
+    <div class="header-icon">🔮</div>
+    <h1>玄 机</h1>
+    <div class="subtitle">链 上 命 理 · AI 算 运</div>
+  </div>
+
+  <div class="divider">◆ ◇ ◆</div>
+
+  <!-- Step 1: Input -->
+  <div class="card" id="step-input">
+    <div class="step-indicator">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+    </div>
+
+    <div class="input-group">
+      <label>💰 钱包地址（可选）</label>
+      <input type="text" id="wallet" placeholder="0x... 留空则仅用生辰推算" autocomplete="off">
+    </div>
+
+    <div class="form-row">
+      <div class="input-group">
+        <label>🎂 出生年份</label>
+        <select id="year">
+          <option value="">选择年份</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>🌙 性别</label>
+        <div class="radio-group">
+          <div class="radio-btn" data-value="male" onclick="selectGender(this)">♂ 男</div>
+          <div class="radio-btn selected" data-value="female" onclick="selectGender(this)">♀ 女</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>🔮 想问什么（可选）</label>
+      <input type="text" id="question" placeholder="财运 · 事业 · 姻缘 · 出行 · 综合运势" autocomplete="off">
+    </div>
+
+    <button class="btn-primary" onclick="startReading()">
+      开 始 测 算
+    </button>
+    <p style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:12px;letter-spacing:1px;">
+      仅供娱乐 · AI 生成 · 不可当真
+    </p>
+  </div>
+
+  <!-- Step 2: Loading -->
+  <div class="card hidden fade-in" id="step-loading">
+    <div class="loading-container">
+      <div class="bagua"></div>
+      <p class="loading-text">天机演算中</p>
+      <p style="color:var(--text-dim);font-size:12px;margin-top:12px;">
+        正在解读链上数据 & 命理推演...
+      </p>
+    </div>
+  </div>
+
+  <!-- Step 3: Result -->
+  <div class="card hidden" id="step-result">
+    <div class="step-indicator">
+      <div class="step-dot done" id="rdot1"></div>
+      <div class="step-dot done" id="rdot2"></div>
+      <div class="step-dot done" id="rdot3"></div>
+    </div>
+    <div id="result-content"></div>
+    <div class="share-row">
+      <button class="share-btn x" onclick="shareX()">𝕏 分享到 X</button>
+      <button class="share-btn dc" onclick="shareDC()">💬 分享到 Discord</button>
+      <button class="share-btn copy" onclick="shareCopy()">📋 复制结果</button>
+    </div>
+    <button class="btn-outline" onclick="resetAll()">⟳ 重新测算</button>
+  </div>
+
+  <div class="footer">
+    Powered by <a href="/">AIGENT</a> · 玄机 XuanJi · Chain Fortune
+  </div>
+</div>
+
+<script>
+// ── Init ──
+(function() {
+  const y = document.getElementById('year');
+  const now = new Date().getFullYear();
+  for (let i = now - 60; i <= now - 12; i++) {
+    const o = document.createElement('option'); o.value = i; o.textContent = i + ' 年';
+    y.appendChild(o);
+  }
+  y.value = '1995';
+  spawnParticles();
+})();
+
+function spawnParticles() {
+  const chars = ['⚬','○','✧','·','⦿','✵','⬡'];
+  const c = document.getElementById('particles');
+  for (let i=0;i<30;i++) {
+    const el = document.createElement('span');
+    el.className = 'particle';
+    el.textContent = chars[Math.floor(Math.random()*chars.length)];
+    el.style.left = Math.random()*100+'%';
+    el.style.animationDelay = Math.random()*10+'s';
+    el.style.animationDuration = (6+Math.random()*10)+'s';
+    el.style.fontSize = (10+Math.random()*18)+'px';
+    c.appendChild(el);
+  }
+}
+
+let gender = 'female';
+function selectGender(el) {
+  document.querySelectorAll('.radio-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  gender = el.dataset.value;
+}
+
+// ── Main Flow ──
+async function startReading() {
+  const wallet = document.getElementById('wallet').value.trim();
+  const year = document.getElementById('year').value;
+  const question = document.getElementById('question').value.trim();
+
+  if (!year) { toast('请选择出生年份'); return; }
+
+  // Show loading
+  document.getElementById('step-input').classList.add('hidden');
+  const loading = document.getElementById('step-loading');
+  loading.classList.remove('hidden');
+  loading.classList.add('fade-in');
+
+  try {
+    const result = await fetchFortune(wallet, year, gender, question);
+    showResult(result);
+  } catch(e) {
+    console.error(e);
+    document.getElementById('step-loading').classList.add('hidden');
+    document.getElementById('step-input').classList.remove('hidden');
+    toast('测算失败，请重试');
+  }
+}
+
+async function fetchFortune(wallet, year, gender, question) {
+  // Build prompt for AI
+  const genderText = gender === 'male' ? '男' : '女';
+  const age = new Date().getFullYear() - parseInt(year);
+  const q = question || '综合运势';
+  const zodiac = getZodiac(parseInt(year));
+  const element = getElement(parseInt(year));
+  const hourZodiac = getHourZodiac();
+
+  // If wallet provided, try to fetch chain data
+  let chainInfo = '';
+  if (wallet && /^0x[a-fA-F0-9]{40}$/.test(wallet)) {
+    try {
+      const resp = await fetch('https://rpc.xlayer.tech', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          jsonrpc:'2.0',id:1,
+          method:'eth_getBalance',
+          params:[wallet,'latest']
+        })
+      });
+      const data = await resp.json();
+      if (data.result) {
+        const bal = BigInt(data.result);
+        chainInfo = `链上余额: ${(Number(bal)/1e18).toFixed(4)} OKB。`;
+        if (bal > 1000000000000000000n) chainInfo += ' 资产雄厚，财运亨通之象。';
+        else if (bal === 0n) chainInfo += ' 钱包空空，宜布局未来。';
+        else chainInfo += ' 小有积蓄，稳中求进。';
+      }
+    } catch {}
+  }
+
+  // Call AI
+  const apiKey = localStorage.getItem('anthropic_key') || '';
+  const systemPrompt = `你是一位精通东方玄学的命理大师，融合易经、五行、星座和区块链数据为用户推算运势。风格：文雅古典，半文半白，有禅意。每次给出不同的独特解读。回复JSON格式：{"score":85,"fortune":"运势总结20字内","love":"姻缘解读","wealth":"财运解读","career":"事业解读","lucky":"幸运物/颜色/数字","advice":"禅意建议50字"}。score是0-100的综合运势分数。`;
+
+  const userPrompt = `请为以下人士推算运势：
+- 性别：${genderText}
+- 年龄：${age}岁
+- 生肖：${zodiac}
+- 五行：${element}
+- 时辰：${hourZodiac}
+- 所问：${q}
+- ${chainInfo}
+
+请给出今日运势解读。`;
+
+  // Try AI first, fallback to local generation
+  try {
+    if (apiKey) {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 500,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userPrompt }],
+        }),
+      });
+      const data = await res.json();
+      const text = data.content[0].text;
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) return JSON.parse(jsonMatch[0]);
+    }
+  } catch {}
+
+  // Local fallback: deterministic but feels random per user
+  return localFortune(wallet, year, gender, question);
+}
+
+function localFortune(wallet, year, gender, question) {
+  const seed = (wallet+year+gender+question).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const rand = (min,max) => {
+    const x = Math.sin(seed * 9301 + min * 49297) * 233280;
+    return Math.floor(min + (Math.abs(x - Math.floor(x))) * (max - min));
+  };
+  const score = rand(55,98);
+  const fortunes = [
+    '紫气东来，贵人暗助，今日宜静不宜动。',
+    '财星高照，然需防小人暗算，守住本心。',
+    '桃花入命，红鸾星动，良缘在东南方。',
+    '天机星现，事业有突破之兆，大胆前行。',
+    '玄武当值，宜修身养性，财不露白。',
+    '朱雀临门，口舌之争难免，退一步海阔天空。',
+  ];
+  const loves = [
+    '桃花运势旺盛，单身者今日宜社交，有缘人已在途中。已有伴侣者，宜多说温柔话语。',
+    '红鸾星微动，感情运势平稳。旧人可守，新人勿近。',
+    '桃花带煞，今日不宜表白或做重大感情决定。静待花开。',
+  ];
+  const wealths = [
+    '财帛宫明亮，今日宜理财规划。偏财运佳，或有意外之喜。但大额投资需谨慎。',
+    '正财运稳健，勤劳所得最为可靠。不宜投机，稳扎稳打为上。',
+    '财星晦暗，今日宜守不宜攻。控制消费，避免冲动购物。破财消灾亦是一种智慧。',
+  ];
+  const careers = [
+    '事业宫有吉星高照，贵人相助。今日提出的方案容易获得认可，宜主动展示自己。',
+    '官禄宫平稳，按部就班即可。不宜跳槽或重大变动，积蓄力量等待时机。',
+    '事业遇小阻，但不足为虑。困难是暂时的，保持耐心和专注，转机将至。',
+  ];
+  const z = getZodiac(parseInt(year));
+  const luckyColors = ['金色','朱红','墨绿','藏蓝','月白','绛紫','琥珀','玄黑'];
+  const luckyNums = [3,6,8,9,15,24,28,33,42,51,66,88];
+  const advices = [
+    `今日${z}与${getZodiac(parseInt(year)+6)}相合，宜与属${getZodiac(parseInt(year)+6)}之人合作。东方为吉位，佩戴${luckyColors[rand(0,7)]}可助运势。静坐片刻，心静则万事明。`,
+    `禅曰：不争，故天下莫能与之争。今日守住本心，不与人争长短。午后饮一杯清茶，财运自然来。`,
+    `易经云：天行健，君子以自强不息。今日宜早起，面向东方深吸三口气，吐纳间得天地灵气。宜穿${luckyColors[rand(0,7)]}。`,
+  ];
+
+  return {
+    score,
+    fortune: fortunes[rand(0,fortunes.length)],
+    love: loves[rand(0,loves.length)],
+    wealth: wealths[rand(0,wealths.length)],
+    career: careers[rand(0,careers.length)],
+    lucky: `${luckyColors[rand(0,luckyColors.length)]} · 数字 ${luckyNums[rand(0,luckyNums.length)]} · ${z}大吉`,
+    advice: advices[rand(0,advices.length)],
+  };
+}
+
+function showResult(r) {
+  document.getElementById('step-loading').classList.add('hidden');
+  const result = document.getElementById('step-result');
+  result.classList.remove('hidden');
+  result.classList.add('fade-in');
+  result.scrollIntoView({ behavior:'smooth', block:'center' });
+
+  document.getElementById('result-content').innerHTML = `
+    <div class="result-header">
+      <div class="result-score">${r.score}</div>
+      <div class="result-score-label">综 合 运 势 评 分</div>
+    </div>
+    <div class="result-item">
+      <div class="label">🔮 今日运势</div>
+      <div class="value">${r.fortune}</div>
+    </div>
+    <div class="result-item">
+      <div class="label">💕 姻缘</div>
+      <div class="value">${r.love}</div>
+    </div>
+    <div class="result-item">
+      <div class="label">💰 财运</div>
+      <div class="value">${r.wealth}</div>
+    </div>
+    <div class="result-item">
+      <div class="label">🚀 事业</div>
+      <div class="value">${r.career}</div>
+    </div>
+    <div class="result-highlight">
+      <div class="big">${r.lucky}</div>
+      <div class="small">🍀 今日幸运物</div>
+    </div>
+    <div class="result-item">
+      <div class="label">🧘 禅意建言</div>
+      <div class="value">${r.advice}</div>
+    </div>
+  `;
+
+  window._fortuneResult = r;
+}
+
+function resetAll() {
+  document.getElementById('step-result').classList.add('hidden');
+  document.getElementById('step-input').classList.remove('hidden');
+  window._fortuneResult = null;
+}
+
+// ── Share ──
+function getShareText() {
+  const r = window._fortuneResult;
+  if (!r) return '🔮 玄机·链上命理 @AIGENT';
+  return `🔮 今日运势 ${r.score}分\n${r.fortune}\n🍀 ${r.lucky}\n\n玄机·链上命理 | AIGENT\nhttps://www.aigent.ink/fortune`;
+}
+
+function shareX() {
+  const text = encodeURIComponent(getShareText());
+  window.open(`https://x.com/intent/post?text=${text}&hashtags=AIGENT,玄机`, '_blank');
+}
+function shareDC() {
+  const text = getShareText();
+  navigator.clipboard.writeText(text).then(() => toast('已复制，粘贴到 Discord 分享'));
+}
+function shareCopy() {
+  const text = getShareText();
+  navigator.clipboard.writeText(text).then(() => toast('✅ 已复制运势结果'));
+}
+
+// ── Helpers ──
+function getZodiac(year) {
+  const animals = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+  return animals[(year - 4) % 12];
+}
+function getElement(year) {
+  const elements = ['金','金','水','水','木','木','火','火','土','土'];
+  return elements[year % 10];
+}
+function getHourZodiac() {
+  const h = new Date().getHours();
+  const z = ['子时','丑时','寅时','卯时','辰时','巳时','午时','未时','申时','酉时','戌时','亥时'];
+  return z[Math.floor((h+1)/2)%12];
+}
+
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.3s'; setTimeout(()=>t.remove(),300); }, 2500);
+}
+</script>
+</body>
+</html>
