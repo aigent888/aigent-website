@@ -440,6 +440,7 @@ async function startFortune(){
 function localFortune(y,m,d,h,g,q){
   const seed=(y+m+d+h+g+q).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
   const rd=(min,max)=>{const x=Math.sin(seed*9301+min*49297)*233280;return Math.floor(min+Math.abs(x-Math.floor(x))*(max-min))};
+  const z=['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'][(parseInt(y)-4)%12];
   const fs=['紫气东来，贵人暗助。','财星高照，宜守本心。','桃花入命，良缘在望。','天机星现，大胆前行。','玄武当值，静养为上。'];
   return{score:rd(55,95),fortune:fs[rd(0,5)],love:['桃花旺盛，单身宜社交。','红鸾微动，旧人可守。','桃花带煞，静待花开。'][rd(0,3)],wealth:['财帛宫明，宜理财。','正财稳健，勿投机。','财星晦暗，宜守成。'][rd(0,3)],career:['事业有贵人助。','官禄平稳，积蓄力量。','小阻不足虑，转机将至。'][rd(0,3)],lucky:`金色 · ${['8','6','9','15','24'][rd(0,5)]} · ${['玉','水晶','红绳','铜钱','玛瑙'][rd(0,5)]}`,advice:`${z}年吉日，东方为吉位。静坐片刻，心静则万事明。`};
 }
