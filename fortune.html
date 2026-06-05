@@ -357,16 +357,19 @@
     </div>
 
     <!-- Tier Select -->
-    <div style="display:flex;gap:8px;margin-bottom:12px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px;">
       <button class="tier-btn selected" id="tier-free" onclick="selectTier('free')">
-        🥠 免费测算<br><small>本地算法</small>
+        🥠 免费<br><small>本地算法</small>
       </button>
-      <button class="tier-btn" id="tier-premium" onclick="selectTier('premium')">
-        🔥 AI 深度<br><small>100 AIGENT · 真 AI · 链上烧币</small>
+      <button class="tier-btn" id="tier-standard" onclick="selectTier('standard')">
+        🔥 标准 AI<br><small>100 AIGENT</small>
+      </button>
+      <button class="tier-btn" id="tier-master" onclick="selectTier('master')">
+        👑 大师 AI<br><small>500 AIGENT</small>
       </button>
     </div>
 
-    <!-- Wallet for premium -->
+    <!-- Wallet for paid tiers -->
     <div id="wallet-section" style="display:none;margin-bottom:12px;">
       <button class="btn-outline" id="btn-connect-fortune" onclick="connectFortuneWallet()" style="font-size:12px;padding:10px;">
         🔗 连接钱包
@@ -377,10 +380,7 @@
     <button class="btn-primary" id="btn-start" onclick="startReading()">
       开 始 测 算
     </button>
-    <p id="premium-note" style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:12px;letter-spacing:1px;display:none;">
-      ⚡ 将燃烧 100 AIGENT · AI 深度学习你的命运 · 链上可查
-    </p>
-    <p id="free-note" style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:12px;letter-spacing:1px;">
+    <p id="price-note" style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:12px;letter-spacing:1px;">
       仅供娱乐 · AI 生成 · 不可当真
     </p>
   </div>
@@ -440,7 +440,7 @@ const i18n = {
     shareDC:'💬 分享到 Discord',
     shareCopy:'📋 复制结果',
     retry:'⟳ 重新测算',
-    footer:'Powered by <a href="/">AIGENT</a> · 玄机 XuanJi · Chain Fortune',
+    footer:'Powered by <a href="/">AIGENT</a> · 玄机 XuanJi · 免费算命 + AI 深度 <a href="/fortune" style="color:var(--gold)">立即体验</a>',
     fortunes:['紫气东来，贵人暗助，今日宜静不宜动。','财星高照，然需防小人暗算，守住本心。','桃花入命，红鸾星动，良缘在东南方。','天机星现，事业有突破之兆，大胆前行。','玄武当值，宜修身养性，财不露白。','朱雀临门，口舌之争难免，退一步海阔天空。'],
     loves:['桃花运势旺盛，单身者今日宜社交，有缘人已在途中。已有伴侣者，宜多说温柔话语。','红鸾星微动，感情运势平稳。旧人可守，新人勿近。','桃花带煞，今日不宜表白或做重大感情决定。静待花开。'],
     wealths:['财帛宫明亮，今日宜理财规划。偏财运佳，或有意外之喜。但大额投资需谨慎。','正财运稳健，勤劳所得最为可靠。不宜投机，稳扎稳打为上。','财星晦暗，今日宜守不宜攻。控制消费，避免冲动购物。破财消灾亦是一种智慧。'],
@@ -541,25 +541,28 @@ let currentTier = 'free';
 let fortuneWallet = null;
 let fortuneSigner = null;
 const AIGENT_ADDR = '0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';
-const BURN_AMOUNT = 100n * 10n**18n;
+const REVENUE_ADDR = '0x38bA1dD6cA31c8b2971de7c61A87f1F7c4Eba7e4';
+const TIERS = {
+  free:    { price: 0,   burn: 0,   revenue: 0,   label: '开 始 测 算', gradient: 'linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark))' },
+  standard:{ price: 100, burn: 70,  revenue: 30,  label: '🔥 支付 100 AIGENT · 燃烧 70 · 收费 30', gradient: 'linear-gradient(135deg, #8b1a1a, #c41e3a, #8b1a1a)' },
+  master:  { price: 500, burn: 350, revenue: 150, label: '👑 支付 500 AIGENT · 燃烧 350 · 收费 150', gradient: 'linear-gradient(135deg, #4a148c, #7b1fa2, #4a148c)' },
+};
 
 function selectTier(tier) {
   currentTier = tier;
   document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('selected'));
-  const btn = document.getElementById(tier === 'free' ? 'tier-free' : 'tier-premium');
-  btn.classList.add('selected');
-  if (tier === 'premium') {
+  document.getElementById(`tier-${tier}`).classList.add('selected');
+  const cfg = TIERS[tier];
+  if (tier !== 'free') {
     document.getElementById('wallet-section').style.display = 'block';
-    document.getElementById('premium-note').style.display = 'block';
-    document.getElementById('free-note').style.display = 'none';
-    document.getElementById('btn-start').textContent = '🔥 燃烧 100 AIGENT · AI 深度测算';
-    document.getElementById('btn-start').style.background = 'linear-gradient(135deg, #8b1a1a, #c41e3a, #8b1a1a)';
+    document.getElementById('btn-start').textContent = cfg.label;
+    document.getElementById('btn-start').style.background = cfg.gradient;
+    document.getElementById('price-note').textContent = `⚡ 燃烧 ${cfg.burn} · 收入 ${cfg.revenue} AIGENT · 链上透明`;
   } else {
     document.getElementById('wallet-section').style.display = 'none';
-    document.getElementById('premium-note').style.display = 'none';
-    document.getElementById('free-note').style.display = 'block';
-    document.getElementById('btn-start').textContent = '开 始 测 算';
-    document.getElementById('btn-start').style.background = 'linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark))';
+    document.getElementById('btn-start').textContent = cfg.label;
+    document.getElementById('btn-start').style.background = cfg.gradient;
+    document.getElementById('price-note').textContent = '仅供娱乐 · 本地算法 · 不可当真';
   }
 }
 
@@ -597,30 +600,40 @@ async function startReading() {
 
   if (!year || !month || !day || !hour) { toast(currentLang==='en'?'Select birth date':'请选择完整生辰'); return; }
 
-  // Premium: require wallet + burn first
-  if (currentTier === 'premium') {
+  // Paid tiers: wallet + payment (burn + revenue)
+  if (currentTier !== 'free') {
     if (!fortuneWallet || !fortuneSigner) { toast('请先连接钱包'); return; }
+    const cfg = TIERS[currentTier];
+    const totalWei = BigInt(cfg.price) * 10n**18n;
     try {
       document.getElementById('step-input').classList.add('hidden');
       document.getElementById('step-loading').classList.remove('hidden');
       document.getElementById('step-loading').classList.add('fade-in');
-      document.querySelector('#step-loading .loading-text').textContent = '链上燃烧 AIGENT...';
-      document.querySelector('#step-loading p').textContent = '正在执行链上操作...';
+      document.querySelector('#step-loading .loading-text').textContent = `支付 ${cfg.price} AIGENT...`;
+      document.querySelector('#step-loading p').textContent = `燃烧 ${cfg.burn} · 收费 ${cfg.revenue}`;
 
-      const abi = ['function burn(uint256 amount)'];
-      const contract = new ethers.Contract(AIGENT_ADDR, abi, fortuneSigner);
-      const tx = await contract.burn(BURN_AMOUNT);
-      document.querySelector('#step-loading .loading-text').textContent = '等待确认...';
-      await tx.wait();
+      const abi = ['function transfer(address to, uint256 amount) returns (bool)', 'function burn(uint256 amount)'];
+      const token = new ethers.Contract(AIGENT_ADDR, abi, fortuneSigner);
+      // Burn portion
+      if (cfg.burn > 0) {
+        const burnWei = BigInt(cfg.burn) * 10n**18n;
+        const txBurn = await token.burn(burnWei);
+        await txBurn.wait();
+      }
+      // Revenue portion
+      if (cfg.revenue > 0) {
+        const revWei = BigInt(cfg.revenue) * 10n**18n;
+        const txRev = await token.transfer(REVENUE_ADDR, revWei);
+        await txRev.wait();
+      }
+      document.querySelector('#step-loading .loading-text').textContent = '天机演算中';
+      document.querySelector('#step-loading p').textContent = 'AI 深度学习你的命运轨迹...';
     } catch(e) {
       document.getElementById('step-loading').classList.add('hidden');
       document.getElementById('step-input').classList.remove('hidden');
-      toast('Burn failed: ' + (e.reason || e.message || 'insufficient balance'));
+      toast('支付失败: ' + (e.reason || e.message || '余额不足'));
       return;
     }
-    // Reset for AI loading
-    document.querySelector('#step-loading .loading-text').textContent = '天机演算中';
-    document.querySelector('#step-loading p').textContent = 'AI 深度学习你的命运轨迹...';
   } else {
     // Free: just show loading
     document.getElementById('step-input').classList.add('hidden');
@@ -767,14 +780,18 @@ function localFortune(wallet, year, month, day, hour, gender, question) {
   };
 }
 
-function showResult(r, isPremium = false) {
+function showResult(r, isPaid = false) {
   document.getElementById('step-loading').classList.add('hidden');
   const result = document.getElementById('step-result');
   result.classList.remove('hidden');
   result.classList.add('fade-in');
   result.scrollIntoView({ behavior:'smooth', block:'center' });
 
-  const badge = isPremium ? '<div style="text-align:center;margin-bottom:16px;font-size:10px;color:var(--red-bright);letter-spacing:2px;">🔥 AI 深度推演 · 100 AIGENT 已燃烧 · 链上可查</div>' : '';
+  const cfg = TIERS[currentTier];
+  const tierLabel = currentTier === 'standard' ? '🔥' : currentTier === 'master' ? '👑' : '';
+  const badge = isPaid
+    ? `<div style="text-align:center;margin-bottom:16px;font-size:10px;color:var(--red-bright);letter-spacing:2px;">${tierLabel} AI 深度推演 · 燃烧 ${cfg.burn} · 收费 ${cfg.revenue} AIGENT · 链上可查</div>`
+    : '';
 
   document.getElementById('result-content').innerHTML = `
     ${badge}
