@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AIGENT AI 玄学馆 · 太上问道</title>
+<title>AIGENT AI 玄学馆 · AI 玄机</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap');
 
@@ -283,7 +283,7 @@
 
   <div class="hr">◆ ◇ ◆ ◇ ◆</div>
   <p style="text-align:center;font-size:11px;color:var(--text-dim)">
-    Powered by <a href="/" style="color:var(--gold);text-decoration:none">AIGENT</a> · 太上问道 · AI 玄学馆
+    Powered by <a href="/" style="color:var(--gold);text-decoration:none">AIGENT</a> · AI 玄机 · AI 玄学馆
   </p>
 </div>
 
@@ -401,7 +401,7 @@ async function callAI(prompt,tier){
 
 function showLoading(msg,sub){document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));const l=document.getElementById('loading-panel');l.classList.remove('hidden');l.classList.add('fade-in');document.getElementById('loading-msg').textContent=msg;document.getElementById('loading-sub').textContent=sub||''}
 function showResult(html){document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));const r=document.getElementById('result-panel');r.classList.remove('hidden');r.classList.add('fade-in');r.innerHTML=html;r.scrollIntoView({behavior:'smooth',block:'center'})}
-function shareResult(text){const share=`${text}\n\n🔮 太上问道 · AIGENT AI 玄学馆\nhttps://www.aigent.ink/mystic\n#AIGENT #太上问道`;return`
+function shareResult(text){const share=`${text}\n\n🔮 AI 玄机 · AIGENT AI 玄学馆\nhttps://www.aigent.ink/mystic\n#AIGENT #AI 玄机`;return`
   <div class="share-row">
     <button class="share-btn x" onclick="window.open('https://x.com/intent/post?text=${encodeURIComponent(share)}','_blank')">𝕏 分享</button>
     <button class="share-btn dc" onclick="navigator.clipboard.writeText('${share.replace(/'/g,"\\'")}');toast('已复制！粘贴到 Discord')">💬 复制</button>
