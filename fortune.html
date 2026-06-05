@@ -169,6 +169,20 @@
     transition: all 0.3s;
   }
   .btn-outline:hover { background: rgba(201,169,110,0.05); }
+  .btn-outline.connected { border-color: var(--green); color: var(--green); }
+
+  /* Tier */
+  .tier-btn {
+    flex:1; padding:12px 8px; text-align:center;
+    border:1px solid rgba(201,169,110,0.2); border-radius:10px;
+    background:transparent; color:var(--text-dim); cursor:pointer;
+    font-family:inherit; font-size:13px; line-height:1.5;
+    transition:all 0.3s;
+  }
+  .tier-btn small { font-size:9px; opacity:0.7; display:block; margin-top:2px; }
+  .tier-btn:hover { border-color: var(--gold); }
+  .tier-btn.selected { border-color: var(--gold); background: rgba(201,169,110,0.1); color: var(--gold); }
+  .tier-btn.premium.selected { border-color: var(--red-bright); background: rgba(196,30,58,0.12); color: var(--red-bright); }
 
   /* ── Loading ── */
   .loading-container {
@@ -273,7 +287,9 @@
     .form-row { grid-template-columns: 1fr; }
     .result-score { font-size: 56px; }
   }
+  }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.0/ethers.umd.min.js"></script>
 </head>
 <body>
 
@@ -340,10 +356,31 @@
       <input type="text" id="question" placeholder="财运 · 事业 · 姻缘 · 出行 · 综合运势" autocomplete="off">
     </div>
 
-    <button class="btn-primary" onclick="startReading()">
+    <!-- Tier Select -->
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <button class="tier-btn selected" id="tier-free" onclick="selectTier('free')">
+        🥠 免费测算<br><small>本地算法</small>
+      </button>
+      <button class="tier-btn" id="tier-premium" onclick="selectTier('premium')">
+        🔥 AI 深度<br><small>100 AIGENT · 真 AI · 链上烧币</small>
+      </button>
+    </div>
+
+    <!-- Wallet for premium -->
+    <div id="wallet-section" style="display:none;margin-bottom:12px;">
+      <button class="btn-outline" id="btn-connect-fortune" onclick="connectFortuneWallet()" style="font-size:12px;padding:10px;">
+        🔗 连接钱包
+      </button>
+      <p id="wallet-status" style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:6px;"></p>
+    </div>
+
+    <button class="btn-primary" id="btn-start" onclick="startReading()">
       开 始 测 算
     </button>
-    <p style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:12px;letter-spacing:1px;">
+    <p id="premium-note" style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:12px;letter-spacing:1px;display:none;">
+      ⚡ 将燃烧 100 AIGENT · AI 深度学习你的命运 · 链上可查
+    </p>
+    <p id="free-note" style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:12px;letter-spacing:1px;">
       仅供娱乐 · AI 生成 · 不可当真
     </p>
   </div>
@@ -500,6 +537,49 @@ function spawnParticles() {
 }
 
 let gender = 'female';
+let currentTier = 'free';
+let fortuneWallet = null;
+let fortuneSigner = null;
+const AIGENT_ADDR = '0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';
+const BURN_AMOUNT = 100n * 10n**18n;
+
+function selectTier(tier) {
+  currentTier = tier;
+  document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('selected'));
+  const btn = document.getElementById(tier === 'free' ? 'tier-free' : 'tier-premium');
+  btn.classList.add('selected');
+  if (tier === 'premium') {
+    document.getElementById('wallet-section').style.display = 'block';
+    document.getElementById('premium-note').style.display = 'block';
+    document.getElementById('free-note').style.display = 'none';
+    document.getElementById('btn-start').textContent = '🔥 燃烧 100 AIGENT · AI 深度测算';
+    document.getElementById('btn-start').style.background = 'linear-gradient(135deg, #8b1a1a, #c41e3a, #8b1a1a)';
+  } else {
+    document.getElementById('wallet-section').style.display = 'none';
+    document.getElementById('premium-note').style.display = 'none';
+    document.getElementById('free-note').style.display = 'block';
+    document.getElementById('btn-start').textContent = '开 始 测 算';
+    document.getElementById('btn-start').style.background = 'linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark))';
+  }
+}
+
+async function connectFortuneWallet() {
+  if (!window.ethereum) { toast('请安装 MetaMask 或 OKX Wallet'); return; }
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const addr = await signer.getAddress();
+    fortuneWallet = addr;
+    fortuneSigner = signer;
+    const bal = await provider.getBalance(addr);
+    const btn = document.getElementById('btn-connect-fortune');
+    btn.textContent = `✅ ${addr.slice(0,6)}...${addr.slice(-4)}`;
+    btn.classList.add('connected');
+    document.getElementById('wallet-status').textContent = `余额: ${ethers.formatEther(bal).slice(0,8)} OKB`;
+  } catch(e) { toast('钱包连接失败'); }
+}
+
 function selectGender(el) {
   document.querySelectorAll('.radio-btn').forEach(b=>b.classList.remove('selected'));
   el.classList.add('selected');
@@ -515,17 +595,43 @@ async function startReading() {
   const hour = document.getElementById('hour').value;
   const question = document.getElementById('question').value.trim();
 
-  if (!year || !month || !day || !hour) { toast(ms('toastBirth')); return; }
+  if (!year || !month || !day || !hour) { toast(currentLang==='en'?'Select birth date':'请选择完整生辰'); return; }
 
-  // Show loading
-  document.getElementById('step-input').classList.add('hidden');
-  const loading = document.getElementById('step-loading');
-  loading.classList.remove('hidden');
-  loading.classList.add('fade-in');
+  // Premium: require wallet + burn first
+  if (currentTier === 'premium') {
+    if (!fortuneWallet || !fortuneSigner) { toast('请先连接钱包'); return; }
+    try {
+      document.getElementById('step-input').classList.add('hidden');
+      document.getElementById('step-loading').classList.remove('hidden');
+      document.getElementById('step-loading').classList.add('fade-in');
+      document.querySelector('#step-loading .loading-text').textContent = '链上燃烧 AIGENT...';
+      document.querySelector('#step-loading p').textContent = '正在执行链上操作...';
+
+      const abi = ['function burn(uint256 amount)'];
+      const contract = new ethers.Contract(AIGENT_ADDR, abi, fortuneSigner);
+      const tx = await contract.burn(BURN_AMOUNT);
+      document.querySelector('#step-loading .loading-text').textContent = '等待确认...';
+      await tx.wait();
+    } catch(e) {
+      document.getElementById('step-loading').classList.add('hidden');
+      document.getElementById('step-input').classList.remove('hidden');
+      toast('Burn failed: ' + (e.reason || e.message || 'insufficient balance'));
+      return;
+    }
+    // Reset for AI loading
+    document.querySelector('#step-loading .loading-text').textContent = '天机演算中';
+    document.querySelector('#step-loading p').textContent = 'AI 深度学习你的命运轨迹...';
+  } else {
+    // Free: just show loading
+    document.getElementById('step-input').classList.add('hidden');
+    const loading = document.getElementById('step-loading');
+    loading.classList.remove('hidden');
+    loading.classList.add('fade-in');
+  }
 
   try {
-    const result = await fetchFortune(wallet, year, month, day, hour, gender, question);
-    showResult(result);
+    const result = await fetchFortune(wallet, year, month, day, hour, gender, question, currentTier === 'premium');
+    showResult(result, currentTier === 'premium');
   } catch(e) {
     console.error(e);
     document.getElementById('step-loading').classList.add('hidden');
@@ -534,7 +640,7 @@ async function startReading() {
   }
 }
 
-async function fetchFortune(wallet, year, month, day, hour, gender, question) {
+async function fetchFortune(wallet, year, month, day, hour, gender, question, isPremium = false) {
   const genderText = gender === 'male' ? '男' : '女';
   const age = new Date().getFullYear() - parseInt(year);
   const q = question || (currentLang==='en'?'General':'综合运势');
@@ -582,9 +688,10 @@ async function fetchFortune(wallet, year, month, day, hour, gender, question) {
 
 请给出今日运势解读。`;
 
-  // Try AI first, fallback to local generation
+  // Try AI first (always for premium, optional for free)
+  const useAI = isPremium || !!apiKey;
   try {
-    if (apiKey) {
+    if (useAI && apiKey) {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
@@ -660,17 +767,20 @@ function localFortune(wallet, year, month, day, hour, gender, question) {
   };
 }
 
-function showResult(r) {
+function showResult(r, isPremium = false) {
   document.getElementById('step-loading').classList.add('hidden');
   const result = document.getElementById('step-result');
   result.classList.remove('hidden');
   result.classList.add('fade-in');
   result.scrollIntoView({ behavior:'smooth', block:'center' });
 
+  const badge = isPremium ? '<div style="text-align:center;margin-bottom:16px;font-size:10px;color:var(--red-bright);letter-spacing:2px;">🔥 AI 深度推演 · 100 AIGENT 已燃烧 · 链上可查</div>' : '';
+
   document.getElementById('result-content').innerHTML = `
+    ${badge}
     <div class="result-header">
       <div class="result-score">${r.score}</div>
-      <div class="result-score-label">综 合 运 势 评 分</div>
+      <div class="result-score-label">${ms('scoreLabel')}</div>
     </div>
     <div class="result-item">
       <div class="label">🔮 今日运势</div>
