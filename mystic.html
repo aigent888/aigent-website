@@ -31,19 +31,27 @@
   /* ── Main Container ── */
   .main{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:30px 20px 80px}
 
+  /* ── Character ── */
+  .character-wrap{width:220px;height:260px;margin:0 auto 8px;position:relative}
+  .character-glow{position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(212,168,67,0.2) 0%,rgba(196,30,58,0.08) 40%,transparent 70%);animation:pulse 4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+  .character-halo{position:absolute;top:8%;left:50%;transform:translateX(-50%);width:180px;height:180px;border:2px solid rgba(212,168,67,0.25);border-radius:50%;animation:haloFloat 5s ease-in-out infinite}
+  @keyframes haloFloat{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-6px)}}
+  .character-float{animation:charFloat 4s ease-in-out infinite}
+  @keyframes charFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
   /* ── Gate / Header ── */
-  .gate{text-align:center;margin-bottom:40px;padding-top:20px;position:relative}
-  .gate-arch{width:180px;height:180px;margin:0 auto 20px;position:relative}
-  .gate-ring{width:100%;height:100%;border:3px solid var(--gold);border-radius:50%;animation:pulse 4s ease-in-out infinite;position:relative}
-  .gate-ring::before{content:'';position:absolute;inset:8px;border:1px solid rgba(212,168,67,0.3);border-radius:50%}
-  .gate-ring::after{content:'';position:absolute;inset:20px;border:1px solid rgba(212,168,67,0.12);border-radius:50%}
-  @keyframes pulse{0%,100%{box-shadow:0 0 30px rgba(212,168,67,0.2)}50%{box-shadow:0 0 60px rgba(212,168,67,0.45)}}
+  .gate{text-align:center;margin-bottom:28px;padding-top:10px;position:relative}
+  .gate h1{font-family:'Ma Shan Zheng','Noto Serif SC',cursive;font-size:56px;background:linear-gradient(180deg,var(--gold-light) 0%,var(--gold) 50%,var(--gold-dark) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:10px;font-weight:400;line-height:1.1;text-shadow:none;filter:drop-shadow(0 2px 8px rgba(212,168,67,0.3))}
+  .gate .oracle{font-size:13px;color:var(--text-dim);letter-spacing:8px;margin-top:2px}
+  .gate .east-power{font-family:'Ma Shan Zheng',cursive;font-size:20px;color:var(--red-bright);letter-spacing:6px;margin-top:10px;text-shadow:0 0 25px rgba(196,30,58,0.5),0 0 50px rgba(196,30,58,0.2);animation:pulse 3s ease-in-out infinite}
 
-  .laojun-icon{position:absolute;inset:16px;display:flex;align-items:center;justify-content:center;font-size:72px;animation:float 6s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-
-  .gate h1{font-family:'Ma Shan Zheng','Noto Serif SC',cursive;font-size:52px;color:var(--gold);letter-spacing:8px;font-weight:400;line-height:1.2}
-  .gate .oracle{font-size:13px;color:var(--text-dim);letter-spacing:6px;margin-top:4px}
+  /* Animated aura particles around character */
+  .aura-particle{position:absolute;width:3px;height:3px;background:var(--gold-light);border-radius:50%;animation:auraOrbit 3s ease-in-out infinite;box-shadow:0 0 6px var(--gold-light)}
+  .aura-particle:nth-child(1){animation-delay:0s;top:10%;left:20%}.aura-particle:nth-child(2){animation-delay:0.5s;top:15%;right:20%}
+  .aura-particle:nth-child(3){animation-delay:1s;top:25%;left:15%}.aura-particle:nth-child(4){animation-delay:1.5s;top:20%;right:15%}
+  .aura-particle:nth-child(5){animation-delay:2s;top:30%;left:25%}.aura-particle:nth-child(6){animation-delay:2.5s;top:35%;right:25%}
+  @keyframes auraOrbit{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:1;transform:scale(2.5)}}
 
   /* ── Incense Smoke Effect ── */
   .smoke{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);width:2px;height:80px;background:linear-gradient(to top,rgba(212,168,67,0.4),transparent);animation:smoke 3s ease-in-out infinite}
@@ -96,10 +104,12 @@
 
   /* ── Loading ── */
   .loading-wrapper{text-align:center;padding:48px 20px}
-  .trigram{width:80px;height:80px;margin:0 auto 24px;position:relative;animation:spin 4s linear infinite}
-  .trigram::before{content:'☰';font-size:60px;color:var(--gold);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;animation:changeTrigram 1s steps(1) infinite}
+  .loading-anim{width:100px;height:100px;margin:0 auto 24px;position:relative}
+  .loading-anim .ring{width:100%;height:100%;border:2px solid rgba(212,168,67,0.2);border-radius:50%;position:absolute;animation:spin 4s linear infinite}
+  .loading-anim .ring:nth-child(2){width:75%;height:75%;top:12.5%;left:12.5%;animation-direction:reverse;animation-duration:2.5s}
+  .loading-anim .ring:nth-child(3){width:50%;height:50%;top:25%;left:25%;animation-duration:1.8s}
+  .loading-anim .center-icon{position:absolute;inset:22%;display:flex;align-items:center;justify-content:center;font-size:30px;animation:float 2s ease-in-out infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  @keyframes changeTrigram{0%,25%{content:'☰'}25%,50%{content:'☷'}50%,75%{content:'☵'}75%,100%{content:'☲'}}
   .loading-text{font-size:15px;color:var(--gold);letter-spacing:4px;animation:fadeT 2s ease-in-out infinite}
   @keyframes fadeT{0%,100%{opacity:0.3}50%{opacity:1}}
 
@@ -144,16 +154,77 @@
 <div id="cosmos"></div>
 
 <div class="main">
-  <!-- Gate -->
+  <!-- Gate with Character -->
   <div class="gate">
-    <div class="gate-arch">
-      <div class="gate-ring"></div>
-      <div class="laojun-icon">🧙‍♂️</div>
-      <div class="smoke"></div><div class="smoke"></div><div class="smoke"></div>
+    <div class="character-wrap">
+      <div class="character-glow"></div>
+      <div class="character-halo"></div>
+      <div class="aura-particle"></div><div class="aura-particle"></div><div class="aura-particle"></div><div class="aura-particle"></div><div class="aura-particle"></div><div class="aura-particle"></div>
+      <div class="character-float">
+        <svg viewBox="0 0 200 260" width="200" height="260" style="display:block;margin:0 auto;filter:drop-shadow(0 8px 30px rgba(212,168,67,0.25))">
+          <defs>
+            <radialGradient id="haloGrad" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="rgba(255,230,150,0.4)"/><stop offset="100%" stop-color="rgba(212,168,67,0)"/></radialGradient>
+            <linearGradient id="robeGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4a843"/><stop offset="40%" stop-color="#f0d680"/><stop offset="100%" stop-color="#8b6914"/></linearGradient>
+            <linearGradient id="robeInner" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5e6c8"/><stop offset="100%" stop-color="#d4a843"/></linearGradient>
+            <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe4c4"/><stop offset="100%" stop-color="#e8c9a0"/></linearGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <!-- Halo glow -->
+          <ellipse cx="100" cy="55" rx="70" ry="60" fill="url(#haloGrad)" opacity="0.6"/>
+          <!-- Hair back -->
+          <ellipse cx="100" cy="60" rx="40" ry="35" fill="#e8e0d8"/>
+          <ellipse cx="70" cy="75" rx="15" ry="25" fill="#d4ccc4"/>
+          <ellipse cx="130" cy="75" rx="15" ry="25" fill="#d4ccc4"/>
+          <!-- Head -->
+          <ellipse cx="100" cy="62" rx="26" ry="28" fill="url(#skinGrad)"/>
+          <!-- Hair top -->
+          <ellipse cx="100" cy="42" rx="28" ry="16" fill="#f0ebe6"/>
+          <path d="M72 50 Q100 25 128 50" fill="#f5f0eb" opacity="0.8"/>
+          <ellipse cx="100" cy="38" rx="12" ry="8" fill="#faf5f0"/>
+          <!-- Facial features - anime style -->
+          <ellipse cx="91" cy="60" rx="3.5" ry="4" fill="#2a1a0a"/>
+          <ellipse cx="109" cy="60" rx="3.5" ry="4" fill="#2a1a0a"/>
+          <circle cx="92" cy="59" r="1" fill="white" opacity="0.8"/>
+          <circle cx="110" cy="59" r="1" fill="white" opacity="0.8"/>
+          <ellipse cx="91" cy="60" rx="5" ry="2.5" fill="none" stroke="#c9a0a0" stroke-width="0.5" opacity="0.5"/>
+          <ellipse cx="109" cy="60" rx="5" ry="2.5" fill="none" stroke="#c9a0a0" stroke-width="0.5" opacity="0.5"/>
+          <!-- Eyebrows (wise/old sage) -->
+          <path d="M84 54 Q91 50 98 53" fill="none" stroke="#d4c4b0" stroke-width="2" stroke-linecap="round"/>
+          <path d="M102 53 Q109 50 116 54" fill="none" stroke="#d4c4b0" stroke-width="2" stroke-linecap="round"/>
+          <!-- Nose -->
+          <path d="M100 62 Q98 66 97 67" fill="none" stroke="#d4b896" stroke-width="1.2"/>
+          <!-- Mouth (serene smile) -->
+          <path d="M95 72 Q100 76 105 72" fill="none" stroke="#c9a090" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Beard (sage) -->
+          <path d="M85 75 Q88 100 100 120 Q112 100 115 75" fill="#f0ebe6" opacity="0.9"/>
+          <path d="M90 82 Q95 100 100 115 Q105 100 110 82" fill="white" opacity="0.5"/>
+          <!-- Body / Robe -->
+          <ellipse cx="100" cy="150" rx="55" ry="70" fill="url(#robeGrad)"/>
+          <path d="M55 100 Q60 95 100 92 Q140 95 145 100 L155 200 Q100 220 45 200 Z" fill="url(#robeGrad)" opacity="0.85"/>
+          <!-- Robe inner layer -->
+          <path d="M65 100 Q80 95 100 93 Q120 95 135 100 L145 200 Q100 215 55 200 Z" fill="url(#robeInner)" opacity="0.5"/>
+          <!-- Gold trim -->
+          <path d="M60 105 Q100 98 140 105" fill="none" stroke="#f0d680" stroke-width="2.5" opacity="0.8"/>
+          <path d="M55 115 Q100 108 145 115" fill="none" stroke="#f0d680" stroke-width="1.5" opacity="0.5"/>
+          <!-- Collar -->
+          <path d="M75 88 L100 95 L125 88" fill="none" stroke="#f0d680" stroke-width="2"/>
+          <!-- Sleeves -->
+          <path d="M55 110 Q40 100 30 115 Q25 130 40 135" fill="url(#robeGrad)" opacity="0.8"/>
+          <path d="M145 110 Q160 100 170 115 Q175 130 160 135" fill="url(#robeGrad)" opacity="0.8"/>
+          <!-- Hands (folded, meditating) -->
+          <ellipse cx="95" cy="125" rx="8" ry="6" fill="url(#skinGrad)"/>
+          <ellipse cx="105" cy="125" rx="8" ry="6" fill="url(#skinGrad)"/>
+          <!-- Third eye / mark -->
+          <circle cx="100" cy="56" r="2" fill="#d4a843" opacity="0.7"/>
+          <!-- Crown / headpiece -->
+          <path d="M88 38 L92 30 L100 28 L108 30 L112 38" fill="#d4a843" opacity="0.7"/>
+          <circle cx="100" cy="26" r="3" fill="#f0d680" filter="url(#glow)"/>
+        </svg>
+      </div>
     </div>
     <h1>太 上 问 道</h1>
     <p class="oracle">AI 玄 学 馆 · 链 上 天 机</p>
-    <p style="font-family:'Ma Shan Zheng',cursive;font-size:18px;color:var(--red);letter-spacing:4px;margin-top:12px;text-shadow:0 0 20px rgba(196,30,58,0.4);animation:pulse 3s ease-in-out infinite">来 自 东 方 的 神 秘 力 量</p>
+    <p class="east-power">来 自 东 方 的 神 秘 力 量</p>
   </div>
 
   <div class="hr">◆ ◇ ◆ ◇ ◆</div>
@@ -241,7 +312,10 @@
   <!-- Loading -->
   <div id="loading-panel" class="card hidden">
     <div class="loading-wrapper">
-      <div class="trigram"></div>
+      <div class="loading-anim">
+        <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+        <div class="center-icon">🧘</div>
+      </div>
       <p class="loading-text" id="loading-msg">天机演算中</p>
       <p style="color:var(--text-dim);font-size:12px;margin-top:8px" id="loading-sub">AI 正在解读宇宙信息...</p>
     </div>
