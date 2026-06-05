@@ -281,9 +281,13 @@
 
 <div class="main">
   <div class="header">
+    <div style="text-align:right;margin-bottom:8px">
+      <button onclick="switchLang('zh')" id="lang-zh" style="background:var(--gold);color:#000;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-family:inherit;cursor:pointer;letter-spacing:1px">中</button>
+      <button onclick="switchLang('en')" id="lang-en" style="background:transparent;color:var(--text-dim);border:1px solid var(--gold-dark);padding:4px 10px;border-radius:6px;font-size:11px;font-family:inherit;cursor:pointer;letter-spacing:1px">EN</button>
+    </div>
     <div class="header-icon">🔮</div>
-    <h1>玄 机</h1>
-    <div class="subtitle">链 上 命 理 · AI 算 运</div>
+    <h1 data-lang="title">玄 机</h1>
+    <div class="subtitle" data-lang="subtitle">链 上 命 理 · AI 算 运</div>
   </div>
 
   <div class="divider">◆ ◇ ◆</div>
@@ -303,16 +307,30 @@
 
     <div class="form-row">
       <div class="input-group">
-        <label>🎂 出生年份</label>
-        <select id="year">
-          <option value="">选择年份</option>
-        </select>
+        <label data-lang="yearLabel">🎂 出生年份</label>
+        <select id="year"><option value="" data-lang="yearOpt">选择年份</option></select>
       </div>
       <div class="input-group">
-        <label>🌙 性别</label>
+        <label data-lang="monthLabel">📅 月份</label>
+        <select id="month"><option value="" data-lang="monthOpt">选择月份</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="input-group">
+        <label data-lang="dayLabel">📆 日期</label>
+        <select id="day"><option value="" data-lang="dayOpt">选择日期</option></select>
+      </div>
+      <div class="input-group">
+        <label data-lang="hourLabel">⏰ 时辰</label>
+        <select id="hour"><option value="" data-lang="hourOpt">选择时辰</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="input-group">
+        <label data-lang="genderLabel">🌙 性别</label>
         <div class="radio-group">
-          <div class="radio-btn" data-value="male" onclick="selectGender(this)">♂ 男</div>
-          <div class="radio-btn selected" data-value="female" onclick="selectGender(this)">♀ 女</div>
+          <div class="radio-btn" data-value="male" onclick="selectGender(this)" data-lang="male">♂ 男</div>
+          <div class="radio-btn selected" data-value="female" onclick="selectGender(this)" data-lang="female">♀ 女</div>
         </div>
       </div>
     </div>
@@ -363,15 +381,106 @@
 </div>
 
 <script>
-// ── Init ──
+// ── i18n ──
+const i18n = {
+  zh: {
+    title:'玄 机', subtitle:'链 上 命 理 · AI 算 运',
+    walletLabel:'💰 钱包地址（可选）', walletPlaceholder:'0x... 留空则仅用生辰推算',
+    yearLabel:'🎂 出生年份', yearOpt:'选择年份',
+    genderLabel:'🌙 性别', male:'♂ 男', female:'♀ 女',
+    questionLabel:'🔮 想问什么（可选）', questionPlaceholder:'财运 · 事业 · 姻缘 · 出行 · 综合运势',
+    btnStart:'开 始 测 算',
+    disclaimer:'仅供娱乐 · AI 生成 · 不可当真',
+    loading:'天机演算中', loadingSub:'正在解读链上数据 & 命理推演...',
+    scoreLabel:'综 合 运 势 评 分',
+    fortuneLabel:'🔮 今日运势',
+    loveLabel:'💕 姻缘',
+    wealthLabel:'💰 财运',
+    careerLabel:'🚀 事业',
+    luckyLabel:'🍀 今日幸运物',
+    adviceLabel:'🧘 禅意建言',
+    shareX:'𝕏 分享到 X',
+    shareDC:'💬 分享到 Discord',
+    shareCopy:'📋 复制结果',
+    retry:'⟳ 重新测算',
+    footer:'Powered by <a href="/">AIGENT</a> · 玄机 XuanJi · Chain Fortune',
+    fortunes:['紫气东来，贵人暗助，今日宜静不宜动。','财星高照，然需防小人暗算，守住本心。','桃花入命，红鸾星动，良缘在东南方。','天机星现，事业有突破之兆，大胆前行。','玄武当值，宜修身养性，财不露白。','朱雀临门，口舌之争难免，退一步海阔天空。'],
+    loves:['桃花运势旺盛，单身者今日宜社交，有缘人已在途中。已有伴侣者，宜多说温柔话语。','红鸾星微动，感情运势平稳。旧人可守，新人勿近。','桃花带煞，今日不宜表白或做重大感情决定。静待花开。'],
+    wealths:['财帛宫明亮，今日宜理财规划。偏财运佳，或有意外之喜。但大额投资需谨慎。','正财运稳健，勤劳所得最为可靠。不宜投机，稳扎稳打为上。','财星晦暗，今日宜守不宜攻。控制消费，避免冲动购物。破财消灾亦是一种智慧。'],
+    careers:['事业宫有吉星高照，贵人相助。今日提出的方案容易获得认可，宜主动展示自己。','官禄宫平稳，按部就班即可。不宜跳槽或重大变动，积蓄力量等待时机。','事业遇小阻，但不足为虑。困难是暂时的，保持耐心和专注，转机将至。'],
+    advices:['{zodiac}吉日，宜与相合之人合作。东方为吉位，佩戴{luckyColor}可助运势。静坐片刻，心静则万事明。','禅曰：不争，故天下莫能与之争。今日守住本心，不与人争长短。午后饮一杯清茶，财运自然来。','易经云：天行健，君子以自强不息。今日宜早起，面向东方深吸三口气，吐纳间得天地灵气。宜穿{luckyColor}。'],
+    toastCopy:'✅ 已复制运势结果',
+    toastClipboard:'已复制，粘贴到 Discord 分享',
+    toastError:'测算失败，请重试',
+    toastYear:'请选择出生年份',
+    chainRich:'资产雄厚，财运亨通之象。',
+    chainEmpty:'钱包空空，宜布局未来。',
+    chainSmall:'小有积蓄，稳中求进。',
+  },
+  en: {
+    title:'XuanJi', subtitle:'On-Chain Fortune · AI Oracle',
+    walletLabel:'💰 Wallet Address (optional)', walletPlaceholder:'0x... leave blank for birth chart only',
+    yearLabel:'🎂 Birth Year', yearOpt:'Select year',
+    genderLabel:'🌙 Gender', male:'♂ Male', female:'♀ Female',
+    questionLabel:'🔮 What do you seek? (optional)', questionPlaceholder:'Wealth · Career · Love · Travel · General',
+    btnStart:'Reveal Fortune',
+    disclaimer:'For entertainment only · AI-generated · Don\'t take seriously',
+    loading:'Reading the stars...', loadingSub:'Analyzing on-chain data & cosmic alignment...',
+    scoreLabel:'FORTUNE SCORE',
+    fortuneLabel:'🔮 Today\'s Fortune',
+    loveLabel:'💕 Love',
+    wealthLabel:'💰 Wealth',
+    careerLabel:'🚀 Career',
+    luckyLabel:'🍀 Lucky Charm',
+    adviceLabel:'🧘 Zen Advice',
+    shareX:'𝕏 Share on X',
+    shareDC:'💬 Share to Discord',
+    shareCopy:'📋 Copy Result',
+    retry:'⟳ Try Again',
+    footer:'Powered by <a href="/">AIGENT</a> · XuanJi · Chain Fortune',
+    fortunes:['The stars align in your favor — a benefactor appears from the East.','Fortune smiles, but beware of hidden rivals. Stay true to your path.','Love is in the air — romance blooms in unexpected places.','A breakthrough in career approaches. Seize the moment boldly.','A day for quiet reflection. Guard your wealth, nourish your soul.','Words may spark conflict today. Take the higher road — peace awaits.'],
+    loves:['Romance shines bright — singles should socialize, couples should speak from the heart.','Love is steady and calm. Cherish what you have, don\'t chase the new.','A challenging day for matters of the heart. Wait for clearer skies.'],
+    wealths:['Your wealth sector glows — ideal for financial planning. Unexpected gains possible, but avoid big bets.','Steady income is your strength. Avoid speculation — slow and steady wins.','A dim day for finances. Hold your position, control spending. Sometimes loss brings wisdom.'],
+    careers:['A lucky star shines on your career. Proposals made today will find favor. Step forward with confidence.','Your career path is stable. Stay the course — this is not the day for dramatic moves.','Small obstacles may appear, but they are fleeting. Patience and focus will turn the tide.'],
+    advices:['Today favors those born in the year of the {zodiacCompanion}. Face East, wear {luckyColor}, and breathe deeply three times.','The Tao teaches: those who do not contend cannot be contended against. Hold your center today. A cup of tea at noon brings fortune.','As the I Ching says: the superior person is strong and untiring. Rise early, face East, and draw in the morning energy. Wear {luckyColor}.'],
+    toastCopy:'✅ Fortune copied!',
+    toastClipboard:'Copied! Paste to Discord to share.',
+    toastError:'Reading failed. Please retry.',
+    toastYear:'Please select your birth year',
+    chainRich:'Substantial holdings — a sign of prosperity.',
+    chainEmpty:'Empty wallet — time to build for the future.',
+    chainSmall:'Modest savings — steady progress ahead.',
+  }
+};
+
+let currentLang = 'zh';
+function switchLang(lang) {
+  currentLang = lang;
+  document.getElementById('lang-zh').style.cssText = lang==='zh' ? 'background:var(--gold);color:#000;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-family:inherit;cursor:pointer;letter-spacing:1px' : 'background:transparent;color:var(--text-dim);border:1px solid var(--gold-dark);padding:4px 10px;border-radius:6px;font-size:11px;font-family:inherit;cursor:pointer;letter-spacing:1px';
+  document.getElementById('lang-en').style.cssText = lang==='en' ? 'background:var(--gold);color:#000;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-family:inherit;cursor:pointer;letter-spacing:1px' : 'background:transparent;color:var(--text-dim);border:1px solid var(--gold-dark);padding:4px 10px;border-radius:6px;font-size:11px;font-family:inherit;cursor:pointer;letter-spacing:1px';
+  document.querySelectorAll('[data-lang]').forEach(el => {
+    const key = el.dataset.lang;
+    if (i18n[lang][key]) el.textContent = i18n[lang][key];
+  });
+}
 (function() {
-  const y = document.getElementById('year');
   const now = new Date().getFullYear();
-  for (let i = now - 60; i <= now - 12; i++) {
+  const y = document.getElementById('year');
+  for (let i = now - 80; i <= now - 8; i++) {
     const o = document.createElement('option'); o.value = i; o.textContent = i + ' 年';
     y.appendChild(o);
   }
   y.value = '1995';
+  const m = document.getElementById('month');
+  for (let i = 1; i <= 12; i++) { const o = document.createElement('option'); o.value = i; o.textContent = i + ' 月'; m.appendChild(o); }
+  m.value = '6';
+  const d = document.getElementById('day');
+  for (let i = 1; i <= 31; i++) { const o = document.createElement('option'); o.value = i; o.textContent = i + ' 日'; d.appendChild(o); }
+  d.value = '15';
+  const h = document.getElementById('hour');
+  const shichen = ['子时 23-01','丑时 01-03','寅时 03-05','卯时 05-07','辰时 07-09','巳时 09-11','午时 11-13','未时 13-15','申时 15-17','酉时 17-19','戌时 19-21','亥时 21-23'];
+  shichen.forEach((s,i) => { const o = document.createElement('option'); o.value = i; o.textContent = s; h.appendChild(o); });
+  h.value = '6';
   spawnParticles();
 })();
 
@@ -401,9 +510,12 @@ function selectGender(el) {
 async function startReading() {
   const wallet = document.getElementById('wallet').value.trim();
   const year = document.getElementById('year').value;
+  const month = document.getElementById('month').value;
+  const day = document.getElementById('day').value;
+  const hour = document.getElementById('hour').value;
   const question = document.getElementById('question').value.trim();
 
-  if (!year) { toast('请选择出生年份'); return; }
+  if (!year || !month || !day || !hour) { toast(ms('toastBirth')); return; }
 
   // Show loading
   document.getElementById('step-input').classList.add('hidden');
@@ -412,7 +524,7 @@ async function startReading() {
   loading.classList.add('fade-in');
 
   try {
-    const result = await fetchFortune(wallet, year, gender, question);
+    const result = await fetchFortune(wallet, year, month, day, hour, gender, question);
     showResult(result);
   } catch(e) {
     console.error(e);
@@ -422,14 +534,14 @@ async function startReading() {
   }
 }
 
-async function fetchFortune(wallet, year, gender, question) {
-  // Build prompt for AI
+async function fetchFortune(wallet, year, month, day, hour, gender, question) {
   const genderText = gender === 'male' ? '男' : '女';
   const age = new Date().getFullYear() - parseInt(year);
-  const q = question || '综合运势';
+  const q = question || (currentLang==='en'?'General':'综合运势');
   const zodiac = getZodiac(parseInt(year));
   const element = getElement(parseInt(year));
-  const hourZodiac = getHourZodiac();
+  const hourName = ['子时','丑时','寅时','卯时','辰时','巳时','午时','未时','申时','酉时','戌时','亥时'][parseInt(hour)];
+  const birthInfo = `${year}年${month}月${day}日 ${hourName}`;
 
   // If wallet provided, try to fetch chain data
   let chainInfo = '';
@@ -462,9 +574,9 @@ async function fetchFortune(wallet, year, gender, question) {
   const userPrompt = `请为以下人士推算运势：
 - 性别：${genderText}
 - 年龄：${age}岁
+- 生辰：${birthInfo}
 - 生肖：${zodiac}
 - 五行：${element}
-- 时辰：${hourZodiac}
 - 所问：${q}
 - ${chainInfo}
 
@@ -498,8 +610,8 @@ async function fetchFortune(wallet, year, gender, question) {
   return localFortune(wallet, year, gender, question);
 }
 
-function localFortune(wallet, year, gender, question) {
-  const seed = (wallet+year+gender+question).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+function localFortune(wallet, year, month, day, hour, gender, question) {
+  const seed = (wallet+year+month+day+hour+gender+question).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
   const rand = (min,max) => {
     const x = Math.sin(seed * 9301 + min * 49297) * 233280;
     return Math.floor(min + (Math.abs(x - Math.floor(x))) * (max - min));
@@ -630,7 +742,9 @@ function getHourZodiac() {
   return z[Math.floor((h+1)/2)%12];
 }
 
-function toast(msg) {
+function ms(key) { return i18n[currentLang]?.[key] || key; }
+function toast(key) {
+  const msg = ms(key) || key;
   const t = document.createElement('div');
   t.className = 'toast'; t.textContent = msg;
   document.body.appendChild(t);
