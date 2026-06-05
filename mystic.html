@@ -22,9 +22,9 @@
   }
 
   /* ── Video Background ── */
-  .video-bg{position:fixed;inset:0;z-index:0;overflow:hidden}
-  .video-bg video{width:100%;height:100%;object-fit:cover;opacity:0.45}
-  .video-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,10,6,0.7) 0%,rgba(26,20,16,0.5) 50%,rgba(13,10,6,0.7) 100%)}
+  .video-bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:#000}
+  .video-bg video{position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;height:auto;transform:translate(-50%,-50%);object-fit:cover;opacity:0.5}
+  .video-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(13,10,6,0.4) 0%,rgba(13,10,6,0.75) 100%)}
 
   /* ── Cosmic Overlay ── */
   #cosmos{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.3}
@@ -171,7 +171,7 @@
       <div class="character-halo"></div>
       <div class="aura-particle"></div><div class="aura-particle"></div><div class="aura-particle"></div><div class="aura-particle"></div><div class="aura-particle"></div><div class="aura-particle"></div>
       <div class="character-float">
-        <img src="/assets/laojun-character.png" alt="太上老君" style="width:200px;height:auto;display:block;margin:0 auto;filter:drop-shadow(0 8px 30px rgba(212,168,67,0.3));border-radius:12px" loading="eager">
+        <img src="/assets/laojun-character.png" alt="太上老君" style="width:200px;height:200px;object-fit:cover;border-radius:50%;display:block;margin:0 auto;filter:drop-shadow(0 0 40px rgba(212,168,67,0.5));border:2px solid rgba(212,168,67,0.3);box-shadow:0 0 60px rgba(212,168,67,0.2),0 0 120px rgba(196,30,58,0.1)" loading="eager">
       </div>
     </div>
     <h1>太 上 问 道</h1>
