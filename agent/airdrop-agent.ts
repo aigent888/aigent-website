@@ -28,9 +28,11 @@ const VERIFIER_PK = process.env.VERIFIER_PRIVATE_KEY || "";
 const DC_TOKEN = process.env.DISCORD_BOT_TOKEN || "";
 const DC_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID || "";
 
-// 回购配置
+// 回购配置 (加池后启用: 1000 AIGENT/天, 上限 5000 万)
 const USDT = process.env.USDT_ADDRESS || "";
-const BUYBACK_USDT_AMOUNT = 20;
+const BUYBACK_USDT_AMOUNT = 0; // 暂未启动，加池后改为 1
+const BURN_PER_DAY = 1000; // 每天燃烧 AIGENT
+const BURN_CAP = 50_000_000; // 烧到 5000 万停止
 
 const LOYALTY_ABI = [
   { type: "function", name: "remainingToday", inputs: [], outputs: [{ type: "uint256" }], stateMutability: "view" },
@@ -315,18 +317,29 @@ async function buybackAndBurn() {
   if (!verifierWallet) { console.log("  ⚠ VERIFIER_PRIVATE_KEY 未设置"); return; }
   if (!USDT) { console.log("  ⚠ USDT_ADDRESS 未设置 (建池后配置)"); return; }
 
-  console.log(`\n🔥 回购销毁 (${BUYBACK_USDT_AMOUNT} USDT → AIGENT → burn)`);
+  console.log(`\n🔥 回购销毁 (${BUYBACK_USDT_AMOUNT} USDT → 烧 ${BURN_PER_DAY} AIGENT)`);
+  if (BUYBACK_USDT_AMOUNT <= 0) { console.log("  ⏸️ 暂未启动 (加池后开启)"); return; }
   try {
     const bal = await publicClient.readContract({
       address: AIGENT as `0x${string}`, abi: AIGENT_ABI,
       functionName: "balanceOf", args: [verifierAccount!.address],
     }) as bigint;
 
-    if (bal > BigInt(100000) * BigInt(1e18)) {
-      const burnAmount = BigInt(10000) * BigInt(1e18);
-      const hash = await verifierWallet!.writeContract({
-        address: AIGENT as `0x${string}`, abi: AIGENT_ABI,
-        functionName: "burn", args: [burnAmount],
+    // Check total burned cap
+    const totalSupply = await publicClient.readContract({
+      address: AIGENT as `0x${string}`, abi: AIGENT_ABI,
+      functionName: "totalSupply",
+    }) as bigint;
+    const burned = BigInt(500_000_000) * BigInt(1e18) - totalSupply;
+    if (burned >= BigInt(BURN_CAP) * BigInt(1e18)) {
+      console.log(`  ✅ 已达上限 ${BURN_CAP.toLocaleString()} 万，停止燃烧`);
+      return;
+    }
+
+    const burnAmount = BigInt(BURN_PER_DAY) * BigInt(1e18);
+    const hash = await verifierWallet!.writeContract({
+      address: AIGENT as `0x${string}`, abi: AIGENT_ABI,
+      functionName: "burn", args: [burnAmount],
         account: verifierAccount!, chain: xLayer,
       });
       console.log(`  ✅ 销毁完成: ${hash}`);
