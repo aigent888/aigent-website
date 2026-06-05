@@ -422,8 +422,14 @@ async function startFortune(){
   const zodiac=((parseInt(y)-4)%12+12)%12;const z=['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'][zodiac];
   const el=parseInt(y)%10;const e=['金','金','水','水','木','木','火','火','土','土'][el];
   const prompt=`为${g==='male'?'男':'女'}性，${y}年${m}月${d}日${sh}出生（生肖${z}，五行${e}），问${q||'综合运势'}的人推算今日运势。回复JSON:{"score":50-98,"fortune":"运势总结","love":"姻缘","wealth":"财运","career":"事业","lucky":"幸运物","advice":"建议"}`;
-  let r=currentTier!=='free'?await callAI(prompt,currentTier):null;
-  if(!r)r=localFortune(y,m,d,h,g,q);
+  let r=null;
+  try{
+    if(currentTier!=='free')r=await callAI(prompt,currentTier);
+    if(!r)r=localFortune(y,m,d,h,g,q);
+  }catch(e){
+    console.error('Fortune error:',e);
+    r={score:88,fortune:'天机暂隐，请稍后再试',love:'良缘可期',wealth:'守成为上',career:'稳步前行',lucky:'金色·8',advice:'心静自然明。刷新后再试。'};
+  }
   showResult(`
     <div style="text-align:center;margin-bottom:4px;font-size:10px;color:var(--gold-dark);letter-spacing:2px">${currentTier!=='free'?'🔥 AI 深度命盘 · 链上验证':''}</div>
     <div class="result-score">${r.score}</div><div class="result-label">综 合 命 理 评 分</div>
