@@ -337,9 +337,10 @@ async function buybackAndBurn() {
     }
 
     const burnAmount = BigInt(BURN_PER_DAY) * BigInt(1e18);
-    const hash = await verifierWallet!.writeContract({
-      address: AIGENT as `0x${string}`, abi: AIGENT_ABI,
-      functionName: "burn", args: [burnAmount],
+    if (bal >= burnAmount) {
+      const hash = await verifierWallet!.writeContract({
+        address: AIGENT as `0x${string}`, abi: AIGENT_ABI,
+        functionName: "burn", args: [burnAmount],
         account: verifierAccount!, chain: xLayer,
       });
       console.log(`  ✅ 销毁完成: ${hash}`);
