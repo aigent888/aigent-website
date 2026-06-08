@@ -273,13 +273,25 @@ AIGENT runs a Discord bot that autonomously manages community operations:
 
 ---
 
-## 10. Disclaimer
+## 10. Team
+
+AIGENT is built by a group of builders at the intersection of AI and Web3. We don't do presales, ICOs, or fundraising — every token in circulation comes from the loyalty airdrop program.
+
+**Why anonymous**: Trust should come from on-chain verifiable facts, not names and headshots. All team allocations are locked in a public Vault with 48-month linear vesting. All administrative powers sit behind a 48-hour Timelock. Anyone can verify this on X Layer — no permission needed.
+
+**What we build**: AI infrastructure for autonomous agents. Our Discord Agent runs 24/7, powered by Claude. Our SDK enables gasless EIP-2612 transactions. Our loyalty system rewards genuine community participation, not bot farming.
+
+**Contact**: Discord (https://discord.gg/EzSfdPKTK8) · GitHub (https://github.com/aigent888)
+
+---
+
+## 11. Disclaimer
 
 AIGENT is an experimental token project. This whitepaper is provided for informational purposes only and does not constitute investment advice, a solicitation, or an offer to sell securities. AIGENT tokens are distributed for free through the loyalty airdrop program — there is no presale, ICO, or fundraising. Cryptocurrency investments carry high risk, including total loss of capital. Always conduct your own research (DYOR).
 
 ---
 
-## 11. Links
+## 12. Links
 
 | Resource | URL |
 |----------|-----|
