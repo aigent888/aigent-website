@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIGENT 广告板 · 价高者上</title>
+<style>
+  :root {
+    --gold:#c9a96e;--gold-light:#e0c88a;--gold-dark:#8b6914;
+    --ink:#1a1410;--ink-light:#2a2218;--paper:#f5f0e8;
+    --red:#c41e3a;--green:#00e676;--cyan:#00e5ff;
+    --text:#d4c5b2;--text-dim:#8a7a6a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:var(--ink);color:var(--text);min-height:100vh}
+  .main{max-width:640px;margin:0 auto;padding:40px 20px 80px}
+  h1{text-align:center;font-size:28px;color:var(--gold);margin-bottom:4px;letter-spacing:4px}
+  .sub{text-align:center;font-size:12px;color:var(--text-dim);letter-spacing:2px;margin-bottom:32px}
+  .divider{text-align:center;margin:16px 0 24px;color:var(--gold-dark);font-size:8px;letter-spacing:6px}
+
+  .card{background:var(--ink-light);border:1px solid rgba(201,169,110,0.12);border-radius:16px;padding:24px;margin-bottom:16px}
+  .card h3{font-size:14px;color:var(--gold);margin-bottom:16px;letter-spacing:2px}
+
+  input,textarea{width:100%;padding:12px;margin-bottom:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(201,169,110,0.2);border-radius:10px;color:var(--paper);font-size:14px;font-family:inherit;outline:none}
+  input:focus,textarea:focus{border-color:var(--gold)}
+  textarea{resize:vertical;min-height:80px}
+  .row{display:flex;gap:8px}
+  .row input{flex:1}
+
+  .btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:2px;transition:all 0.3s;font-family:inherit;color:#fff}
+  .btn-gold{background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-dark));color:#1a1410}
+  .btn-gold:hover{box-shadow:0 8px 30px rgba(201,169,110,0.25);transform:translateY(-1px)}
+  .btn-red{background:linear-gradient(135deg,#8b1a1a,#c41e3a,#8b1a1a)}
+  .btn-sm{padding:8px 16px;font-size:12px;width:auto;letter-spacing:1px}
+  .btn-outline{background:transparent;border:1px solid var(--gold);color:var(--gold);width:100%;padding:12px;border-radius:10px;font-size:13px;cursor:pointer;font-family:inherit;letter-spacing:1px;transition:all 0.3s}
+  .btn-outline:hover{background:rgba(201,169,110,0.05)}
+  .btn-outline.connected{border-color:var(--green);color:var(--green)}
+
+  .ad-card{background:rgba(0,0,0,0.2);border:1px solid rgba(201,169,110,0.1);border-radius:12px;padding:16px;margin-bottom:10px;display:flex;gap:14px;transition:all 0.3s}
+  .ad-card:hover{border-color:rgba(201,169,110,0.3)}
+  .ad-card.top{background:rgba(201,169,110,0.06);border-color:rgba(201,169,110,0.3)}
+  .ad-badge{font-size:10px;color:var(--gold);letter-spacing:1px;white-space:nowrap;min-width:50px;text-align:center;padding:4px 8px;background:rgba(201,169,110,0.08);border-radius:6px}
+  .ad-badge.top{background:var(--gold);color:var(--ink);font-weight:700}
+  .ad-text{flex:1;min-width:0}
+  .ad-title{font-size:14px;font-weight:600;color:var(--paper);margin-bottom:4px;word-break:break-word}
+  .ad-link{font-size:11px;color:var(--cyan);word-break:break-all}
+  .ad-meta{font-size:10px;color:var(--text-dim);margin-top:4px}
+  .ad-expired{opacity:0.35}
+
+  .tabs{display:flex;gap:6px;margin-bottom:16px}
+  .tab{flex:1;padding:10px;text-align:center;border:1px solid rgba(201,169,110,0.15);border-radius:10px;cursor:pointer;font-size:13px;color:var(--text-dim);transition:all 0.3s;font-family:inherit;background:transparent}
+  .tab.active{border-color:var(--gold);color:var(--gold);background:rgba(201,169,110,0.06)}
+
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--gold-dark);color:#fff;padding:12px 24px;border-radius:20px;font-size:13px;z-index:99;letter-spacing:1px}
+  .hidden{display:none!important}
+
+  @media(max-width:480px){.main{padding:20px 12px 60px}.row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="main">
+  <h1>📢 AIGENT 广告板</h1>
+  <p class="sub">价高者上 · AIGENT 竞价 · 链上透明</p>
+  <div class="divider">◆ ◇ ◆</div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('view')">📋 广告列表</button>
+    <button class="tab" onclick="switchTab('post')">✍️ 发布广告</button>
+  </div>
+
+  <!-- View Ads -->
+  <div id="tab-view">
+    <div id="ads-list"><p style="color:var(--text-dim);text-align:center;padding:30px">暂无广告 · 成为第一个！</p></div>
+  </div>
+
+  <!-- Post Ad -->
+  <div id="tab-post" class="hidden">
+    <div class="card">
+      <h3>📢 发布新广告</h3>
+      <div id="wallet-section" style="margin-bottom:12px">
+        <button class="btn-outline" id="btn-connect" onclick="connectWallet()">🔗 连接钱包</button>
+        <p id="wallet-info" style="font-size:10px;color:var(--text-dim);text-align:center;margin-top:4px"></p>
+      </div>
+      <input type="text" id="ad-title" placeholder="广告标题（最多 50 字）" maxlength="50">
+      <input type="url" id="ad-link" placeholder="链接（https://...）">
+      <textarea id="ad-desc" placeholder="简短描述（最多 100 字）" maxlength="100"></textarea>
+      <div class="row">
+        <input type="number" id="ad-bid" placeholder="出价 (AIGENT)" min="10" value="10">
+        <button class="btn btn-red btn-sm" onclick="postAd()" style="white-space:nowrap">🔥 发布</button>
+      </div>
+      <p style="font-size:10px;color:var(--text-dim);margin-top:8px;text-align:center">
+        ⚡ 50% 燃烧 · 50% 收入 · 展示 7 天 · 最小出价 10 AIGENT
+      </p>
+    </div>
+  </div>
+
+  <div class="divider">◆ ◇ ◆</div>
+  <p style="text-align:center;font-size:11px;color:var(--text-dim)">
+    Powered by <a href="/" style="color:var(--gold);text-decoration:none">AIGENT</a>
+  </p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.0/ethers.umd.min.js"></script>
+<script>
+const AIGENT = '0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';
+const REVENUE = '0x38bA1dD6cA31c8b2971de7c61A87f1F7c4Eba7e4';
+const ADS_KEY = 'aigent_ads';
+
+let wallet=null,signer=null;
+
+function switchTab(t){document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');document.getElementById('tab-view').classList.toggle('hidden',t!=='view');document.getElementById('tab-post').classList.toggle('hidden',t!=='post')}
+
+async function connectWallet(){
+  if(!window.ethereum){toast('请安装 MetaMask 或 OKX Wallet');return}
+  const p=new ethers.BrowserProvider(window.ethereum);
+  const s=await p.getSigner();
+  wallet=await s.getAddress();
+  signer=s;
+  document.getElementById('btn-connect').textContent=`✅ ${wallet.slice(0,6)}...${wallet.slice(-4)}`;
+  document.getElementById('btn-connect').classList.add('connected');
+  document.getElementById('wallet-info').textContent='已连接 · 准备发布广告';
+}
+
+async function postAd(){
+  const title=document.getElementById('ad-title').value.trim();
+  const link=document.getElementById('ad-link').value.trim();
+  const desc=document.getElementById('ad-desc').value.trim();
+  const bid=document.getElementById('ad-bid').value;
+  if(!title||!link){toast('请填写标题和链接');return}
+  if(!bid||Number(bid)<10){toast('最小出价 10 AIGENT');return}
+  if(!signer){toast('请先连接钱包');return}
+
+  const amount=BigInt(Number(bid))*10n**18n;
+  const burnAmt=amount/2n;
+  const revAmt=amount-burnAmt;
+  try{
+    const abi=['function burn(uint256)','function transfer(address,uint256) returns (bool)'];
+    const token=new ethers.Contract(AIGENT,abi,signer);
+    toast('处理中...');
+    if(burnAmt>0){await (await token.burn(burnAmt)).wait()}
+    if(revAmt>0){await (await token.transfer(REVENUE,revAmt)).wait()}
+    const ads=JSON.parse(localStorage.getItem(ADS_KEY)||'[]');
+    ads.unshift({title,link,desc,bid:Number(bid),author:wallet.slice(0,10),time:Date.now(),expires:Date.now()+7*86400000});
+    localStorage.setItem(ADS_KEY,JSON.stringify(ads));
+    document.getElementById('ad-title').value='';document.getElementById('ad-link').value='';document.getElementById('ad-desc').value='';
+    toast(`✅ 广告已发布！燃烧 ${burnAmt/10n**18n} · 收入 ${revAmt/10n**18n} AIGENT`);
+    renderAds();
+    switchTab('view');
+  }catch(e){toast('失败: '+(e.reason||e.message||'余额不足'))}
+}
+
+function renderAds(){
+  const ads=JSON.parse(localStorage.getItem(ADS_KEY)||'[]');
+  const now=Date.now();
+  const active=ads.filter(a=>a.expires>now).sort((a,b)=>b.bid-a.bid);
+  const container=document.getElementById('ads-list');
+  if(!active.length){container.innerHTML='<p style="color:var(--text-dim);text-align:center;padding:30px">📋 暂无广告 · <a href="#" onclick="switchTab(\'post\')" style="color:var(--gold)">发布第一条</a></p>';return}
+  container.innerHTML=active.map((a,i)=>`
+    <div class="ad-card${i===0?' top':''}${a.expires<now?' ad-expired':''}">
+      <div class="ad-badge${i===0?' top':''}">${i===0?'👑 TOP':'#'+(i+1)}<br><small>${a.bid} AIGENT</small></div>
+      <div class="ad-text">
+        <div class="ad-title">${esc(a.title)}</div>
+        ${a.desc?`<div style="font-size:12px;color:var(--text-dim);margin-top:2px">${esc(a.desc)}</div>`:''}
+        <a class="ad-link" href="${esc(a.link)}" target="_blank" rel="nofollow">${esc(a.link)}</a>
+        <div class="ad-meta">👤 ${a.author} · ⏰ ${new Date(a.time).toLocaleDateString()} · 🔥 ${Math.ceil((a.expires-now)/86400000)}天后过期</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300)},2500)}
+
+renderAds();
+</script>
+</body>
+</html>

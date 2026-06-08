@@ -292,10 +292,10 @@
 // ══════════════════════════════════
 //  State
 // ══════════════════════════════════
-const AIGENT='0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39',REVENUE='0x38bA1dD6cA31c8b2971de7c61A87f1F7c4Eba7e4',AGENT='http://localhost:3456';
+const AIGENT='0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39';const AGENT='http://localhost:3456';
 let currentService='fortune',currentTier='free',wallet=null,signer=null,selectedCard=null;
-const TIERS={free:{price:0,burn:0,rev:0},standard:{price:100,burn:70,rev:30},master:{price:500,burn:350,rev:150}};
-const PRICES={free:'免费 · 本地算法',standard:'⚡ 燃烧 70 · 收入 30 AIGENT',master:'👑 燃烧 350 · 收入 150 AIGENT'};
+const TIERS={free:{price:0,burn:0,rev:0},standard:{price:100,burn:100,rev:0},master:{price:500,burn:500,rev:0}};
+const PRICES={free:'免费 · 本地算法',standard:'🔥 100% 燃烧 · 零利润 · 纯通缩',master:'👑 500 AIGENT 全烧 · 极致通缩'};
 
 // ══════════════════════════════════
 //  Init
@@ -380,7 +380,6 @@ async function pay(tier){
     const abi=['function burn(uint256)','function transfer(address,uint256) returns (bool)'];
     const token=new ethers.Contract(AIGENT,abi,signer);
     if(cfg.burn>0){await(await token.burn(BigInt(cfg.burn)*10n**18n)).wait()}
-    if(cfg.rev>0){await(await token.transfer(REVENUE,BigInt(cfg.rev)*10n**18n)).wait()}
     return true;
   }catch(e){toast('支付失败: '+(e.reason||'余额不足'));return false}
 }
