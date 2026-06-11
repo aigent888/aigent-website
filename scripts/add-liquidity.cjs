@@ -23,8 +23,8 @@ const UNI_V3_POSITION_MANAGER = "0x315e413A11AB0df498eF83873012430ca36638Ae";
 const UNI_V3_FACTORY = "0x4B2ab38DBF28D31D467aA8993f6c2585981D6804";
 const UNI_V3_ROUTER = "0x4f0c28f5926afda16bf2506d5d9e57ea190f9bca";
 
-// USDT on X Layer (verified on-chain, OKX bridged)
-const USDT = "0x1E4a5963aBFD975d8c9021ce480b42188849D41d";
+// USDT on X Layer (OKX bridged — verified by actual withdrawal)
+const USDT = "0x779ded0c9e1022225f8e0630b35a9b54be713736";
 
 // Pool config
 const AIGENT_AMOUNT = "10000000"; // 10M AIGENT
@@ -63,14 +63,21 @@ if (!PRIVATE_KEY) {
 // Since AIGENT < USDT (price wise), AIGENT is token0
 // price = token1/token0 = USDT/AIGENT = 0.0001
 function getSqrtPriceX96(price) {
-  return ethers.toBigInt(
-    Math.floor(Math.sqrt(price) * 2 ** 96)
-  ).toString();
+  // sqrt(price) * 2^96, using BigInt to avoid overflow
+  const sqrt = Math.sqrt(price);
+  // Scale: multiply by 1e18 for precision, then by 2^96 / 1e18
+  const Q96 = BigInt("79228162514264337593543950336"); // 2^96
+  const scaled = BigInt(Math.floor(sqrt * 1e18));
+  return ((scaled * Q96) / BigInt(1e18)).toString();
 }
 
-// Full range: set min/max ticks
-const MIN_TICK = -887272;
-const MAX_TICK = 887272;
+// Wide range around current price (tick ~92108)
+// Must be multiples of tickSpacing (60 for 0.3%)
+const currentTick = 92108;
+const rangeOffset = 50000; // wide range
+const TICK_SPACING = 60;
+const tickLower = Math.floor((currentTick - rangeOffset) / TICK_SPACING) * TICK_SPACING;
+const tickUpper = Math.ceil((currentTick + rangeOffset) / TICK_SPACING) * TICK_SPACING;
 
 async function main() {
   const provider = new ethers.JsonRpcProvider(RPC_URL);
@@ -199,8 +206,8 @@ async function main() {
     token0: token0,
     token1: token1,
     fee: FEE,
-    tickLower: MIN_TICK,
-    tickUpper: MAX_TICK,
+    tickLower: tickLower,
+    tickUpper: tickUpper,
     amount0Desired: amount0,
     amount1Desired: amount1,
     amount0Min: 0,

@@ -1,0 +1,12 @@
+{
+  "pool": "0x5f2233457c93d3B17CadC4Ef99042DD5C608ba8b",
+  "token0": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+  "token1": "0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39",
+  "fee": 3000,
+  "aigent": "0xE54357D170e2521C1638e2c8Ec138EECEbfC3e39",
+  "usdt": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+  "aigentAmount": "10000000",
+  "usdtAmount": "1000",
+  "price": 0.0001,
+  "createdAt": "2026-06-11T02:38:08.521Z"
+}
